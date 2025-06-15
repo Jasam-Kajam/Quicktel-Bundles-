@@ -52,15 +52,15 @@
       <input type="tel" id="phone" name="phone" placeholder="07XXXXXXXX" required />
 
       <label for="bundle">Choose a Bundle</label>
-<select id="bundle" name="bundle">
-  <option value="20">150MB - KSh 20 (24hrs)</option>
-  <option value="50">500MB - KSh 50 (24hrs)</option>
-  <option value="99">1GB - KSh 99 (24hrs)</option>
-  <option value="199">2GB - KSh 199 (24hrs)</option>
-  <option value="500">5GB - KSh 500 (7 days)</option>
-  <option value="1000">10GB - KSh 1000 (30 days)</option>
-  <option value="2000">25GB - KSh 2000 (30 days)</option>
-</select>
+      <select id="bundle" name="bundle">
+        <option value="20" data-validity="24 hours">150MB - KSh 20 (24hrs)</option>
+        <option value="50" data-validity="24 hours">500MB - KSh 50 (24hrs)</option>
+        <option value="99" data-validity="24 hours">1GB - KSh 99 (24hrs)</option>
+        <option value="199" data-validity="24 hours">2GB - KSh 199 (24hrs)</option>
+        <option value="500" data-validity="7 days">5GB - KSh 500 (7 days)</option>
+        <option value="1000" data-validity="30 days">10GB - KSh 1000 (30 days)</option>
+        <option value="2000" data-validity="30 days">25GB - KSh 2000 (30 days)</option>
+      </select>
 
       <button type="submit">Order Now</button>
     </form>
@@ -68,10 +68,10 @@
     <div id="confirmation" style="display:none">
       <h3>Complete Your Order</h3>
       <p>Send <strong>KSh <span id="amount"></span></strong> to Till Number <strong>8644442</strong></p>
-      <p>Once paid, your bundle will be delivered shortly.</p>
+      <p>Bundle will be delivered shortly. Valid for <strong><span id="validity"></span></strong>.</p>
     </div>
 
-    <a class="whatsapp" href="https://wa.me/2547XXXXXXXX" target="_blank">
+    <a class="whatsapp" href="https://wa.me/254729952483" target="_blank">
       📱 Chat with us on WhatsApp
     </a>
   </div>
@@ -80,12 +80,15 @@
     const form = document.getElementById('bundleForm');
     const confirmation = document.getElementById('confirmation');
     const amountSpan = document.getElementById('amount');
+    const validitySpan = document.getElementById('validity');
 
     form.addEventListener('submit', function(e) {
       e.preventDefault();
       const bundle = document.getElementById('bundle');
       const amount = bundle.value;
+      const validity = bundle.options[bundle.selectedIndex].dataset.validity;
       amountSpan.textContent = amount;
+      validitySpan.textContent = validity;
       form.style.display = 'none';
       confirmation.style.display = 'block';
     });
