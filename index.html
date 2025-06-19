@@ -1,238 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Quicktel Bundles</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f0f0f0;
-      margin: 0;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
+const express = require('express');
+const fetch = require('node-fetch');
+const cors = require('cors');
+const africastalking = require('africastalking');
+
+const app = express();
+const PORT = 5000;
+
+app.use(cors());
+app.use(express.json());
+
+// Paystack Secret Key
+const PAYSTACK_SECRET_KEY = 'sk_live_46bd28ec294704ab8eb8fa0b5fe80558eb5b5ffc';
+
+// Africa's Talking credentials
+const africasTalking = africastalking({
+    apiKey: 'atsk_fd734fe5664d26d6ceab49795e7f707343c597e9a60702a07b08f6032273531346d02e33',
+    username: 'sandbox',
+});
+
+// Endpoint for verifying payment after Paystack payment success
+app.post('/verify-payment', async (req, res) => {
+    const { reference, bundle, phone } = req.body;
+
+    try {
+        const response = await fetch(`https://api.paystack.co/transaction/verify/${reference}`, {
+            headers: {
+                Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+
+        if (data.status && data.data.status === 'success') {
+            console.log(`✅ Payment verified for ${phone}: ${bundle}`);
+
+            // Simulate bundle activation
+            console.log(`📶 Activating bundle: ${bundle} for ${phone}`);
+
+            // Send SMS confirmation via Africa's Talking
+            const sms = africasTalking.SMS;
+            await sms.send({
+                to: `+254${phone.substring(1)}`, 
+                message: `Hello ${phone}, your Quicktel ${bundle} bundle has been activated. Enjoy!`
+            });
+
+            res.json({ message: '✅ Payment successful and bundle activated!' });
+        } else {
+            res.status(400).json({ message: '❌ Payment verification failed.' });
+        }
+    } catch (error) {
+        console.error('❌ Error verifying payment:', error);
+        res.status(500).json({ message: 'Server error.' });
     }
+});
 
-    .grid-container {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-auto-rows: 360px; /* doubled height */
-      gap: 10px;
-    }
-
-    .bundle-card {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      padding: 5px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-around;
-    }
-
-    .stylish-logo {
-      font-size: 18px;
-      font-weight: bold;
-      color: purple;
-      margin-top: 10px;
-    }
-
-    .bundle-title {
-      color: #2ecc71;
-      font-size: 24px;
-      font-weight: bold;
-    }
-
-    .bundle-validity {
-      color: #000;
-      font-weight: bold;
-      font-size: 16px;
-    }
-
-    .bundle-price-label {
-      color: #ff5c5c;
-      font-size: 18px;
-      font-weight: bold;
-    }
-
-    .bundle-price-value {
-      font-size: 22px;
-      color: #ff5c5c;
-      font-weight: bold;
-    }
-
-    .button-group {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .buy-btn {
-      flex: 1;
-      padding: 8px;
-      font-size: 14px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .self-btn {
-      background: #444;
-      color: white;
-    }
-
-    .others-btn {
-      background: #3498db;
-      color: white;
-    }
-
-    footer {
-      margin-top: auto;
-      padding: 15px 10px;
-      background-color: #333;
-      color: white;
-      text-align: center;
-      font-size: 13px;
-      border-top: 1px solid #555;
-    }
-
-    footer a {
-      color: #1abc9c;
-      text-decoration: none;
-      margin: 0 8px;
-    }
-
-    footer a:hover {
-      text-decoration: underline;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="grid-container">
-
-    <div class="bundle-card">
-      <div class="stylish-logo">QUICKTEL</div>
-      <div class="bundle-title">200 SMS</div>
-      <div class="bundle-validity">Valid | 24hrs</div>
-      <div class="bundle-price-label">Price:</div>
-      <div class="bundle-price-value">KES 9</div>
-      <div class="button-group">
-        <button class="buy-btn self-btn">Self</button>
-        <button class="buy-btn others-btn">Others</button>
-      </div>
-    </div>
-
-    <div class="bundle-card">
-      <div class="stylish-logo">QUICKTEL</div>
-      <div class="bundle-title">1000 SMS</div>
-      <div class="bundle-validity">Valid | 1 Week</div>
-      <div class="bundle-price-label">Price:</div>
-      <div class="bundle-price-value">KES 28</div>
-      <div class="button-group">
-        <button class="buy-btn self-btn">Self</button>
-        <button class="buy-btn others-btn">Others</button>
-      </div>
-    </div>
-
-    <div class="bundle-card">
-      <div class="stylish-logo">QUICKTEL</div>
-      <div class="bundle-title">1500 SMS</div>
-      <div class="bundle-validity">Valid | 30 Days</div>
-      <div class="bundle-price-label">Price:</div>
-      <div class="bundle-price-value">KES 97</div>
-      <div class="button-group">
-        <button class="buy-btn self-btn">Self</button>
-        <button class="buy-btn others-btn">Others</button>
-      </div>
-    </div>
-
-    <div class="bundle-card">
-      <div class="stylish-logo">QUICKTEL</div>
-      <div class="bundle-title">500 Mins</div>
-      <div class="bundle-validity">Valid | 1 Week</div>
-      <div class="bundle-price-label">Price:</div>
-      <div class="bundle-price-value">KES 475</div>
-      <div class="button-group">
-        <button class="buy-btn self-btn">Self</button>
-        <button class="buy-btn others-btn">Others</button>
-      </div>
-    </div>
-
-    <div class="bundle-card">
-      <div class="stylish-logo">QUICKTEL</div>
-      <div class="bundle-title">3GB Data</div>
-      <div class="bundle-validity">Valid | 7 Days</div>
-      <div class="bundle-price-label">Price:</div>
-      <div class="bundle-price-value">KES 250</div>
-      <div class="button-group">
-        <button class="buy-btn self-btn">Self</button>
-        <button class="buy-btn others-btn">Others</button>
-      </div>
-    </div>
-
-    <div class="bundle-card">
-      <div class="stylish-logo">QUICKTEL</div>
-      <div class="bundle-title">5GB Data</div>
-      <div class="bundle-validity">Valid | 30 Days</div>
-      <div class="bundle-price-label">Price:</div>
-      <div class="bundle-price-value">KES 400</div>
-      <div class="button-group">
-        <button class="buy-btn self-btn">Self</button>
-        <button class="buy-btn others-btn">Others</button>
-      </div>
-    </div>
-
-    <div class="bundle-card">
-      <div class="stylish-logo">QUICKTEL</div>
-      <div class="bundle-title">10GB Data</div>
-      <div class="bundle-validity">Valid | 30 Days</div>
-      <div class="bundle-price-label">Price:</div>
-      <div class="bundle-price-value">KES 700</div>
-      <div class="button-group">
-        <button class="buy-btn self-btn">Self</button>
-        <button class="buy-btn others-btn">Others</button>
-      </div>
-    </div>
-
-    <div class="bundle-card">
-      <div class="stylish-logo">QUICKTEL</div>
-      <div class="bundle-title">25GB Data</div>
-      <div class="bundle-validity">Valid | 30 Days</div>
-      <div class="bundle-price-label">Price:</div>
-      <div class="bundle-price-value">KES 1200</div>
-      <div class="button-group">
-        <button class="buy-btn self-btn">Self</button>
-        <button class="buy-btn others-btn">Others</button>
-      </div>
-    </div>
-
-    <div class="bundle-card">
-      <div class="stylish-logo">QUICKTEL</div>
-      <div class="bundle-title">50GB Data</div>
-      <div class="bundle-validity">Valid | 30 Days</div>
-      <div class="bundle-price-label">Price:</div>
-      <div class="bundle-price-value">KES 2000</div>
-      <div class="button-group">
-        <button class="buy-btn self-btn">Self</button>
-        <button class="buy-btn others-btn">Others</button>
-      </div>
-    </div>
-
-  </div>
-
-  <footer>
-    &copy; 2025 Quicktel Bundles. All rights reserved. 
-    <br/>
-    <a href="#">Terms & Conditions</a> | 
-    <a href="#">Privacy Policy</a> | 
-    <a href="#">Contact Us</a>
-  </footer>
-
-</body>
-</html>
+// Start backend
+app.listen(PORT, () => console.log(`🚀 Backend running on port ${PORT}`));
