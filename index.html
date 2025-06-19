@@ -30,7 +30,7 @@
     .stylish-logo {
       font-size: 28px;
       font-weight: bold;
-      color: purple;  /* Updated color */
+      color: purple;
       text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
       margin-bottom: 20px;
       letter-spacing: 2px;
@@ -40,16 +40,15 @@
       position: relative;
     }
 
-    .wave {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border-top-left-radius: 50% 100%;
-      border-top-right-radius: 50% 100%;
-      background: #2ecc71;
-      margin-left: 5px;
-      transform: rotate(-30deg);
-      margin-top: 5px;
+    .wifi-wave {
+      margin-left: 6px;
+      margin-top: 3px;
+    }
+
+    .wifi-wave svg {
+      width: 28px;
+      height: 28px;
+      fill: #2ecc71;
     }
 
     .bundle-title {
@@ -62,6 +61,7 @@
     .bundle-validity {
       color: #222;
       font-size: 14px;
+      font-weight: bold;
       margin-bottom: 10px;
     }
 
@@ -114,9 +114,14 @@
   <div class="container">
     <div class="bundle-card">
       
-      <!-- Stylish QUICKTEL Logo with green wave -->
+      <!-- Stylish QUICKTEL Logo with WiFi wave -->
       <div class="stylish-logo">
-        QUICKTE<span>L</span><div class="wave"></div>
+        QUICKTE<span>L</span>
+        <div class="wifi-wave">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 18c.55 0 1 .45 1 1s-.45 1-1 1 -1-.45-1-1 .45-1 1-1zm2.07-2.75c-.39-.39-1.02-.39-1.41 0-.39.39-1.02.39-1.41 0a.9959.9959 0 00-1.41 1.41c1.17 1.17 3.07 1.17 4.24 0 .39-.39.39-1.02 0-1.41zm3.54-3.53c-3.12-3.12-8.19-3.12-11.31 0-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0 2.34-2.34 6.14-2.34 8.48 0 .39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41z"/>
+          </svg>
+        </div>
       </div>
 
       <div class="bundle-title">500 Mins</div>
