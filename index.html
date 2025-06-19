@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Quicktel Bundle</title>
+  <title>Quicktel Bundles</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -13,8 +13,23 @@
     }
 
     .container {
-      max-width: 350px;
+      max-width: 1200px;
       margin: auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
     }
 
     .bundle-card {
@@ -23,8 +38,11 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       padding: 20px;
       text-align: center;
-      margin-bottom: 30px;
-      position: relative;
+      transition: transform 0.2s ease;
+    }
+
+    .bundle-card:hover {
+      transform: translateY(-5px);
     }
 
     .stylish-logo {
@@ -34,21 +52,6 @@
       text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
       margin-bottom: 20px;
       letter-spacing: 2px;
-      position: relative;
-      display: inline-block;
-    }
-
-    .wifi-wave {
-      position: absolute;
-      bottom: -2px;
-      left: 92%;
-      transform: translateX(-50%) rotate(-10deg);
-    }
-
-    .wifi-wave svg {
-      width: 24px;
-      height: 24px;
-      fill: #2ecc71;
     }
 
     .bundle-title {
@@ -59,7 +62,7 @@
     }
 
     .bundle-validity {
-      color: #222;
+      color: #000;
       font-size: 14px;
       font-weight: bold;
       margin-bottom: 10px;
@@ -112,40 +115,68 @@
 <body>
 
   <div class="container">
-    <div class="bundle-card">
-      
-      <!-- Stylish QUICKTEL Logo with WiFi wave inside the L -->
-      <div class="stylish-logo">
-        QUICKTE<span style="position: relative;">L
-          <div class="wifi-wave">
-            <svg viewBox="0 0 24 24">
-              <path d="M12 18c.7 0 1.25.55 1.25 1.25S12.7 20.5 12 20.5s-1.25-.55-1.25-1.25S11.3 18 12 18zm3.75-3.25a.88.88 0 0 0-1.25 0c-1.38 1.38-3.62 1.38-5 0a.88.88 0 0 0-1.25 0 .88.88 0 0 0 0 1.25 5.62 5.62 0 0 0 7.5 0 .88.88 0 0 0 0-1.25zm3.75-3.75a.88.88 0 0 0-1.25 0c-2.75 2.75-7.25 2.75-10 0a.88.88 0 0 0-1.25 0 .88.88 0 0 0 0 1.25c3.5 3.5 9 3.5 12.5 0a.88.88 0 0 0 0-1.25z"/>
-            </svg>
-          </div>
-        </span>
-      </div>
 
+    <!-- CARD 1 -->
+    <div class="bundle-card">
+      <div class="stylish-logo">QUICKTEL</div>
+      <div class="bundle-title">200 SMS</div>
+      <div class="bundle-validity">Valid | 24hrs</div>
+      <div class="bundle-price">Price: KES 9</div>
+      <div class="buy-for-label">BUY FOR:</div>
+      <div class="button-group">
+        <button class="buy-btn self-btn" onclick="buyForSelf('200 SMS', 9)">Self</button>
+        <button class="buy-btn others-btn" onclick="buyForOthers('200 SMS', 9)">Others</button>
+      </div>
+    </div>
+
+    <!-- CARD 2 -->
+    <div class="bundle-card">
+      <div class="stylish-logo">QUICKTEL</div>
+      <div class="bundle-title">1000 SMS</div>
+      <div class="bundle-validity">Valid | 1 Week</div>
+      <div class="bundle-price">Price: KES 28</div>
+      <div class="buy-for-label">BUY FOR:</div>
+      <div class="button-group">
+        <button class="buy-btn self-btn" onclick="buyForSelf('1000 SMS', 28)">Self</button>
+        <button class="buy-btn others-btn" onclick="buyForOthers('1000 SMS', 28)">Others</button>
+      </div>
+    </div>
+
+    <!-- CARD 3 -->
+    <div class="bundle-card">
+      <div class="stylish-logo">QUICKTEL</div>
+      <div class="bundle-title">1500 SMS</div>
+      <div class="bundle-validity">Valid | 30 Days</div>
+      <div class="bundle-price">Price: KES 97</div>
+      <div class="buy-for-label">BUY FOR:</div>
+      <div class="button-group">
+        <button class="buy-btn self-btn" onclick="buyForSelf('1500 SMS', 97)">Self</button>
+        <button class="buy-btn others-btn" onclick="buyForOthers('1500 SMS', 97)">Others</button>
+      </div>
+    </div>
+
+    <!-- CARD 4 -->
+    <div class="bundle-card">
+      <div class="stylish-logo">QUICKTEL</div>
       <div class="bundle-title">500 Mins</div>
       <div class="bundle-validity">Valid | 1 Week</div>
-      <div class="bundle-price">Price: KSh 475</div>
-
+      <div class="bundle-price">Price: KES 475</div>
       <div class="buy-for-label">BUY FOR:</div>
-
       <div class="button-group">
         <button class="buy-btn self-btn" onclick="buyForSelf('500 Mins', 475)">Self</button>
         <button class="buy-btn others-btn" onclick="buyForOthers('500 Mins', 475)">Others</button>
       </div>
-
     </div>
+
   </div>
 
   <script>
     function buyForSelf(bundle, price) {
-      alert(`Buying ${bundle} for SELF at KSh ${price}`);
+      alert(`Buying ${bundle} for SELF at KES ${price}`);
     }
 
     function buyForOthers(bundle, price) {
-      alert(`Buying ${bundle} for OTHERS at KSh ${price}`);
+      alert(`Buying ${bundle} for OTHERS at KES ${price}`);
     }
   </script>
 
