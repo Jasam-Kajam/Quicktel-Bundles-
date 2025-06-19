@@ -1,128 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Quicktel Bundles</title>
-  <style>
-    body {font-family: 'Segoe UI', sans-serif; background: #f0f0f0; margin: 0; padding: 10px; display: flex; flex-direction: column; min-height: 100vh;}
-    .grid-container {display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 400px; gap: 10px;}
-    .bundle-card {background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); padding: 5px; text-align: center; display: flex; flex-direction: column; justify-content: space-around; position: relative;}
-    .popular-label {position: absolute; top: 10px; left: 10px; background-color: gold; color: #333; font-weight: bold; padding: 3px 8px; border-radius: 8px; font-size: 13px;}
-    .stylish-logo {font-size: 18px; font-weight: bold; color: purple; margin-top: 15px;}
-    .bundle-title {color: #2ecc71; font-size: 20px; font-weight: bold; margin-top: 10px;}
-    .bundle-validity {color: #000; font-weight: bold; font-size: 15px; margin-top: 5px;}
-    .bundle-price-label {color: #ff5c5c; font-size: 18px; font-weight: bold; margin-top: 8px;}
-    .button-select {background-color: #ff9800; color: white; border: none; border-radius: 8px; padding: 10px 0; font-size: 16px; font-weight: bold; cursor: pointer; margin: 10px;}
-    footer {margin-top: auto; padding: 15px 10px; background-color: #333; color: white; text-align: center; font-size: 13px; border-top: 1px solid #555;}
-    footer a {color: #1abc9c; text-decoration: none; margin: 0 8px;}
-    footer a:hover {text-decoration: underline;}
-    #paymentModal {display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 999;}
-    #modalContent {background: white; padding: 20px; border-radius: 10px; text-align: center; width: 300px;}
-    input {padding: 10px; width: 90%; margin: 10px auto; border: 1px solid #ccc; border-radius: 5px;}
-  </style>
+    <meta charset="UTF-8">
+    <title>QUICKTEL Bundles</title>
+    <script src="https://js.paystack.co/v1/inline.js"></script> <!-- Load Paystack -->
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #e5f4ec, #b3e5fc); margin: 0; padding: 0; color: #333; }
+        h1 { text-align: center; color: purple; padding: 20px 0 10px; font-size: 28px; font-weight: 700; }
+        .grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 10px; }
+        .card { background: white; border-radius: 20px; padding: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); text-align: center; display: flex; flex-direction: column; justify-content: space-between; height: 230px; }
+        .popular { background-color: gold; color: black; padding: 3px 8px; border-radius: 10px; display: inline-block; margin-bottom: 5px; font-weight: bold; }
+        .price { color: palevioletred; font-weight: bold; margin: 5px 0; font-size: 20px; }
+        .valid { font-weight: bold; margin-bottom: 8px; }
+        .buy-buttons { display: flex; justify-content: center; gap: 10px; }
+        .buy-buttons button { padding: 6px 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .buy-self { background-color: #333; color: #fff; }
+        .buy-others { background-color: #2196f3; color: #fff; }
+        footer { margin-top: 20px; background-color: #222; color: white; text-align: center; padding: 20px; font-size: 14px; border-top: 5px solid purple; }
+    </style>
 </head>
 <body>
 
-  <div class="grid-container" id="bundleGrid">
-    <!-- Bundles dynamically generated below -->
-  </div>
+<h1>QUICKTEL BUNDLES</h1>
 
-  <!-- Payment Modal -->
-  <div id="paymentModal">
-    <div id="modalContent">
-      <h3>Enter Phone Number</h3>
-      <input type="text" id="phoneInput" placeholder="07XXXXXXXX" />
-      <button class="button-select" onclick="startPayment()">Proceed to Pay</button>
-    </div>
-  </div>
+<div class="grid-container">
+    <div class="card"><div class="popular">⭐ Popular Now</div><div class="price">KSh 50</div><div class="valid">175 MB · No expiry & WhatsApp</div><div class="buy-buttons"><button class="buy-self" onclick="startPayment(50, '175 MB No expiry & WhatsApp')">Self</button></div></div>
 
-  <footer>
-    &copy; 2025 Quicktel Bundles. All rights reserved.
-    <br/>
-    <a href="#">Terms & Conditions</a> |
-    <a href="#">Privacy Policy</a> |
-    <a href="#">Contact Us</a>
-  </footer>
+    <div class="card"><div class="price">KSh 20</div><div class="valid">1GB · 1 Hour</div><div class="buy-buttons"><button class="buy-self" onclick="startPayment(20, '1GB 1 Hour')">Self</button></div></div>
 
-  <script src="https://js.paystack.co/v1/inline.js"></script>
-  <script>
-    const PAYSTACK_PUBLIC_KEY = 'pk_live_3b95d82d975d8cd88f2e0059b1d6dca62c1db036';
-    let selectedBundle = {};
+    <div class="card"><div class="price">KSh 100</div><div class="valid">2GB · 3 Days</div><div class="buy-buttons"><button class="buy-self" onclick="startPayment(100, '2GB 3 Days')">Self</button></div></div>
 
-    const bundles = [
-      {title:'175MB', validity:'No Expiry & WhatsApp', price:50, popular:true},
-      {title:'1GB', validity:'Valid | 1 Hour', price:20},
-      {title:'2GB', validity:'Valid | 3 Days', price:100},
-      {title:'300MB', validity:'Valid | 24 Hours', price:25, popular:true},
-      {title:'500MB', validity:'Valid | 1 Hour', price:15, popular:true},
-      {title:'5GB', validity:'No Expiry & WhatsApp', price:1000},
-      {title:'1.25GB', validity:'No Expiry & WhatsApp', price:150},
-      {title:'10MB', validity:'No Expiry', price:5},
-      {title:'500MB', validity:'Till Midnight', price:30},
-      {title:'200 SMS', validity:'Valid | 24 Hours', price:9},
-      {title:'1000 SMS', validity:'Valid | 1 Week', price:28},
-      {title:'1500 SMS', validity:'Valid | 30 Days', price:97}
-    ];
+    <div class="card"><div class="popular">⭐ Popular Now</div><div class="price">KSh 25</div><div class="valid">300MB · 24 Hours</div><div class="buy-buttons"><button class="buy-self" onclick="startPayment(25, '300MB 24 Hours')">Self</button></div></div>
 
-    function loadBundles() {
-      const grid = document.getElementById('bundleGrid');
-      bundles.forEach((b, index) => {
-        const card = document.createElement('div');
-        card.className = 'bundle-card';
-        card.innerHTML = `
-          ${b.popular ? '<div class="popular-label">⭐ Popular now</div>' : ''}
-          <div class="stylish-logo">QUICKTEL</div>
-          <div class="bundle-title">${b.title}</div>
-          <div class="bundle-validity">${b.validity}</div>
-          <div class="bundle-price-label">Price: KSh ${b.price}</div>
-          <button class="button-select" onclick="openPayment(${index})">Select</button>`;
-        grid.appendChild(card);
-      });
-    }
+    <div class="card"><div class="price">KSh 15</div><div class="valid">500MB · 1 Hour</div><div class="buy-buttons"><button class="buy-self" onclick="startPayment(15, '500MB 1 Hour')">Self</button></div></div>
 
-    function openPayment(index) {
-      selectedBundle = bundles[index];
-      document.getElementById('paymentModal').style.display = 'flex';
-    }
+    <div class="card"><div class="price">KSh 1000</div><div class="valid">5GB · No Expiry & WhatsApp</div><div class="buy-buttons"><button class="buy-self" onclick="startPayment(1000, '5GB No Expiry')">Self</button></div></div>
 
-    function startPayment() {
-      const phone = document.getElementById('phoneInput').value.trim();
-      if (!phone.match(/^07\d{8}$/)) {
-        alert("Enter valid Safaricom number");
+    <div class="card"><div class="price">KSh 150</div><div class="valid">1.25GB · No Expiry & WhatsApp</div><div class="buy-buttons"><button class="buy-self" onclick="startPayment(150, '1.25GB No Expiry')">Self</button></div></div>
+
+    <div class="card"><div class="price">KSh 250</div><div class="valid">2GB · 30 Days</div><div class="buy-buttons"><button class="buy-self" onclick="startPayment(250, '2GB 30 Days')">Self</button></div></div>
+
+    <div class="card"><div class="price">KSh 200</div><div class="valid">1GB · 7 Days</div><div class="buy-buttons"><button class="buy-self" onclick="startPayment(200, '1GB 7 Days')">Self</button></div></div>
+</div>
+
+<footer>
+    <p>Terms & Conditions apply. Quicktel reserves the right to change bundle offers anytime. All purchases are final.</p>
+</footer>
+
+<script>
+function startPayment(amount, bundle) {
+    const phone = prompt("Enter your phone number (07XXXXXXXX):");
+    if (!phone || !/^07\d{8}$/.test(phone)) {
+        alert("Invalid phone number!");
         return;
-      }
-      const handler = PaystackPop.setup({
-        key: PAYSTACK_PUBLIC_KEY,
-        email: 'customer@quicktel.com',
-        amount: selectedBundle.price * 100, // amount in kobo
-        currency: 'KES',
+    }
+
+    let handler = PaystackPop.setup({
+        key: 'pk_live_3b95d82d975d8cd88f2e0059b1d6dca62c1db036',
+        email: phone + "@quicktel.com",
+        amount: amount * 100, // amount in kobo
+        currency: "KES",
+        ref: 'QT' + Math.floor((Math.random() * 1000000000) + 1),
         callback: function(response) {
-          // After payment success
-          fetch('https://your-backend-server.com/verify-payment', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-              reference: response.reference,
-              bundle: `${selectedBundle.title} - ${selectedBundle.validity}`,
-              phone: phone
-            })
-          })
-          .then(res => res.json())
-          .then(data => {
-            alert(data.message);
-            document.getElementById('paymentModal').style.display = 'none';
-          })
-          .catch(() => alert("Failed to verify payment."));
+            // Call backend to verify
+            fetch("https://your-backend-url.com/verify-payment", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    reference: response.reference, 
+                    bundle: bundle, 
+                    phone: phone 
+                })
+            }).then(res => res.json())
+            .then(data => {
+                alert(data.message);
+            }).catch(err => {
+                alert("Payment verified but backend failed!");
+            });
         },
         onClose: function() {
-          document.getElementById('paymentModal').style.display = 'none';
+            alert('Payment window closed.');
         }
-      });
-      handler.openIframe();
-    }
-
-    loadBundles();
-  </script>
+    });
+    handler.openIframe();
+}
+</script>
 
 </body>
 </html>
