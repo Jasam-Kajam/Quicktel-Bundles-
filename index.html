@@ -34,21 +34,20 @@
       text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
       margin-bottom: 20px;
       letter-spacing: 2px;
-      display: flex;
-      justify-content: center;
-      align-items: flex-end;
       position: relative;
+      display: inline-block;
     }
 
     .wifi-wave {
-      display: inline-flex;
-      align-items: flex-end;
-      margin-left: 4px;
+      position: absolute;
+      bottom: -2px;
+      left: 92%;
+      transform: translateX(-50%) rotate(-10deg);
     }
 
     .wifi-wave svg {
-      width: 20px;
-      height: 20px;
+      width: 24px;
+      height: 24px;
       fill: #2ecc71;
     }
 
@@ -115,14 +114,15 @@
   <div class="container">
     <div class="bundle-card">
       
-      <!-- Stylish QUICKTEL Logo with WiFi wave attached to L base -->
+      <!-- Stylish QUICKTEL Logo with WiFi wave inside the L -->
       <div class="stylish-logo">
-        QUICKTE<span>L</span>
-        <div class="wifi-wave">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 18c.55 0 1 .45 1 1s-.45 1-1 1 -1-.45-1-1 .45-1 1-1zm2.07-2.75c-.39-.39-1.02-.39-1.41 0-.39.39-1.02.39-1.41 0a.9959.9959 0 00-1.41 1.41c1.17 1.17 3.07 1.17 4.24 0 .39-.39.39-1.02 0-1.41zm3.54-3.53c-3.12-3.12-8.19-3.12-11.31 0-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0 2.34-2.34 6.14-2.34 8.48 0 .39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41z"/>
-          </svg>
-        </div>
+        QUICKTE<span style="position: relative;">L
+          <div class="wifi-wave">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 18c.7 0 1.25.55 1.25 1.25S12.7 20.5 12 20.5s-1.25-.55-1.25-1.25S11.3 18 12 18zm3.75-3.25a.88.88 0 0 0-1.25 0c-1.38 1.38-3.62 1.38-5 0a.88.88 0 0 0-1.25 0 .88.88 0 0 0 0 1.25 5.62 5.62 0 0 0 7.5 0 .88.88 0 0 0 0-1.25zm3.75-3.75a.88.88 0 0 0-1.25 0c-2.75 2.75-7.25 2.75-10 0a.88.88 0 0 0-1.25 0 .88.88 0 0 0 0 1.25c3.5 3.5 9 3.5 12.5 0a.88.88 0 0 0 0-1.25z"/>
+            </svg>
+          </div>
+        </span>
       </div>
 
       <div class="bundle-title">500 Mins</div>
