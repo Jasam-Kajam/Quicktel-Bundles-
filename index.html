@@ -30,10 +30,26 @@
     .stylish-logo {
       font-size: 28px;
       font-weight: bold;
-      color: #2ecc71;
+      color: purple;  /* Updated color */
       text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
       margin-bottom: 20px;
       letter-spacing: 2px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .wave {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border-top-left-radius: 50% 100%;
+      border-top-right-radius: 50% 100%;
+      background: #2ecc71;
+      margin-left: 5px;
+      transform: rotate(-30deg);
+      margin-top: 5px;
     }
 
     .bundle-title {
@@ -98,8 +114,10 @@
   <div class="container">
     <div class="bundle-card">
       
-      <!-- Stylish QUICKTEL Text -->
-      <div class="stylish-logo">QUICKTEL</div>
+      <!-- Stylish QUICKTEL Logo with green wave -->
+      <div class="stylish-logo">
+        QUICKTE<span>L</span><div class="wave"></div>
+      </div>
 
       <div class="bundle-title">500 Mins</div>
       <div class="bundle-validity">Valid | 1 Week</div>
@@ -118,12 +136,10 @@
   <script>
     function buyForSelf(bundle, price) {
       alert(`Buying ${bundle} for SELF at KSh ${price}`);
-      // Call your backend or Paystack popup here
     }
 
     function buyForOthers(bundle, price) {
       alert(`Buying ${bundle} for OTHERS at KSh ${price}`);
-      // Call your backend or Paystack popup here
     }
   </script>
 
