@@ -1,59 +1,140 @@
-const express = require('express');
-const fetch = require('node-fetch');
-const cors = require('cors');
-const africastalking = require('africastalking');
-
-const app = express();
-const PORT = 5000;
-
-app.use(cors());
-app.use(express.json());
-
-// Paystack Secret Key
-const PAYSTACK_SECRET_KEY = 'sk_live_46bd28ec294704ab8eb8fa0b5fe80558eb5b5ffc';
-
-// Africa's Talking credentials
-const africasTalking = africastalking({
-    apiKey: 'atsk_fd734fe5664d26d6ceab49795e7f707343c597e9a60702a07b08f6032273531346d02e33',
-    username: 'sandbox',
-});
-
-// Endpoint for verifying payment after Paystack payment success
-app.post('/verify-payment', async (req, res) => {
-    const { reference, bundle, phone } = req.body;
-
-    try {
-        const response = await fetch(`https://api.paystack.co/transaction/verify/${reference}`, {
-            headers: {
-                Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
-                'Content-Type': 'application/json'
-            }
-        });
-
-        const data = await response.json();
-
-        if (data.status && data.data.status === 'success') {
-            console.log(`✅ Payment verified for ${phone}: ${bundle}`);
-
-            // Simulate bundle activation
-            console.log(`📶 Activating bundle: ${bundle} for ${phone}`);
-
-            // Send SMS confirmation via Africa's Talking
-            const sms = africasTalking.SMS;
-            await sms.send({
-                to: `+254${phone.substring(1)}`, 
-                message: `Hello ${phone}, your Quicktel ${bundle} bundle has been activated. Enjoy!`
-            });
-
-            res.json({ message: '✅ Payment successful and bundle activated!' });
-        } else {
-            res.status(400).json({ message: '❌ Payment verification failed.' });
-        }
-    } catch (error) {
-        console.error('❌ Error verifying payment:', error);
-        res.status(500).json({ message: 'Server error.' });
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quicktel Bundles</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f0f0;
+      margin: 0;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
-});
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: 380px;
+      gap: 10px;
+    }
+    .bundle-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      padding: 5px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      position: relative;
+    }
+    .popular-label {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: gold;
+      color: #333;
+      font-weight: bold;
+      padding: 3px 8px;
+      border-radius: 8px;
+      font-size: 13px;
+    }
+    .stylish-logo {
+      font-size: 18px;
+      font-weight: bold;
+      color: purple;
+      margin-top: 15px;
+    }
+    .bundle-title {
+      color: #2ecc71;
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .bundle-validity {
+      color: #000;
+      font-weight: bold;
+      font-size: 15px;
+      margin-top: 5px;
+    }
+    .bundle-price-label {
+      color: #ff5c5c;
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 8px;
+    }
+    .button-select {
+      background-color: #ff9800;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 0;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 10px;
+    }
+    footer {
+      margin-top: auto;
+      padding: 15px 10px;
+      background-color: #333;
+      color: white;
+      text-align: center;
+      font-size: 13px;
+      border-top: 1px solid #555;
+    }
+    footer a {
+      color: #1abc9c;
+      text-decoration: none;
+      margin: 0 8px;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
 
-// Start backend
-app.listen(PORT, () => console.log(`🚀 Backend running on port ${PORT}`));
+  <div class="grid-container">
+
+    <!-- New Offers -->
+    <div class="bundle-card"><div class="popular-label">⭐ Popular now</div><div class="stylish-logo">QUICKTEL</div><div class="bundle-title">175MB</div><div class="bundle-validity">No Expiry & WhatsApp</div><div class="bundle-price-label">Price: KSh 50</div><button class="button-select">Select</button></div>
+
+    <div class="bundle-card"><div class="stylish-logo">QUICKTEL</div><div class="bundle-title">1GB</div><div class="bundle-validity">Valid | 1 Hour</div><div class="bundle-price-label">Price: KSh 20</div><button class="button-select">Select</button></div>
+
+    <div class="bundle-card"><div class="stylish-logo">QUICKTEL</div><div class="bundle-title">2GB</div><div class="bundle-validity">Valid | 3 Days</div><div class="bundle-price-label">Price: KSh 100</div><button class="button-select">Select</button></div>
+
+    <div class="bundle-card"><div class="popular-label">⭐ Popular now</div><div class="stylish-logo">QUICKTEL</div><div class="bundle-title">300MB</div><div class="bundle-validity">Valid | 24 Hours</div><div class="bundle-price-label">Price: KSh 25</div><button class="button-select">Select</button></div>
+
+    <div class="bundle-card"><div class="popular-label">⭐ Popular now</div><div class="stylish-logo">QUICKTEL</div><div class="bundle-title">500MB</div><div class="bundle-validity">Valid | 1 Hour</div><div class="bundle-price-label">Price: KSh 15</div><button class="button-select">Select</button></div>
+
+    <div class="bundle-card"><div class="stylish-logo">QUICKTEL</div><div class="bundle-title">5GB</div><div class="bundle-validity">No Expiry & WhatsApp</div><div class="bundle-price-label">Price: KSh 1000</div><button class="button-select">Select</button></div>
+
+    <div class="bundle-card"><div class="stylish-logo">QUICKTEL</div><div class="bundle-title">1.25GB</div><div class="bundle-validity">No Expiry & WhatsApp</div><div class="bundle-price-label">Price: KSh 150</div><button class="button-select">Select</button></div>
+
+    <div class="bundle-card"><div class="stylish-logo">QUICKTEL</div><div class="bundle-title">10MB</div><div class="bundle-validity">No Expiry</div><div class="bundle-price-label">Price: KSh 5</div><button class="button-select">Select</button></div>
+
+    <div class="bundle-card"><div class="stylish-logo">QUICKTEL</div><div class="bundle-title">500MB</div><div class="bundle-validity">Till Midnight</div><div class="bundle-price-label">Price: KSh 30</div><button class="button-select">Select</button></div>
+
+    <!-- Previous SMS Offers -->
+    <div class="bundle-card"><div class="stylish-logo">QUICKTEL</div><div class="bundle-title">200 SMS</div><div class="bundle-validity">Valid | 24 Hours</div><div class="bundle-price-label">Price: KSh 9</div><button class="button-select">Select</button></div>
+
+    <div class="bundle-card"><div class="stylish-logo">QUICKTEL</div><div class="bundle-title">1000 SMS</div><div class="bundle-validity">Valid | 1 Week</div><div class="bundle-price-label">Price: KSh 28</div><button class="button-select">Select</button></div>
+
+    <div class="bundle-card"><div class="stylish-logo">QUICKTEL</div><div class="bundle-title">1500 SMS</div><div class="bundle-validity">Valid | 30 Days</div><div class="bundle-price-label">Price: KSh 97</div><button class="button-select">Select</button></div>
+
+  </div>
+
+  <footer>
+    &copy; 2025 Quicktel Bundles. All rights reserved. 
+    <br/>
+    <a href="#">Terms & Conditions</a> | 
+    <a href="#">Privacy Policy</a> | 
+    <a href="#">Contact Us</a>
+  </footer>
+
+</body>
+</html>
