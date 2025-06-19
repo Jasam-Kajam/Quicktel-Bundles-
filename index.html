@@ -27,13 +27,13 @@
       position: relative;
     }
 
-    .logo {
-      margin-bottom: 15px;
-    }
-
-    .logo img {
-      max-width: 120px;
-      height: auto;
+    .stylish-logo {
+      font-size: 28px;
+      font-weight: bold;
+      color: #2ecc71;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+      margin-bottom: 20px;
+      letter-spacing: 2px;
     }
 
     .bundle-title {
@@ -98,11 +98,8 @@
   <div class="container">
     <div class="bundle-card">
       
-      <!-- Logo Section -->
-      <div class="logo">
-        <!-- Replace the image source with your actual logo path -->
-        <img src="https://via.placeholder.com/120x40?text=QUICKTEL" alt="Quicktel Logo">
-      </div>
+      <!-- Stylish QUICKTEL Text -->
+      <div class="stylish-logo">QUICKTEL</div>
 
       <div class="bundle-title">500 Mins</div>
       <div class="bundle-validity">Valid | 1 Week</div>
@@ -121,12 +118,12 @@
   <script>
     function buyForSelf(bundle, price) {
       alert(`Buying ${bundle} for SELF at KSh ${price}`);
-      // Trigger your backend call here
+      // Call your backend or Paystack popup here
     }
 
     function buyForOthers(bundle, price) {
       alert(`Buying ${bundle} for OTHERS at KSh ${price}`);
-      // Trigger your backend call here
+      // Call your backend or Paystack popup here
     }
   </script>
 
