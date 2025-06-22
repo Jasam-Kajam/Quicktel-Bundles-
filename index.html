@@ -16,7 +16,17 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         .logo img { width: 50px; border-radius: 8px; }
-        .hamburger { font-size: 30px; cursor: pointer; user-select: none; }
+        .hamburger { 
+            font-size: 30px; 
+            cursor: pointer; 
+            user-select: none; 
+            background: none; 
+            border: none; 
+            box-shadow: none; 
+            padding: 0; 
+            margin: 0; 
+            color: #000;
+        }
         .sidebar {
             position: fixed; top: 0; right: -250px; width: 250px; height: 100%;
             background: #fff; box-shadow: -2px 0 5px rgba(0,0,0,0.3);
@@ -104,7 +114,123 @@
 
     <h1>QUICKTEL BUNDLES</h1>
 
-    <!-- (Rest of your full bundle code stays exactly same) -->
+    <div class="dropdown-container">
+        <label>Main Category:</label>
+        <select id="mainSelect" onchange="changeMain()">
+            <option value="bundles">Bundles</option>
+            <option value="minutes">Minutes</option>
+            <option value="sms">SMS</option>
+        </select>
+
+        <span id="bundleSubSelectArea">
+            <label>Sub Category:</label>
+            <select id="bundleSelect" onchange="changeBundle()">
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="special">Special</option>
+            </select>
+        </span>
+    </div>
+
+    <!-- Bundles Section -->
+    <div id="bundles" class="section active">
+
+        <!-- DAILY -->
+        <div id="daily" class="section active">
+            <div class="grid">
+                <div class="card">
+                    <div class="logo-card">
+                        <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg">
+                    </div>
+                    <div class="bundle-title">1GB Daily</div>
+                    <div class="validity">Valid: 24 Hours</div>
+                    <div class="price">KSh 55</div>
+                    <div class="buy-label">BUY FOR:</div>
+                    <div class="buttons">
+                        <button class="self-button" onclick="buySelf('1GB Daily', 55)">Self</button>
+                        <a class="others-button" href="others.html?bundle=1GB Daily&price=55">Others</a>
+                    </div>
+                </div>
+
+                <!-- Add more daily offers below -->
+            </div>
+        </div>
+
+        <!-- WEEKLY -->
+        <div id="weekly" class="section">
+            <div class="grid">
+                <div class="card">
+                    <div class="logo-card">
+                        <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg">
+                    </div>
+                    <div class="bundle-title">3GB Weekly</div>
+                    <div class="validity">Valid: 7 Days</div>
+                    <div class="price">KSh 250</div>
+                    <div class="buy-label">BUY FOR:</div>
+                    <div class="buttons">
+                        <button class="self-button" onclick="buySelf('3GB Weekly', 250)">Self</button>
+                        <a class="others-button" href="others.html?bundle=3GB Weekly&price=250">Others</a>
+                    </div>
+                </div>
+
+                <!-- Add more weekly offers below -->
+            </div>
+        </div>
+
+        <!-- MONTHLY -->
+        <div id="monthly" class="section">
+            <div class="grid">
+                <!-- Add monthly offers -->
+            </div>
+        </div>
+
+        <!-- SPECIAL -->
+        <div id="special" class="section">
+            <div class="grid">
+                <!-- Add special offers -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MINUTES -->
+    <div id="minutes" class="section">
+        <div class="grid">
+            <div class="card">
+                <div class="logo-card">
+                    <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg">
+                </div>
+                <div class="bundle-title">500 Minutes</div>
+                <div class="validity">Valid: 7 Days</div>
+                <div class="price">KSh 475</div>
+                <div class="buy-label">BUY FOR:</div>
+                <div class="buttons">
+                    <button class="self-button" onclick="buySelf('500 Minutes', 475)">Self</button>
+                    <a class="others-button" href="others.html?bundle=500 Minutes&price=475">Others</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SMS -->
+    <div id="sms" class="section">
+        <div class="grid">
+            <div class="card">
+                <div class="logo-card">
+                    <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg">
+                </div>
+                <div class="bundle-title">100 SMS</div>
+                <div class="validity">Valid: 30 Days</div>
+                <div class="price">KSh 100</div>
+                <div class="buy-label">BUY FOR:</div>
+                <div class="buttons">
+                    <button class="self-button" onclick="buySelf('100 SMS', 100)">Self</button>
+                    <a class="others-button" href="others.html?bundle=100 SMS&price=100">Others</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <footer>
         <a href="terms.html">Terms & Conditions</a>
@@ -121,17 +247,15 @@
             const icon = document.getElementById('hamburgerIcon');
             sidebar.classList.toggle('show');
             if (sidebar.classList.contains('show')) {
-                icon.innerHTML = '&times;'; // X symbol
+                icon.innerHTML = '&times;';
             } else {
-                icon.innerHTML = '&#9776;'; // Hamburger
+                icon.innerHTML = '&#9776;';
             }
         }
-
         function closeSidebar() {
             document.getElementById('sidebar').classList.remove('show');
             document.getElementById('hamburgerIcon').innerHTML = '&#9776;';
         }
-
         function selectMain(section) {
             document.getElementById('mainSelect').value = section;
             changeMain();
