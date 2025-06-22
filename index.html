@@ -71,14 +71,6 @@
         }
         .self-button { background-color: #333; color: white; }
         .others-button { background-color: #007bff; color: white; }
-        footer {
-            text-align: center; padding: 15px; background: #eee;
-            margin-top: 30px; font-size: 0.95em;
-        }
-        footer a {
-            color: purple; margin: 0 10px; text-decoration: none; 
-            display: inline-block;
-        }
     </style>
 </head>
 
@@ -94,13 +86,13 @@
 
         <div class="menu" id="menu">
             <a href="#">Home</a>
-    <a href="#" onclick="selectCategory('bundles')">Bundles</a>
-    <a href="#" onclick="selectCategory('minutes')">Minutes</a>
-    <a href="#" onclick="selectCategory('sms')">SMS</a>
-    <a href="terms.html">Terms & Conditions</a>
-    <a href="privacy.html">Privacy Policy</a>
-    <a href="https://wa.me/254729952483" target=\"_blank\">Support</a>
-</div>
+            <a href="#" onclick="selectMain('bundles')">Bundles</a>
+            <a href="#" onclick="selectMain('minutes')">Minutes</a>
+            <a href="#" onclick="selectMain('sms')">SMS</a>
+            <a href="terms.html">Terms & Conditions</a>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="https://wa.me/254729952483" target="_blank">Support</a>
+        </div>
     </header>
 
     <h1>QUICKTEL BUNDLES</h1>
@@ -124,10 +116,11 @@
         </span>
     </div>
 
-    <!-- Bundles -->
+    <!-- Bundles Section -->
     <div id="bundles-section">
         <div id="daily" class="sub-section">
             <div class="grid">
+                <!-- Example DAILY offer -->
                 <div class="card">
                     <div class="logo-card"><img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"></div>
                     <div class="bundle-title">1GB Daily</div>
@@ -139,12 +132,13 @@
                         <a class="others-button" href="others.html?bundle=1GB Daily&price=55">Others</a>
                     </div>
                 </div>
-                <!-- ➔ Add more DAILY offers here -->
+                <!-- Add more DAILY offers here -->
             </div>
         </div>
 
         <div id="weekly" class="sub-section" style="display:none">
             <div class="grid">
+                <!-- Example WEEKLY offer -->
                 <div class="card">
                     <div class="logo-card"><img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"></div>
                     <div class="bundle-title">3GB Weekly</div>
@@ -156,12 +150,13 @@
                         <a class="others-button" href="others.html?bundle=3GB Weekly&price=150">Others</a>
                     </div>
                 </div>
-                <!-- ➔ Add more WEEKLY offers here -->
+                <!-- Add more WEEKLY offers here -->
             </div>
         </div>
 
         <div id="monthly" class="sub-section" style="display:none">
             <div class="grid">
+                <!-- Example MONTHLY offer -->
                 <div class="card">
                     <div class="logo-card"><img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"></div>
                     <div class="bundle-title">10GB Monthly</div>
@@ -173,12 +168,13 @@
                         <a class="others-button" href="others.html?bundle=10GB Monthly&price=850">Others</a>
                     </div>
                 </div>
-                <!-- ➔ Add more MONTHLY offers here -->
+                <!-- Add more MONTHLY offers here -->
             </div>
         </div>
 
         <div id="special" class="sub-section" style="display:none">
             <div class="grid">
+                <!-- Example SPECIAL offer -->
                 <div class="card">
                     <div class="logo-card"><img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"></div>
                     <div class="bundle-title">Unlimited Special</div>
@@ -190,14 +186,15 @@
                         <a class="others-button" href="others.html?bundle=Unlimited Special&price=200">Others</a>
                     </div>
                 </div>
-                <!-- ➔ Add more SPECIAL offers here -->
+                <!-- Add more SPECIAL offers here -->
             </div>
         </div>
     </div>
 
-    <!-- Minutes -->
+    <!-- Minutes Section -->
     <div id="minutes-section" style="display:none">
         <div class="grid">
+            <!-- Example MINUTES offer -->
             <div class="card">
                 <div class="logo-card"><img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"></div>
                 <div class="bundle-title">500 Minutes</div>
@@ -209,12 +206,14 @@
                     <a class="others-button" href="others.html?bundle=500 Minutes&price=475">Others</a>
                 </div>
             </div>
+            <!-- Add more MINUTES offers here -->
         </div>
     </div>
 
-    <!-- SMS -->
+    <!-- SMS Section -->
     <div id="sms-section" style="display:none">
         <div class="grid">
+            <!-- Example SMS offer -->
             <div class="card">
                 <div class="logo-card"><img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"></div>
                 <div class="bundle-title">100 SMS</div>
@@ -226,17 +225,17 @@
                     <a class="others-button" href="others.html?bundle=100 SMS&price=100">Others</a>
                 </div>
             </div>
+            <!-- Add more SMS offers here -->
         </div>
     </div>
 
-    <<footer 
-style="text-align: center; padding: 20px; background-color: #f2f2f2; color: #555; font-size: 0.9em; border-top: 1px solid #ddd; margin-top: 50px;">
-    <p>© 2025 Quicktel Bundles. All Rights Reserved.</p>
-    <p>
-        <a href="terms.html" style="color: #555; text-decoration: none; margin: 0 10px;">Terms & Conditions</a> |
-        <a href="privacy.html" style="color: #555; text-decoration: none; margin: 0 10px;">Privacy Policy</a> |
-        <a href="https://wa.me/254729952483" target="_blank" style="color: #555; text-decoration: none; margin: 0 10px;">Support</a>
-    </p>
+    <footer style="text-align: center; padding: 20px; background-color: #f2f2f2; color: #555; font-size: 0.9em; border-top: 1px solid #ddd; margin-top: 50px;">
+        <p>© 2025 Quicktel Bundles. All Rights Reserved.</p>
+        <p>
+            <a href="terms.html" style="color: #555; text-decoration: none; margin: 0 10px;">Terms & Conditions</a> |
+            <a href="privacy.html" style="color: #555; text-decoration: none; margin: 0 10px;">Privacy Policy</a> |
+            <a href="https://wa.me/254729952483" target="_blank" style="color: #555; text-decoration: none; margin: 0 10px;">Support</a>
+        </p>
     </footer>
 
     <script src="https://js.paystack.co/v1/inline.js"></script>
@@ -251,6 +250,12 @@ style="text-align: center; padding: 20px; background-color: #f2f2f2; color: #555
                 menu.style.display = "block";
                 icon.innerHTML = "&times;";
             }
+        }
+
+        function selectMain(section) {
+            document.getElementById('mainSelect').value = section;
+            changeMain();
+            toggleMenu();
         }
 
         function changeMain() {
@@ -291,6 +296,9 @@ style="text-align: center; padding: 20px; background-color: #f2f2f2; color: #555
             });
             handler.openIframe();
         }
+
+        // Disable right-click
+        document.addEventListener('contextmenu', event => event.preventDefault());
     </script>
 
 </body>
