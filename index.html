@@ -16,17 +16,21 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         .logo img { width: 50px; border-radius: 8px; }
-        .hamburger { font-size: 30px; cursor: pointer; }
+        .hamburger { font-size: 30px; cursor: pointer; user-select: none; }
         .sidebar {
             position: fixed; top: 0; right: -250px; width: 250px; height: 100%;
             background: #fff; box-shadow: -2px 0 5px rgba(0,0,0,0.3);
             transition: right 0.3s; padding: 20px; z-index: 999;
+            pointer-events: none;
+        }
+        .sidebar.show {
+            right: 0;
+            pointer-events: auto;
         }
         .sidebar a {
             display: block; margin: 15px 0; font-size: 1.2em; color: purple;
             text-decoration: none;
         }
-        .sidebar.show { right: 0; }
         h1 {
             text-align: center; color: #6a1b9a;
             font-size: 2.2em; margin: 20px 0;
@@ -119,8 +123,11 @@
 
     <!-- Bundles Section -->
     <div id="bundles" class="section active">
+
+        <!-- DAILY BUNDLES -->
         <div id="daily" class="section active">
             <div class="grid">
+                <!-- Example daily offer -->
                 <div class="card">
                     <div class="logo-card">
                         <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg">
@@ -134,16 +141,52 @@
                         <a class="others-button" href="others.html?bundle=1GB Daily&price=55">Others</a>
                     </div>
                 </div>
+
+                <!-- ADD MORE DAILY OFFERS BELOW -->
+
             </div>
         </div>
 
-        <!-- Empty placeholders for subcategories -->
-        <div id="weekly" class="section"><div class="grid"></div></div>
-        <div id="monthly" class="section"><div class="grid"></div></div>
-        <div id="special" class="section"><div class="grid"></div></div>
+        <!-- WEEKLY BUNDLES -->
+        <div id="weekly" class="section">
+            <div class="grid">
+                <!-- Example weekly offer -->
+                <div class="card">
+                    <div class="logo-card">
+                        <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg">
+                    </div>
+                    <div class="bundle-title">3GB Weekly</div>
+                    <div class="validity">Valid: 7 Days</div>
+                    <div class="price">KSh 250</div>
+                    <div class="buy-label">BUY FOR:</div>
+                    <div class="buttons">
+                        <button class="self-button" onclick="buySelf('3GB Weekly', 250)">Self</button>
+                        <a class="others-button" href="others.html?bundle=3GB Weekly&price=250">Others</a>
+                    </div>
+                </div>
+
+                <!-- ADD MORE WEEKLY OFFERS BELOW -->
+
+            </div>
+        </div>
+
+        <!-- MONTHLY BUNDLES -->
+        <div id="monthly" class="section">
+            <div class="grid">
+                <!-- ADD MONTHLY OFFERS HERE -->
+            </div>
+        </div>
+
+        <!-- SPECIAL BUNDLES -->
+        <div id="special" class="section">
+            <div class="grid">
+                <!-- ADD SPECIAL OFFERS HERE -->
+            </div>
+        </div>
+
     </div>
 
-    <!-- Minutes Section -->
+    <!-- MINUTES Section -->
     <div id="minutes" class="section">
         <div class="grid">
             <div class="card">
