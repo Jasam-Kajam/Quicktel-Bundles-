@@ -14,33 +14,28 @@
             display: flex; justify-content: space-between; align-items: center;
             padding: 10px 20px; background: #fff;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: relative;
         }
         .logo img { width: 50px; border-radius: 8px; }
         .hamburger { 
-            font-size: 30px; 
-            cursor: pointer; 
-            user-select: none; 
-            background: none; 
-            border: none; 
-            box-shadow: none; 
-            padding: 0; 
-            margin: 0; 
-            color: #000;
+            font-size: 30px; cursor: pointer; user-select: none; 
+            background: none; border: none; color: #000;
         }
-        .sidebar {
-            position: fixed; top: 0; right: -250px; width: 250px; height: 100%;
-            background: #fff; box-shadow: -2px 0 5px rgba(0,0,0,0.3);
-            transition: right 0.3s; padding: 20px; z-index: 999;
-            pointer-events: none;
+        .menu {
+            display: none;
+            position: absolute;
+            right: 20px; top: 60px;
+            background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            z-index: 1000;
+            min-width: 180px;
         }
-        .sidebar.show {
-            right: 0;
-            pointer-events: auto;
+        .menu a {
+            display: block; padding: 10px 20px;
+            text-decoration: none; color: purple;
+            border-bottom: 1px solid #eee;
         }
-        .sidebar a {
-            display: block; margin: 15px 0; font-size: 1.2em; color: purple;
-            text-decoration: none;
-        }
+        .menu a:last-child { border-bottom: none; }
         h1 {
             text-align: center; color: #6a1b9a;
             font-size: 2.2em; margin: 20px 0;
@@ -69,15 +64,13 @@
         .validity { font-size: 1.1em; color: #555; margin-bottom: 10px; }
         .price { font-size: 1.4em; color: red; font-weight: bold; margin-bottom: 15px; }
         .buy-label { font-size: 1em; color: #FFD700; font-weight: 600; margin-bottom: 10px; }
-        .buttons { display: flex; justify-content: center; gap: 10px; }
+        .buttons { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;}
         .self-button, .others-button {
             border: none; border-radius: 8px; padding: 10px 20px;
             font-size: 1em; font-weight: 500; cursor: pointer; text-decoration: none;
         }
         .self-button { background-color: #333; color: white; }
-        .others-button { background-color: #007bff; color: white; display: inline-block; }
-        .section { display: none; }
-        .section.active { display: block; }
+        .others-button { background-color: #007bff; color: white; }
         footer {
             text-align: center; padding: 15px; background: #eee;
             margin-top: 30px; font-size: 0.95em;
@@ -95,22 +88,19 @@
         <div class="logo">
             <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg">
         </div>
-        <div class="hamburger" onclick="toggleSidebar()">
+        <div class="hamburger" onclick="toggleMenu()">
             <span id="hamburgerIcon">&#9776;</span>
         </div>
-    </header>
 
-    <div class="sidebar" id="sidebar">
-        <a href="#" onclick="closeSidebar()">Close</a>
-        <a href="#" onclick="selectMain('bundles')">Bundles</a>
-        <a href="#" onclick="selectMain('minutes')">Minutes</a>
-        <a href="#" onclick="selectMain('sms')">SMS</a>
-        <a href="terms.html">Terms & Conditions</a>
-        <a href="privacy.html">Privacy Policy</a>
-        <a href="about.html">About Us</a>
-        <a href="contact.html">Contact</a>
-        <a href="https://wa.me/254729952483" target="_blank">Support</a>
-    </div>
+        <div class="menu" id="menu">
+            <a href="#">Home</a>
+            <a href="terms.html">Terms & Conditions</a>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="about.html">About Us</a>
+            <a href="contact.html">Contact</a>
+            <a href="https://wa.me/254729952483" target="_blank">Support</a>
+        </div>
+    </header>
 
     <h1>QUICKTEL BUNDLES</h1>
 
@@ -133,16 +123,12 @@
         </span>
     </div>
 
-    <!-- Bundles Section -->
-    <div id="bundles" class="section active">
-
-        <!-- DAILY -->
-        <div id="daily" class="section active">
+    <!-- Bundles -->
+    <div id="bundles-section">
+        <div id="daily" class="sub-section">
             <div class="grid">
                 <div class="card">
-                    <div class="logo-card">
-                        <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg">
-                    </div>
+                    <div class="logo-card"><img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"></div>
                     <div class="bundle-title">1GB Daily</div>
                     <div class="validity">Valid: 24 Hours</div>
                     <div class="price">KSh 55</div>
@@ -152,55 +138,67 @@
                         <a class="others-button" href="others.html?bundle=1GB Daily&price=55">Others</a>
                     </div>
                 </div>
-
-                <!-- Add more daily offers below -->
+                <!-- ➔ Add more DAILY offers here -->
             </div>
         </div>
 
-        <!-- WEEKLY -->
-        <div id="weekly" class="section">
+        <div id="weekly" class="sub-section" style="display:none">
             <div class="grid">
                 <div class="card">
-                    <div class="logo-card">
-                        <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg">
-                    </div>
+                    <div class="logo-card"><img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"></div>
                     <div class="bundle-title">3GB Weekly</div>
                     <div class="validity">Valid: 7 Days</div>
-                    <div class="price">KSh 250</div>
+                    <div class="price">KSh 150</div>
                     <div class="buy-label">BUY FOR:</div>
                     <div class="buttons">
-                        <button class="self-button" onclick="buySelf('3GB Weekly', 250)">Self</button>
-                        <a class="others-button" href="others.html?bundle=3GB Weekly&price=250">Others</a>
+                        <button class="self-button" onclick="buySelf('3GB Weekly', 150)">Self</button>
+                        <a class="others-button" href="others.html?bundle=3GB Weekly&price=150">Others</a>
                     </div>
                 </div>
-
-                <!-- Add more weekly offers below -->
+                <!-- ➔ Add more WEEKLY offers here -->
             </div>
         </div>
 
-        <!-- MONTHLY -->
-        <div id="monthly" class="section">
+        <div id="monthly" class="sub-section" style="display:none">
             <div class="grid">
-                <!-- Add monthly offers -->
+                <div class="card">
+                    <div class="logo-card"><img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"></div>
+                    <div class="bundle-title">10GB Monthly</div>
+                    <div class="validity">Valid: 30 Days</div>
+                    <div class="price">KSh 850</div>
+                    <div class="buy-label">BUY FOR:</div>
+                    <div class="buttons">
+                        <button class="self-button" onclick="buySelf('10GB Monthly', 850)">Self</button>
+                        <a class="others-button" href="others.html?bundle=10GB Monthly&price=850">Others</a>
+                    </div>
+                </div>
+                <!-- ➔ Add more MONTHLY offers here -->
             </div>
         </div>
 
-        <!-- SPECIAL -->
-        <div id="special" class="section">
+        <div id="special" class="sub-section" style="display:none">
             <div class="grid">
-                <!-- Add special offers -->
+                <div class="card">
+                    <div class="logo-card"><img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"></div>
+                    <div class="bundle-title">Unlimited Special</div>
+                    <div class="validity">Valid: 2 Days</div>
+                    <div class="price">KSh 200</div>
+                    <div class="buy-label">BUY FOR:</div>
+                    <div class="buttons">
+                        <button class="self-button" onclick="buySelf('Unlimited Special', 200)">Self</button>
+                        <a class="others-button" href="others.html?bundle=Unlimited Special&price=200">Others</a>
+                    </div>
+                </div>
+                <!-- ➔ Add more SPECIAL offers here -->
             </div>
         </div>
-
     </div>
 
-    <!-- MINUTES -->
-    <div id="minutes" class="section">
+    <!-- Minutes -->
+    <div id="minutes-section" style="display:none">
         <div class="grid">
             <div class="card">
-                <div class="logo-card">
-                    <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg">
-                </div>
+                <div class="logo-card"><img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"></div>
                 <div class="bundle-title">500 Minutes</div>
                 <div class="validity">Valid: 7 Days</div>
                 <div class="price">KSh 475</div>
@@ -214,12 +212,10 @@
     </div>
 
     <!-- SMS -->
-    <div id="sms" class="section">
+    <div id="sms-section" style="display:none">
         <div class="grid">
             <div class="card">
-                <div class="logo-card">
-                    <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg">
-                </div>
+                <div class="logo-card"><img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"></div>
                 <div class="bundle-title">100 SMS</div>
                 <div class="validity">Valid: 30 Days</div>
                 <div class="price">KSh 100</div>
@@ -242,36 +238,32 @@
 
     <script src="https://js.paystack.co/v1/inline.js"></script>
     <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
+        function toggleMenu() {
+            const menu = document.getElementById('menu');
             const icon = document.getElementById('hamburgerIcon');
-            sidebar.classList.toggle('show');
-            if (sidebar.classList.contains('show')) {
-                icon.innerHTML = '&times;';
+            if (menu.style.display === "block") {
+                menu.style.display = "none";
+                icon.innerHTML = "&#9776;";
             } else {
-                icon.innerHTML = '&#9776;';
+                menu.style.display = "block";
+                icon.innerHTML = "&times;";
             }
         }
-        function closeSidebar() {
-            document.getElementById('sidebar').classList.remove('show');
-            document.getElementById('hamburgerIcon').innerHTML = '&#9776;';
-        }
-        function selectMain(section) {
-            document.getElementById('mainSelect').value = section;
-            changeMain();
-        }
+
         function changeMain() {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             let main = document.getElementById('mainSelect').value;
-            document.getElementById(main).classList.add('active');
+            document.getElementById('bundles-section').style.display = (main === 'bundles') ? 'block' : 'none';
+            document.getElementById('minutes-section').style.display = (main === 'minutes') ? 'block' : 'none';
+            document.getElementById('sms-section').style.display = (main === 'sms') ? 'block' : 'none';
             document.getElementById('bundleSubSelectArea').style.display = (main === 'bundles') ? 'inline' : 'none';
-            closeSidebar();
         }
+
         function changeBundle() {
-            document.querySelectorAll('#bundles > .section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.sub-section').forEach(s => s.style.display = 'none');
             let sub = document.getElementById('bundleSelect').value;
-            document.getElementById(sub).classList.add('active');
+            document.getElementById(sub).style.display = 'block';
         }
+
         function buySelf(bundleName, price) {
             const phone = prompt("Enter your M-PESA number:");
             if (!phone) return;
