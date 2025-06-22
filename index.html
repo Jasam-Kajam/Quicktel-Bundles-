@@ -118,7 +118,7 @@
                         <div class="buy-label">BUY FOR:</div>
                         <div class="buttons">
                             <button class="self-button" onclick="buySelf('1GB Daily', 55)">Self</button>
-                            <button class="others-button" onclick="window.location.href='others.html?bundle=1GB Daily&price=55'">Others</button>
+                            <button class="others-button" onclick="buyForOthers('1GB Daily', 55)">Others</button>
                         </div>
                     </div>
                    <div class="card">
@@ -129,7 +129,7 @@
     <div class="buy-label">BUY FOR:</div>
     <div class="buttons">
         <button class="self-button" onclick="buySelf('200MB Daily', 15)">Self</button>
-        <button class="others-button" onclick="window.location.href='others.html?bundle=200MB Daily&price=15'">Others</button>
+        <button class="others-button" onclick="buyForOthers('1GB Daily', 55)">Others</button>
     </div>
 </div>
 
@@ -141,7 +141,7 @@
     <div class="buy-label">BUY FOR:</div>
     <div class="buttons">
         <button class="self-button" onclick="buySelf('500MB Daily', 30)">Self</button>
-        <button class="others-button" onclick="window.location.href='others.html?bundle=500MB Daily&price=30'">Others</button>
+        <button class="others-button" onclick="buyForOthers('1GB Daily', 55)">Others</button>
     </div>
 </div>
 
@@ -1427,7 +1427,7 @@
     <div class="buy-label">BUY FOR:</div>
     <div class="buttons">
         <button class="self-button" onclick="buySelf('5000 SMS', 1800)">Self</button>
-        <button class="others-button" onclick="window.location.href='others.html?bundle=5000 SMS&price=1800'">Others</button>
+        <button class="others-button" onclick="buyForOthers('1GB Daily', 55)">Others</button>
     </div>
 </div>
                 </div>
@@ -1494,30 +1494,49 @@
         }
 
         function buySelf(bundleName, price) {
-            const phone = prompt("Enter your M-PESA number:");
-            if (!phone) return;
-            let handler = PaystackPop.setup({
-                key: 'pk_live_3b95d82d975d8cd88f2e0059b1d6dca62c1db036',
-                email: 'test@quicktel.com',
-                amount: price * 100,
-                currency: 'KES',
-                metadata: {
-                    custom_fields: [
-                        { display_name: "Bundle", variable_name: "bundle", value: bundleName },
-                        { display_name: "Payer", variable_name: "payer", value: phone },
-                        { display_name: "Recipient", variable_name: "recipient", value: phone }
-                    ]
-                },
-                callback: function (response) {
-                    alert("Payment successful: " + response.reference);
-                },
-                onClose: function () {
-                    alert("Transaction cancelled");
-                }
-            });
-            handler.openIframe();
-        }
+    const phone = prompt("Enter your M-PESA number:");
+    if(!phone) return;
+    let handler = PaystackPop.setup({
+        key: 'pk_live_2508586704139143',
+        email: 'test@quicktel.com',
+        amount: price * 100,
+        currency: 'KES',
+        metadata: {
+            custom_fields: [
+                { display_name: "Bundle", variable_name: "bundle", value: bundleName },
+                { display_name: "Payer", variable_name: "payer", value: phone },
+                { display_name: "Recipient", variable_name: "recipient", value: phone }
+            ]
+        },
+        callback: function(response) { alert("Payment successful: " + response.reference); },
+        onClose: function() { alert("Transaction cancelled"); }
+    });
+    handler.openIframe();
+}
 
+function buyForOthers(bundleName, price) {
+    const payerPhone = prompt("Enter your M-PESA number:");
+    if(!payerPhone) return;
+    const recipientPhone = prompt("Enter recipient's phone number:");
+    if(!recipientPhone) return;
+
+    let handler = PaystackPop.setup({
+        key: 'pk_live_2508586704139143',
+        email: 'test@quicktel.com',
+        amount: price * 100,
+        currency: 'KES',
+        metadata: {
+            custom_fields: [
+                { display_name: "Bundle", variable_name: "bundle", value: bundleName },
+                { display_name: "Payer", variable_name: "payer", value: payerPhone },
+                { display_name: "Recipient", variable_name: "recipient", value: recipientPhone }
+            ]
+        },
+        callback: function(response) { alert("Payment successful: " + response.reference); },
+        onClose: function() { alert("Transaction cancelled"); }
+    });
+    handler.openIframe();
+}
         window.onload = changeMain;
 
         document.addEventListener('contextmenu', function(event) {
