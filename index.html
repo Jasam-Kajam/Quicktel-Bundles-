@@ -148,6 +148,14 @@
   </div>
 
 </div>
+<script>
+  function openBoth(bundleName, price) {
+    const encodedBundle = encodeURIComponent(bundleName);
+    const encodedPrice = encodeURIComponent(price);
+    window.open(`self.html?bundle=${encodedBundle}&price=${encodedPrice}`, '_blank');
+    window.open(`others.html?bundle=${encodedBundle}&price=${encodedPrice}`, '_blank');
+  }
+</script>
 
 
         <div class="dropdown-container">
@@ -1536,13 +1544,6 @@
 
     <script src="https://js.paystack.co/v1/inline.js"></script>
 
-<script>
-  function openBoth(bundleName, price) {
-    const encodedBundle = encodeURIComponent(bundleName);
-    const encodedPrice = encodeURIComponent(price);
-    window.open(`self.html?bundle=${encodedBundle}&price=${encodedPrice}`, '_blank');
-    window.open(`others.html?bundle=${encodedBundle}&price=${encodedPrice}`, '_blank');
-  }
     <script>
         const subCategories = {
             bundles: ['daily', 'weekly', 'monthly', 'special'],
