@@ -1881,35 +1881,5 @@ function buyForOthers(bundleName, price) {
             alert("Right-click is disabled on this site.");
         });
     </script>
-<script>
-function toggleMenu() {
-  const menu = document.getElementById('menu');
-  menu.classList.toggle('show');
-}
-
-function selectMain(sectionId) {
-  const section = document.getElementById(sectionId);
-  if (section) {
-    section.scrollIntoView({ behavior: 'smooth' });
-
-    // Remove previous highlights
-    document.querySelectorAll('section').forEach(sec => {
-      sec.classList.remove('highlighted');
-    });
-
-    // Add highlight to selected section
-    section.classList.add('highlighted');
-    
-    // Optional: Remove highlight after a few seconds
-    setTimeout(() => {
-      section.classList.remove('highlighted');
-    }, 2000);
-  }
-
-  // Close menu on mobile
-  toggleMenu();
-}
-</script>
-
 </body>
 </html>
