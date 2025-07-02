@@ -205,8 +205,7 @@
             </span>
         </div>
 
-        <section id="bundles">
-  <h2>Bundles</h2>
+        <!-- BUNDLES -->
         <div id="bundles-section" class="section">
             <div id="bundles-daily" class="sub-section">
                 <div class="grid">
@@ -776,9 +775,8 @@
             </div>
         </div>
 
-        <section id="minutes">
-  <h2>Minutes</h2>
-        <div id="minutes-section" class="section">
+        <!-- MINUTES -->
+        <div id="minutes-section" class="section" style="display:none">
             <div id="minutes-short" class="sub-section">
                 <div class="grid">
                     <div class="card">
@@ -1778,58 +1776,53 @@
 
     <script src="https://js.paystack.co/v1/inline.js"></script>
     <script>
-function toggleMenu() {
-  const menu = document.getElementById('menu');
-  menu.classList.toggle('show');
-}
-
-// Scroll to specific section
-function selectMain(sectionId) {
-  const section = document.getElementById(sectionId);
-  if (section) {
-    section.scrollIntoView({ behavior: 'smooth' });
-  }
-
-  // Optional: Close the menu after selection
-  toggleMenu();
-}
-   const subCategories = {
+        const subCategories = {
             bundles: ['daily', 'weekly', 'monthly', 'special'],
             minutes: ['short', 'long', 'international'],
             sms: ['bulk', 'personal', 'promo']
         };
 
-        <script>
-function toggleMenu() {
-  const menu = document.getElementById('menu');
-  menu.classList.toggle('show');
-}
+        function toggleMenu() {
+            const menu = document.getElementById('menu');
+            const icon = document.getElementById('hamburgerIcon');
+            if (menu.style.display === "block") {
+                menu.style.display = "none";
+                icon.innerHTML = "&#9776;";
+            } else {
+                menu.style.display = "block";
+                icon.innerHTML = "&times;";
+            }
+        }
 
-function selectMain(sectionId) {
-  const section = document.getElementById(sectionId);
-  if (section) {
-    section.scrollIntoView({ behavior: 'smooth' });
+        function selectMain(main) {
+            document.getElementById('mainSelect').value = main;
+            changeMain();
+            toggleMenu();
+        }
 
-    // Remove previous highlights
-    document.querySelectorAll('section').forEach(sec => {
-      sec.classList.remove('highlighted');
-    });
+        function changeMain() {
+            let main = document.getElementById('mainSelect').value;
+            document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+            document.getElementById(main + '-section').style.display = 'block';
 
-    // Add highlight to selected section
-    section.classList.add('highlighted');
-    
-    // Optional: Remove highlight after a few seconds
-    setTimeout(() => {
-      section.classList.remove('highlighted');
-    }, 2000);
-  }
+            let subSelect = document.getElementById('subSelect');
+            subSelect.innerHTML = '';
+            subCategories[main].forEach(sub => {
+                let option = document.createElement('option');
+                option.value = sub;
+                option.text = sub.charAt(0).toUpperCase() + sub.slice(1);
+                subSelect.appendChild(option);
+            });
+            changeSubCategory();
+        }
 
-  // Close menu on mobile
-  toggleMenu();
-}
-</script>
+        function changeSubCategory() {
+            let main = document.getElementById('mainSelect').value;
+            let sub = document.getElementById('subSelect').value;
+            document.querySelectorAll(`#${main}-section .sub-section`).forEach(s => s.style.display = 'none');
+            document.getElementById(`${main}-${sub}`).style.display = 'block';
+        }
 
-<script>
         function buySelf(bundleName, price) {
     const phone = prompt("Enter your M-PESA number:");
     if(!phone) return;
