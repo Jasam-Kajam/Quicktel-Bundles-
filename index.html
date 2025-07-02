@@ -1778,7 +1778,22 @@
 
     <script src="https://js.paystack.co/v1/inline.js"></script>
     <script>
-        const subCategories = {
+function toggleMenu() {
+  const menu = document.getElementById('menu');
+  menu.classList.toggle('show');
+}
+
+// Scroll to specific section
+function selectMain(sectionId) {
+  const section = document.getElementById(sectionId);
+  if (section) {
+    section.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // Optional: Close the menu after selection
+  toggleMenu();
+}
+   const subCategories = {
             bundles: ['daily', 'weekly', 'monthly', 'special'],
             minutes: ['short', 'long', 'international'],
             sms: ['bulk', 'personal', 'promo']
