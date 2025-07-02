@@ -1775,104 +1775,125 @@
     </footer>
 
     <script src="https://js.paystack.co/v1/inline.js"></script>
-    <script>
-        const subCategories = {
-            bundles: ['daily', 'weekly', 'monthly', 'special'],
-            minutes: ['short', 'long', 'international'],
-            sms: ['bulk', 'personal', 'promo']
-        };
+<script>
+    const subCategories = {
+        bundles: ['daily', 'weekly', 'monthly', 'special'],
+        minutes: ['short', 'long', 'international'],
+        sms: ['bulk', 'personal', 'promo']
+    };
 
-        function toggleMenu() {
-            const menu = document.getElementById('menu');
-            const icon = document.getElementById('hamburgerIcon');
-            if (menu.style.display === "block") {
-                menu.style.display = "none";
-                icon.innerHTML = "&#9776;";
-            } else {
-                menu.style.display = "block";
-                icon.innerHTML = "&times;";
-            }
+    function toggleMenu() {
+        const menu = document.getElementById('menu');
+        const icon = document.getElementById('hamburgerIcon');
+        if (menu.style.display === "block") {
+            menu.style.display = "none";
+            icon.innerHTML = "&#9776;";
+        } else {
+            menu.style.display = "block";
+            icon.innerHTML = "&times;";
+        }
+    }
+
+    function selectMain(main) {
+        document.getElementById('mainSelect').value = main;
+        changeMain();
+
+        // Highlight and scroll to the selected section
+        const section = document.getElementById(main + '-section');
+        if (section) {
+            section.classList.add('highlighted');
+            section.scrollIntoView({ behavior: 'smooth' });
+
+            setTimeout(() => {
+                section.classList.remove('highlighted');
+            }, 2000);
         }
 
-        function selectMain(main) {
-            document.getElementById('mainSelect').value = main;
-            changeMain();
-            toggleMenu();
-        }
+        toggleMenu(); // close hamburger menu
+    }
 
-        function changeMain() {
-            let main = document.getElementById('mainSelect').value;
-            document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
-            document.getElementById(main + '-section').style.display = 'block';
+    function changeMain() {
+        let main = document.getElementById('mainSelect').value;
+        document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+        document.getElementById(main + '-section').style.display = 'block';
 
-            let subSelect = document.getElementById('subSelect');
-            subSelect.innerHTML = '';
-            subCategories[main].forEach(sub => {
-                let option = document.createElement('option');
-                option.value = sub;
-                option.text = sub.charAt(0).toUpperCase() + sub.slice(1);
-                subSelect.appendChild(option);
-            });
-            changeSubCategory();
-        }
-
-        function changeSubCategory() {
-            let main = document.getElementById('mainSelect').value;
-            let sub = document.getElementById('subSelect').value;
-            document.querySelectorAll(`#${main}-section .sub-section`).forEach(s => s.style.display = 'none');
-            document.getElementById(`${main}-${sub}`).style.display = 'block';
-        }
-
-        function buySelf(bundleName, price) {
-    const phone = prompt("Enter your M-PESA number:");
-    if(!phone) return;
-    let handler = PaystackPop.setup({
-        key: 'pk_live_3b95d82d975d8cd88f2e0059b1d6dca62c1db036',
-        email: 'customer@quicktel.com',
-        amount: price * 100,
-        currency: 'KES',
-        metadata: {
-            custom_fields: [
-                { display_name: "Bundle", variable_name: "bundle", value: bundleName },
-                { display_name: "Payer", variable_name: "payer", value: phone },
-                { display_name: "Recipient", variable_name: "recipient", value: phone }
-            ]
-        },
-        callback: function(response) { alert("Payment successful: " + response.reference); },
-        onClose: function() { alert("Transaction cancelled"); }
-    });
-    handler.openIframe();
-}
-
-function buyForOthers(bundleName, price) {
-    const payerPhone = prompt("Enter your M-PESA number:");
-    if(!payerPhone) return;
-    const recipientPhone = prompt("Enter recipient's phone number:");
-    if(!recipientPhone) return;
-
-    let handler = PaystackPop.setup({
-        key: 'pk_live_3b95d82d975d8cd88f2e0059b1d6dca62c1db036',
-        email: 'customer@quicktel.com',
-        amount: price * 100,
-        currency: 'KES',
-        metadata: {
-            custom_fields: [
-                { display_name: "Bundle", variable_name: "bundle", value: bundleName },
-                { display_name: "Payer", variable_name: "payer", value: payerPhone },
-                { display_name: "Recipient", variable_name: "recipient", value: recipientPhone }
-            ]
-        },
-        callback: function(response) { alert("Payment successful: " + response.reference); },
-        onClose: function() { alert("Transaction cancelled"); }
-    });
-    handler.openIframe();
-}
-        window.onload = changeMain;
-
-        document.addEventListener('contextmenu', function(event) {
-            event.preventDefault();
-            alert("Right-click is disabled on this site.");
+        let subSelect = document.getElementById('subSelect');
+        subSelect.innerHTML = '';
+        subCategories[main].forEach(sub => {
+            let option = document.createElement('option');
+            option.value = sub;
+            option.text = sub.charAt(0).toUpperCase() + sub.slice(1);
+            subSelect.appendChild(option);
         });
-    </script>
+        changeSubCategory();
+    }
+
+    function changeSubCategory() {
+        let main = document.getElementById('mainSelect').value;
+        let sub = document.getElementById('subSelect').value;
+        document.querySelectorAll(`#${main}-section .sub-section`).forEach(s => s.style.display = 'none');
+        document.getElementById(`${main}-${sub}`).style.display = 'block';
+    }
+
+    function buySelf(bundleName, price) {
+        const phone = prompt("Enter your M-PESA number:");
+        if (!phone) return;
+        let handler = PaystackPop.setup({
+            key: 'pk_live_3b95d82d975d8cd88f2e0059b1d6dca62c1db036',
+            email: 'customer@quicktel.com',
+            amount: price * 100,
+            currency: 'KES',
+            metadata: {
+                custom_fields: [
+                    { display_name: "Bundle", variable_name: "bundle", value: bundleName },
+                    { display_name: "Payer", variable_name: "payer", value: phone },
+                    { display_name: "Recipient", variable_name: "recipient", value: phone }
+                ]
+            },
+            callback: function (response) {
+                alert("Payment successful: " + response.reference);
+            },
+            onClose: function () {
+                alert("Transaction cancelled");
+            }
+        });
+        handler.openIframe();
+    }
+
+    function buyForOthers(bundleName, price) {
+        const payerPhone = prompt("Enter your M-PESA number:");
+        if (!payerPhone) return;
+        const recipientPhone = prompt("Enter recipient's phone number:");
+        if (!recipientPhone) return;
+
+        let handler = PaystackPop.setup({
+            key: 'pk_live_3b95d82d975d8cd88f2e0059b1d6dca62c1db036',
+            email: 'customer@quicktel.com',
+            amount: price * 100,
+            currency: 'KES',
+            metadata: {
+                custom_fields: [
+                    { display_name: "Bundle", variable_name: "bundle", value: bundleName },
+                    { display_name: "Payer", variable_name: "payer", value: payerPhone },
+                    { display_name: "Recipient", variable_name: "recipient", value: recipientPhone }
+                ]
+            },
+            callback: function (response) {
+                alert("Payment successful: " + response.reference);
+            },
+            onClose: function () {
+                alert("Transaction cancelled");
+            }
+        });
+        handler.openIframe();
+    }
+
+    window.onload = changeMain;
+
+    document.addEventListener('contextmenu', function (event) {
+        event.preventDefault();
+        alert("Right-click is disabled on this site.");
+    });
+</script>
 </body>
 </html>
