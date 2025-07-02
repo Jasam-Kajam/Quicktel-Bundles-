@@ -67,6 +67,10 @@
       font-size: 1.1em; padding: 10px 20px; border-radius: 10px; border: 2px solid purple;
       margin: 0 10px; background: white; color: #333; cursor: pointer;
     }
+.highlighted {
+    outline: 3px solid #4CAF50;
+    transition: outline 0.3s ease-in-out;
+    }
     .grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -1802,20 +1806,25 @@
 
     function selectMain(main) {
         document.getElementById('mainSelect').value = main;
+
+        // Show the section first
         changeMain();
 
-        // Highlight and scroll to the selected section
-        const section = document.getElementById(main + '-section');
-        if (section) {
-            section.classList.add('highlighted');
-            section.scrollIntoView({ behavior: 'smooth' });
+        // Wait for display update before scrolling
+        setTimeout(() => {
+            const section = document.getElementById(main + '-section');
+            if (section) {
+                section.classList.add('highlighted');
+                section.scrollIntoView({ behavior: 'smooth' });
 
-            setTimeout(() => {
-                section.classList.remove('highlighted');
-            }, 2000);
-        }
+                // Remove highlight after 2 seconds
+                setTimeout(() => {
+                    section.classList.remove('highlighted');
+                }, 2000);
+            }
+        }, 100);
 
-        toggleMenu(); // close hamburger menu
+        toggleMenu();
     }
 
     function changeMain() {
