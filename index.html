@@ -1799,46 +1799,36 @@ function selectMain(sectionId) {
             sms: ['bulk', 'personal', 'promo']
         };
 
-        function toggleMenu() {
-            const menu = document.getElementById('menu');
-            const icon = document.getElementById('hamburgerIcon');
-            if (menu.style.display === "block") {
-                menu.style.display = "none";
-                icon.innerHTML = "&#9776;";
-            } else {
-                menu.style.display = "block";
-                icon.innerHTML = "&times;";
-            }
-        }
+        <script>
+function toggleMenu() {
+  const menu = document.getElementById('menu');
+  menu.classList.toggle('show');
+}
 
-        function selectMain(main) {
-            document.getElementById('mainSelect').value = main;
-            changeMain();
-            toggleMenu();
-        }
+function selectMain(sectionId) {
+  const section = document.getElementById(sectionId);
+  if (section) {
+    section.scrollIntoView({ behavior: 'smooth' });
 
-        function changeMain() {
-            let main = document.getElementById('mainSelect').value;
-            document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
-            document.getElementById(main + '-section').style.display = 'block';
+    // Remove previous highlights
+    document.querySelectorAll('section').forEach(sec => {
+      sec.classList.remove('highlighted');
+    });
 
-            let subSelect = document.getElementById('subSelect');
-            subSelect.innerHTML = '';
-            subCategories[main].forEach(sub => {
-                let option = document.createElement('option');
-                option.value = sub;
-                option.text = sub.charAt(0).toUpperCase() + sub.slice(1);
-                subSelect.appendChild(option);
-            });
-            changeSubCategory();
-        }
+    // Add highlight to selected section
+    section.classList.add('highlighted');
+    
+    // Optional: Remove highlight after a few seconds
+    setTimeout(() => {
+      section.classList.remove('highlighted');
+    }, 2000);
+  }
 
-        function changeSubCategory() {
-            let main = document.getElementById('mainSelect').value;
-            let sub = document.getElementById('subSelect').value;
-            document.querySelectorAll(`#${main}-section .sub-section`).forEach(s => s.style.display = 'none');
-            document.getElementById(`${main}-${sub}`).style.display = 'block';
-        }
+  // Close menu on mobile
+  toggleMenu();
+}
+</script>
+
 
         function buySelf(bundleName, price) {
     const phone = prompt("Enter your M-PESA number:");
@@ -1891,5 +1881,35 @@ function buyForOthers(bundleName, price) {
             alert("Right-click is disabled on this site.");
         });
     </script>
+<script>
+function toggleMenu() {
+  const menu = document.getElementById('menu');
+  menu.classList.toggle('show');
+}
+
+function selectMain(sectionId) {
+  const section = document.getElementById(sectionId);
+  if (section) {
+    section.scrollIntoView({ behavior: 'smooth' });
+
+    // Remove previous highlights
+    document.querySelectorAll('section').forEach(sec => {
+      sec.classList.remove('highlighted');
+    });
+
+    // Add highlight to selected section
+    section.classList.add('highlighted');
+    
+    // Optional: Remove highlight after a few seconds
+    setTimeout(() => {
+      section.classList.remove('highlighted');
+    }, 2000);
+  }
+
+  // Close menu on mobile
+  toggleMenu();
+}
+</script>
+
 </body>
 </html>
