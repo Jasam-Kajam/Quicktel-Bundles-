@@ -197,11 +197,14 @@
 
         <div class="dropdown-container">
             <label>Main Category:</label>
-            <select id="mainSelect" onchange="changeMain()">
-                <option value="bundles">Bundles</option>
-                <option value="minutes">Minutes</option>
-                <option value="sms">SMS</option>
-            </select>
+            <select id="mainSelect" style="display: none;">
+  <option value="bundles">Bundles</option>
+  <option value="minutes">Minutes</option>
+  <option value="sms">SMS</option>
+</select>
+
+<select id="subSelect" style="display: none;"></select>
+
 
             <span id="subCategoryArea">
                 <label>Sub Category:</label>
