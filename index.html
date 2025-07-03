@@ -35,83 +35,199 @@
   <link rel="icon" href="/favicon.ico" type="image/x-icon" />
 
   <style>
-    html, body {
-      margin: 0; padding: 0; height: 100%;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background: linear-gradient(to bottom right, #cceaff, #ffffff);
-    }
-    body {
-      display: flex; flex-direction: column; min-height: 100vh;
-    }
-    header {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 10px 20px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      position: relative;
-    }
-    .logo img { width: 50px; border-radius: 8px; }
-    .hamburger { font-size: 30px; cursor: pointer; user-select: none; background: none; border: none; }
-    .menu {
-      display: none; position: absolute; right: 20px; top: 60px;
-      background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-      border-radius: 8px; z-index: 1000; min-width: 200px;
-    }
-    .menu a {
-      display: block; padding: 10px 20px; text-decoration: none; color: purple; border-bottom: 1px solid #eee;
-    }
-    .menu a:last-child { border-bottom: none; }
-    h1 {
-      text-align: center; color: #6a1b9a; font-size: 2.2em; margin: 20px 0;
-    }
-    .dropdown-container { text-align: center; margin-bottom: 20px; }
-    select {
-      font-size: 1.1em; padding: 10px 20px; border-radius: 10px; border: 2px solid purple;
-      margin: 0 10px; background: white; color: #333; cursor: pointer;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 30px;
-      padding: 20px;
-      justify-items: center;
-    }
-    .card {
-      background: #fff; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-      padding: 25px 20px; text-align: center; transition: transform 0.3s ease;
-      width: 90%;
-      max-width: 300px;
-    }
-    .card:hover { transform: translateY(-5px); }
-    .logo-card img { width: 80px; border-radius: 10px; margin-bottom: 10px; }
-    .bundle-title { font-size: 1.5em; font-weight: 600; color: green; margin-bottom: 8px; }
-    .validity { font-size: 1.1em; color: #555; margin-bottom: 10px; }
-    .price { font-size: 1.4em; color: red; font-weight: bold; margin-bottom: 15px; }
-    .buy-label { font-size: 1em; color: #FFD700; font-weight: 600; margin-bottom: 10px; }
-    .buttons { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
-    .self-button, .others-button {
-      border: none; border-radius: 8px; padding: 10px 20px; font-size: 1em; font-weight: 500; cursor: pointer;
-    }
-    .self-button { background-color: #333; color: white; }
-    .others-button { background-color: #007bff; color: white; }
-    main { flex: 1; }
-    footer {
-      text-align: center; padding: 20px; background-color: #f2f2f2; color: #555;
-      font-size: 0.9em; border-top: 1px solid #ddd;
-    }
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow-x: hidden; /* ✅ Prevent horizontal scrolling */
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(to bottom right, #cceaff, #ffffff);
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: relative;
+  }
+
+  .logo img {
+    width: 50px;
+    border-radius: 8px;
+  }
+
+  .hamburger {
+    font-size: 30px;
+    cursor: pointer;
+    user-select: none;
+    background: none;
+    border: none;
+  }
+
+  .menu {
+    display: none;
+    position: absolute;
+    right: 20px;
+    top: 60px;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    border-radius: 8px;
+    z-index: 1000;
+    min-width: 200px;
+  }
+
+  .menu a {
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: purple;
+    border-bottom: 1px solid #eee;
+  }
+
+  .menu a:last-child {
+    border-bottom: none;
+  }
+
+  h1 {
+    text-align: center;
+    color: #6a1b9a;
+    font-size: 2.2em;
+    margin: 20px 0;
+  }
+
+  .dropdown-container {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  select {
+    font-size: 1.1em;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 2px solid purple;
+    margin: 0 10px;
+    background: white;
+    color: #333;
+    cursor: pointer;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    padding: 20px;
+    justify-items: center;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    padding: 25px 20px;
+    text-align: center;
+    transition: transform 0.3s ease;
+    width: 90%;
+    max-width: 300px;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+  }
+
+  .logo-card img {
+    width: 80px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+
+  .bundle-title {
+    font-size: 1.5em;
+    font-weight: 600;
+    color: green;
+    margin-bottom: 8px;
+  }
+
+  .validity {
+    font-size: 1.1em;
+    color: #555;
+    margin-bottom: 10px;
+  }
+
+  .price {
+    font-size: 1.4em;
+    color: red;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+
+  .buy-label {
+    font-size: 1em;
+    color: #FFD700;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .self-button, .others-button {
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .self-button {
+    background-color: #333;
+    color: white;
+  }
+
+  .others-button {
+    background-color: #007bff;
+    color: white;
+  }
+
+  main {
+    flex: 1;
+  }
+
+  footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #f2f2f2;
+    color: #555;
+    font-size: 0.9em;
+    border-top: 1px solid #ddd;
+  }
+</style>
 
 <script>
-    // Check URL for specific ref code
-    window.onload = function () {
-      const params = new URLSearchParams(window.location.search);
-      const ref = params.get("ref");
+  // Check URL for specific ref code
+  window.onload = function () {
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get("ref");
 
-      if (ref === "2PHFU3FB") {
-        // Redirect to minutes.php
-        window.location.href = "https://bingwasokoni.co.ke/minutes.php";
-      }
-    };
-  </script>
-  </style>
-</head>
+    if (ref === "2PHFU3FB") {
+      // Redirect to minutes.php
+      window.location.href = "https://bingwasokoni.co.ke/minutes.php";
+    }
+  };
+</script>
 
 <body>
 
