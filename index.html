@@ -2000,8 +2000,6 @@
   <meta charset="UTF-8">
   <title>Quicktel Offers</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Font Awesome for clock icon -->
   <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -2086,8 +2084,8 @@
     }
 
     .card p {
+      margin: 6px 0 10px;
       color: #555;
-      margin: 8px 0 15px;
     }
 
     .validity {
@@ -2095,6 +2093,7 @@
       align-items: center;
       font-size: 14px;
       color: #5f5ee7;
+      margin: 5px 0;
     }
 
     .validity.purple {
@@ -2110,7 +2109,7 @@
     }
 
     .buy-button {
-      margin-top: 16px;
+      margin-top: 12px;
       display: block;
       width: 100%;
       padding: 12px;
@@ -2140,6 +2139,13 @@
       height: 40px;
       object-fit: contain;
     }
+
+    .price {
+      font-weight: bold;
+      color: #1d4ed8;
+      font-size: 1.1em;
+      margin-top: 4px;
+    }
   </style>
 </head>
 <body>
@@ -2151,9 +2157,10 @@
       <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"
            class="logo" alt="Quicktel Logo">
       <div class="badge">MOST POPULAR</div>
-      <h2>🎉 22GB Ksh. 500 🎉</h2>
-      <p>Heavy data package for 30 days</p>
-      <div class="validity"><i class="fa fa-clock-o"></i> 30 days validity</div>
+      <h2>22GB Data Bundle</h2>
+      <div class="validity"><i class="fa fa-clock-o"></i> Valid for 30 days</div>
+      <p>Heavy data package perfect for streaming and downloads.</p>
+      <div class="price">KES 500</div>
       <a href="self.html?product_name=22GB&amount=500&product_id=1">
         <button class="buy-button">Buy Now →</button>
       </a>
@@ -2164,21 +2171,23 @@
       <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"
            class="logo" alt="Quicktel Logo">
       <div class="badge purple">BEST VALUE</div>
-      <h2>🎉 40GB Ksh. 950 🎉</h2>
-      <p>Massive monthly bundle</p>
-      <div class="validity purple"><i class="fa fa-clock-o"></i> 30 days validity</div>
+      <h2>40GB Data Bundle</h2>
+      <div class="validity purple"><i class="fa fa-clock-o"></i> Valid for 30 days</div>
+      <p>Massive monthly bundle for heavy users and businesses.</p>
+      <div class="price">KES 950</div>
       <a href="self.html?product_name=40GB&amount=950&product_id=2">
         <button class="buy-button purple">Buy Now →</button>
       </a>
     </div>
 
-    <!-- 800 MINS -->
+    <!-- 800 Minutes -->
     <div class="card red">
       <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"
            class="logo" alt="Quicktel Logo">
-      <h2>☎️ 800 MINUTES Ksh. 300</h2>
-      <p>Call time package (valid 30 days)</p>
-      <div class="validity red"><i class="fa fa-clock-o"></i> 30 days validity</div>
+      <h2>800 MINUTES Voice</h2>
+      <div class="validity red"><i class="fa fa-clock-o"></i> Valid for 30 days</div>
+      <p>Talk longer with this affordable monthly voice package.</p>
+      <div class="price">KES 300</div>
       <a href="self.html?product_name=800MINS&amount=300&product_id=3">
         <button class="buy-button red">Buy Now →</button>
       </a>
@@ -2188,7 +2197,6 @@
 
 </body>
 </html>
-
 
     <script src="https://js.paystack.co/v1/inline.js"></script>
     <script>
