@@ -84,15 +84,6 @@
       background-image: linear-gradient(to right, #f43f5e, #ec4899);
     }
 
-    input[type="tel"] {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      font-size: 1em;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-
     .logo {
       position: absolute;
       top: 16px;
@@ -101,91 +92,174 @@
       height: 40px;
       object-fit: contain;
     }
+
+    .phone-input-popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 9999;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 40px;
+      animation: slideDown 0.4s ease-out forwards;
+    }
+
+    @keyframes slideDown {
+      0% {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .phone-box {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 360px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      text-align: center;
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .phone-box input {
+      width: 100%;
+      padding: 12px;
+      font-size: 1em;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    .phone-box button {
+      margin-top: 14px;
+      padding: 12px;
+      width: 100%;
+      font-size: 1em;
+      background: #1d4ed8;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
 
-  <div class="card-container">
+<div class="card-container">
 
-    <!-- 22GB -->
-    <div class="card blue">
-      <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"
-           class="logo" alt="Quicktel Logo">
-      <h2>22GB Data Bundle</h2>
-      <div class="price">Price: KES 500</div>
-      <p>Heavy data package perfect for streaming and downloads.</p>
-      <div class="validity"><i class="fa fa-clock-o"></i> Valid for 30 days</div>
-      <input type="tel" id="phone22" placeholder="Enter Safaricom number e.g. 2547XXXXXXXX">
-      <button class="buy-button" onclick="payWithPaystack('22GB Data Bundle', 500, 'phone22')">Buy Now →</button>
-    </div>
-
-    <!-- 40GB -->
-    <div class="card purple">
-      <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"
-           class="logo" alt="Quicktel Logo">
-      <h2>40GB Data Bundle</h2>
-      <div class="price">Price: KES 950</div>
-      <p>Massive monthly bundle for heavy users and businesses.</p>
-      <div class="validity purple"><i class="fa fa-clock-o"></i> Valid for 30 days</div>
-      <input type="tel" id="phone40" placeholder="Enter Safaricom number e.g. 2547XXXXXXXX">
-      <button class="buy-button purple" onclick="payWithPaystack('40GB Data Bundle', 950, 'phone40')">Buy Now →</button>
-    </div>
-
-    <!-- 800 Minutes -->
-    <div class="card red">
-      <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"
-           class="logo" alt="Quicktel Logo">
-      <h2>800 MINUTES Voice</h2>
-      <div class="price">Price: KES 300</div>
-      <p>Talk longer with this affordable monthly voice package.</p>
-      <div class="validity red"><i class="fa fa-clock-o"></i> Valid for 30 days</div>
-      <input type="tel" id="phone800" placeholder="Enter Safaricom number e.g. 2547XXXXXXXX">
-      <button class="buy-button red" onclick="payWithPaystack('800 MINUTES Voice', 300, 'phone800')">Buy Now →</button>
-    </div>
-
+  <!-- 22GB -->
+  <div class="card blue">
+    <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"
+         class="logo" alt="Quicktel Logo">
+    <h2>22GB Data Bundle</h2>
+    <div class="price">Price: KES 500</div>
+    <p>Heavy data package perfect for streaming and downloads.</p>
+    <div class="validity"><i class="fa fa-clock-o"></i> Valid for 30 days</div>
+    <button class="buy-button" onclick="openPhonePopup('22GB Data Bundle', 500)">Buy Now →</button>
   </div>
 
-  <!-- Paystack Script -->
-  <script src="https://js.paystack.co/v1/inline.js"></script>
-  <script>
-    function payWithPaystack(productName, amountKES, phoneInputId) {
-      const phone = document.getElementById(phoneInputId).value.trim();
+  <!-- 40GB -->
+  <div class="card purple">
+    <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"
+         class="logo" alt="Quicktel Logo">
+    <h2>40GB Data Bundle</h2>
+    <div class="price">Price: KES 950</div>
+    <p>Massive monthly bundle for heavy users and businesses.</p>
+    <div class="validity purple"><i class="fa fa-clock-o"></i> Valid for 30 days</div>
+    <button class="buy-button purple" onclick="openPhonePopup('40GB Data Bundle', 950)">Buy Now →</button>
+  </div>
 
-      if (!/^2547\d{8}$/.test(phone)) {
-        alert("❌ Please enter a valid Safaricom number starting with 2547...");
-        return;
-      }
+  <!-- 800 Minutes -->
+  <div class="card red">
+    <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"
+         class="logo" alt="Quicktel Logo">
+    <h2>800 MINUTES Voice</h2>
+    <div class="price">Price: KES 300</div>
+    <p>Talk longer with this affordable monthly voice package.</p>
+    <div class="validity red"><i class="fa fa-clock-o"></i> Valid for 30 days</div>
+    <button class="buy-button red" onclick="openPhonePopup('800 MINUTES Voice', 300)">Buy Now →</button>
+  </div>
 
-      const handler = PaystackPop.setup({
-        key: 'pk_live_3b95d82d975d8cd88f2e0059b1d6dca62c1db036', // Your real key
-        email: phone + '@quicktel.ke', // Constructed pseudo email
-        amount: amountKES * 100,
-        currency: 'KES',
-        ref: 'QT' + Math.floor(Math.random() * 1000000000),
-        label: productName,
-        metadata: {
-          custom_fields: [
-            {
-              display_name: "Safaricom Number",
-              variable_name: "safaricom_number",
-              value: phone
-            }
-          ]
-        },
-        callback: function(response) {
-          alert("✅ Payment successful! Ref: " + response.reference);
-        },
-        onClose: function() {
-          alert("❌ Payment cancelled.");
-        }
-      });
+</div>
 
-      handler.openIframe();
+<!-- Phone Input Popup -->
+<div class="phone-input-popup" id="popup">
+  <div class="phone-box">
+    <h3>Enter Safaricom Number</h3>
+    <input type="tel" id="safaricomNumber" placeholder="e.g. 2547XXXXXXXX">
+    <button onclick="submitPayment()">Proceed to Pay</button>
+  </div>
+</div>
+
+<!-- Paystack Script -->
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script>
+  let currentProduct = '';
+  let currentAmount = 0;
+
+  function openPhonePopup(product, amount) {
+    currentProduct = product;
+    currentAmount = amount;
+    document.getElementById('safaricomNumber').value = '';
+    const popup = document.getElementById('popup');
+    popup.style.display = 'flex';
+  }
+
+  function submitPayment() {
+    const phone = document.getElementById('safaricomNumber').value.trim();
+    if (!/^2547\d{8}$/.test(phone)) {
+      alert("❌ Please enter a valid Safaricom number starting with 2547...");
+      return;
     }
-  </script>
+
+    document.getElementById('popup').style.display = 'none';
+
+    const handler = PaystackPop.setup({
+      key: 'pk_live_3b95d82d975d8cd88f2e0059b1d6dca62c1db036',
+      email: phone + '@quicktel.ke',
+      amount: currentAmount * 100,
+      currency: 'KES',
+      ref: 'QT' + Math.floor(Math.random() * 1000000000),
+      label: currentProduct,
+      metadata: {
+        custom_fields: [
+          {
+            display_name: "Safaricom Number",
+            variable_name: "safaricom_number",
+            value: phone
+          }
+        ]
+      },
+      callback: function(response) {
+        alert("✅ Payment successful! Ref: " + response.reference);
+      },
+      onClose: function() {
+        alert("❌ Payment cancelled.");
+      }
+    });
+
+    handler.openIframe();
+  }
+</script>
 
 </body>
 </html>
+
 
 
 <!DOCTYPE html>
