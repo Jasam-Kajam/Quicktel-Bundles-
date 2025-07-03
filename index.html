@@ -103,20 +103,7 @@
       background: rgba(0,0,0,0.6);
       z-index: 9999;
       justify-content: center;
-      align-items: flex-start;
-      padding-top: 40px;
-      animation: slideDown 0.4s ease-out forwards;
-    }
-
-    @keyframes slideDown {
-      0% {
-        transform: translateY(-100%);
-        opacity: 0;
-      }
-      100% {
-        transform: translateY(0);
-        opacity: 1;
-      }
+      align-items: center;
     }
 
     .phone-box {
@@ -127,12 +114,20 @@
       max-width: 360px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.3);
       text-align: center;
-      animation: fadeIn 0.3s ease-in;
+      animation: slideToCenter 0.4s ease-out forwards;
+      transform: translateY(-100%);
+      opacity: 0;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+    @keyframes slideToCenter {
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
     }
 
     .phone-box input {
@@ -199,7 +194,7 @@
 
 <!-- Phone Input Popup -->
 <div class="phone-input-popup" id="popup">
-  <div class="phone-box">
+  <div class="phone-box" id="phoneBox">
     <h3>Enter Safaricom Number</h3>
     <input type="tel" id="safaricomNumber" placeholder="e.g. 2547XXXXXXXX">
     <button onclick="submitPayment()">Proceed to Pay</button>
@@ -217,7 +212,10 @@
     currentAmount = amount;
     document.getElementById('safaricomNumber').value = '';
     const popup = document.getElementById('popup');
+    const phoneBox = document.getElementById('phoneBox');
+
     popup.style.display = 'flex';
+    phoneBox.style.animation = 'slideToCenter 0.4s ease-out forwards';
   }
 
   function submitPayment() {
@@ -259,7 +257,6 @@
 
 </body>
 </html>
-
 
 
 <!DOCTYPE html>
