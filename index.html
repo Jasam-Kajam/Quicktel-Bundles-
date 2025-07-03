@@ -6,12 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -24,22 +19,15 @@
       padding-inline: 5%;
     }
 
-    .card-container a {
-      text-decoration: none;
-    }
-
     .card {
       position: relative;
       background: white;
-      color: #111;
       padding: 20px 25px;
       border-radius: 16px;
       margin-bottom: 24px;
       box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-      overflow: hidden;
       max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
+      margin-inline: auto;
     }
 
     .card::before {
@@ -49,54 +37,17 @@
       left: 0;
       width: 6px;
       height: 100%;
-      border-top-left-radius: 16px;
-      border-bottom-left-radius: 16px;
+      border-radius: 16px 0 0 16px;
     }
 
-    .blue::before {
-      background: #3b82f6;
-    }
+    .blue::before { background: #3b82f6; }
+    .purple::before { background: #a855f7; }
+    .red::before { background: #ef4444; }
 
-    .purple::before {
-      background: #a855f7;
-    }
+    .card h2 { margin: 0; font-size: 1.4em; font-weight: bold; }
+    .card p { margin: 6px 0 10px; color: #555; }
 
-    .red::before {
-      background: #ef4444;
-    }
-
-    .badge {
-      font-size: 12px;
-      font-weight: bold;
-      background: #f0f0ff;
-      color: #6A5ACD;
-      padding: 5px 12px;
-      border-radius: 20px;
-      display: inline-block;
-      margin-bottom: 10px;
-    }
-
-    .badge.purple {
-      color: #a855f7;
-      background: #f3e8ff;
-    }
-
-    .card h2 {
-      margin: 0;
-      font-size: 1.4em;
-      font-weight: bold;
-    }
-
-    .card p {
-      margin: 6px 0 10px;
-      color: #555;
-    }
-
-    .price {
-      font-weight: bold;
-      color: #1d4ed8;
-      margin: 6px 0;
-    }
+    .price { font-weight: bold; color: #1d4ed8; margin: 6px 0; }
 
     .validity {
       display: flex;
@@ -106,17 +57,9 @@
       margin: 5px 0;
     }
 
-    .validity.purple {
-      color: #a855f7;
-    }
-
-    .validity.red {
-      color: #ef4444;
-    }
-
-    .validity i {
-      margin-right: 6px;
-    }
+    .validity.purple { color: #a855f7; }
+    .validity.red { color: #ef4444; }
+    .validity i { margin-right: 6px; }
 
     .buy-button {
       margin-top: 12px;
@@ -141,6 +84,15 @@
       background-image: linear-gradient(to right, #f43f5e, #ec4899);
     }
 
+    input[type="tel"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      font-size: 1em;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
     .logo {
       position: absolute;
       top: 16px;
@@ -159,28 +111,24 @@
     <div class="card blue">
       <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"
            class="logo" alt="Quicktel Logo">
-      <div class="badge">MOST POPULAR</div>
       <h2>22GB Data Bundle</h2>
       <div class="price">Price: KES 500</div>
       <p>Heavy data package perfect for streaming and downloads.</p>
       <div class="validity"><i class="fa fa-clock-o"></i> Valid for 30 days</div>
-      <a href="self.html?product_name=22GB&amount=500&product_id=1">
-        <button class="buy-button">Buy Now →</button>
-      </a>
+      <input type="tel" id="phone22" placeholder="Enter Safaricom number e.g. 2547XXXXXXXX">
+      <button class="buy-button" onclick="payWithPaystack('22GB Data Bundle', 500, 'phone22')">Buy Now →</button>
     </div>
 
     <!-- 40GB -->
     <div class="card purple">
       <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"
            class="logo" alt="Quicktel Logo">
-      <div class="badge purple">BEST VALUE</div>
       <h2>40GB Data Bundle</h2>
       <div class="price">Price: KES 950</div>
       <p>Massive monthly bundle for heavy users and businesses.</p>
       <div class="validity purple"><i class="fa fa-clock-o"></i> Valid for 30 days</div>
-      <a href="self.html?product_name=40GB&amount=950&product_id=2">
-        <button class="buy-button purple">Buy Now →</button>
-      </a>
+      <input type="tel" id="phone40" placeholder="Enter Safaricom number e.g. 2547XXXXXXXX">
+      <button class="buy-button purple" onclick="payWithPaystack('40GB Data Bundle', 950, 'phone40')">Buy Now →</button>
     </div>
 
     <!-- 800 Minutes -->
@@ -191,12 +139,50 @@
       <div class="price">Price: KES 300</div>
       <p>Talk longer with this affordable monthly voice package.</p>
       <div class="validity red"><i class="fa fa-clock-o"></i> Valid for 30 days</div>
-      <a href="self.html?product_name=800MINS&amount=300&product_id=3">
-        <button class="buy-button red">Buy Now →</button>
-      </a>
+      <input type="tel" id="phone800" placeholder="Enter Safaricom number e.g. 2547XXXXXXXX">
+      <button class="buy-button red" onclick="payWithPaystack('800 MINUTES Voice', 300, 'phone800')">Buy Now →</button>
     </div>
 
   </div>
+
+  <!-- Paystack Script -->
+  <script src="https://js.paystack.co/v1/inline.js"></script>
+  <script>
+    function payWithPaystack(productName, amountKES, phoneInputId) {
+      const phone = document.getElementById(phoneInputId).value.trim();
+
+      if (!/^2547\d{8}$/.test(phone)) {
+        alert("❌ Please enter a valid Safaricom number starting with 2547...");
+        return;
+      }
+
+      const handler = PaystackPop.setup({
+        key: 'pk_live_3b95d82d975d8cd88f2e0059b1d6dca62c1db036', // Your real key
+        email: phone + '@quicktel.ke', // Constructed pseudo email
+        amount: amountKES * 100,
+        currency: 'KES',
+        ref: 'QT' + Math.floor(Math.random() * 1000000000),
+        label: productName,
+        metadata: {
+          custom_fields: [
+            {
+              display_name: "Safaricom Number",
+              variable_name: "safaricom_number",
+              value: phone
+            }
+          ]
+        },
+        callback: function(response) {
+          alert("✅ Payment successful! Ref: " + response.reference);
+        },
+        onClose: function() {
+          alert("❌ Payment cancelled.");
+        }
+      });
+
+      handler.openIframe();
+    }
+  </script>
 
 </body>
 </html>
