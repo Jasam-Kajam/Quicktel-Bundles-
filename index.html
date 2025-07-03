@@ -39,7 +39,7 @@
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow-x: hidden; /* ✅ Prevent horizontal scrolling */
+    overflow-x: hidden;
     font-family: 'Segoe UI', Arial, sans-serif;
     background: linear-gradient(to bottom right, #cceaff, #ffffff);
   }
@@ -57,7 +57,17 @@
     padding: 10px 20px;
     background: #fff;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    z-index: 1000;
+  }
+
+  main {
+    flex: 1;
+    padding-top: 70px; /* Prevent content under header */
   }
 
   .logo img {
@@ -71,6 +81,7 @@
     user-select: none;
     background: none;
     border: none;
+    color: #6a1b9a;
   }
 
   .menu {
@@ -202,10 +213,6 @@
     color: white;
   }
 
-  main {
-    flex: 1;
-  }
-
   footer {
     text-align: center;
     padding: 20px;
@@ -217,16 +224,29 @@
 </style>
 
 <script>
-  // Check URL for specific ref code
+  // Toggle dropdown menu
+  function toggleMenu() {
+    const menu = document.getElementById("dropdownMenu");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+  }
+
+  // Auto-redirect if ref is present
   window.onload = function () {
     const params = new URLSearchParams(window.location.search);
     const ref = params.get("ref");
-
     if (ref === "2PHFU3FB") {
-      // Redirect to minutes.php
       window.location.href = "https://bingwasokoni.co.ke/minutes.php";
     }
   };
+
+  // Hide menu when clicking outside
+  window.addEventListener('click', function (e) {
+    const menu = document.getElementById("dropdownMenu");
+    const button = document.querySelector(".hamburger");
+    if (!menu.contains(e.target) && !button.contains(e.target)) {
+      menu.style.display = "none";
+    }
+  });
 </script>
 
 <body>
