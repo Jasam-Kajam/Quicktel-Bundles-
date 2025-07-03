@@ -1751,16 +1751,6 @@
 
   <h2>Go Monthly Bingwa Offers</h2>
 
-  <div class="offer-box">
-    <div class="offer-label">POPULAR</div>
-    <div class="offer-title">300 MINS + 500SMS</div>
-    <div class="offer-desc">Perfect for frequent callers and texters</div>
-    <div class="offer-validity">⏱️ 30 days validity</div>
-    <a class="buy-btn" href="self.html?bundle=300MINS+500SMS&price=100">
-      Buy Now →
-    </a>
-  </div>
-
 </body>
 </html>
 
@@ -1840,6 +1830,7 @@
       background-image: linear-gradient(to right, #6a5af9, #1d4ed8);
       border: none;
       cursor: pointer;
+      text-decoration: none;
     }
 
     .buy-button.purple {
@@ -1923,7 +1914,17 @@
 
 <div class="card-container">
 
-  <!-- 22GB -->
+  <div class="offer-box">
+    <div class="offer-label">POPULAR</div>
+    <div class="offer-title">300 MINS + 500SMS</div>
+    <div class="offer-desc">Perfect for frequent callers and texters</div>
+    <div class="offer-validity">⏱️ 30 days validity</div>
+    <a class="buy-btn" href="self.html?bundle=300MINS+500SMS&price=100">
+      Buy Now →
+    </a>
+  </div>
+
+ <!-- 22GB -->
   <div class="card blue">
     <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"
          class="logo" alt="Quicktel Logo">
@@ -1959,7 +1960,7 @@
 </div>
 
 <!-- Phone Input Popup -->
-<div class="phone-input-popup" id="popup">
+<div class="phone-input-popup" id="popup" onclick="dismissPopup(event)">
   <div class="phone-box" id="phoneBox">
     <h3>Enter Safaricom Number</h3>
     <input type="tel" id="safaricomNumber" placeholder="e.g. 2547XXXXXXXX">
@@ -1979,14 +1980,20 @@
     document.getElementById('safaricomNumber').value = '';
     const popup = document.getElementById('popup');
     const phoneBox = document.getElementById('phoneBox');
-
     popup.style.display = 'flex';
     phoneBox.style.animation = 'slideToCenter 0.4s ease-out forwards';
   }
 
+  function dismissPopup(event) {
+    const phoneBox = document.getElementById('phoneBox');
+    if (!phoneBox.contains(event.target)) {
+      document.getElementById('popup').style.display = 'none';
+    }
+  }
+
   function submitPayment() {
     const phone = document.getElementById('safaricomNumber').value.trim();
-    if (!/^2547\d{8}$/.test(phone)) {
+    if (!/^254\d{9}$/.test(phone)) {
       alert("❌ Please enter a valid Safaricom number starting with 2547...");
       return;
     }
@@ -2023,6 +2030,7 @@
 
 </body>
 </html>
+
 
     <footer>
         <p>© 2025 Quicktel Bundles. All Rights Reserved.</p>
