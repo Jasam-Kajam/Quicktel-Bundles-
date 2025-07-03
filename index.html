@@ -1767,18 +1767,22 @@
 <style>
   .card-container {
     width: 100%;
-    padding-inline: 3%;
+    padding-inline: 5%;
     box-sizing: border-box;
   }
 
   .card {
     position: relative;
     background: white;
+    color: #111;
+    padding: 20px 25px;
     border-radius: 16px;
-    padding: 20px 20px 20px 24px;
     margin-bottom: 24px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    overflow: hidden; /* important for curved strip */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    overflow: hidden;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .card::before {
@@ -1788,7 +1792,6 @@
     left: 0;
     width: 6px;
     height: 100%;
-    background: #ddd; /* default in case class is missing */
   }
 
   .blue::before {
@@ -1821,21 +1824,19 @@
 
   .card h2 {
     margin: 0;
-    font-size: 24px;
+    font-size: 1.4em;
     font-weight: bold;
-    color: #111;
   }
 
   .card p {
     color: #555;
-    margin: 6px 0;
+    margin: 8px 0 15px;
   }
 
   .validity {
     display: flex;
     align-items: center;
     font-size: 14px;
-    margin-top: 6px;
     color: #5f5ee7;
   }
 
@@ -1849,7 +1850,6 @@
 
   .validity i {
     margin-right: 6px;
-    color: inherit;
   }
 
   .buy-button {
@@ -1858,11 +1858,14 @@
     width: 100%;
     padding: 12px;
     font-weight: bold;
+    font-size: 1em;
     text-align: center;
     text-decoration: none;
     color: white;
     border-radius: 8px;
     background-image: linear-gradient(to right, #6a5af9, #1d4ed8);
+    border: none;
+    cursor: pointer;
   }
 
   .buy-button.purple {
@@ -1889,35 +1892,42 @@
   <div class="card blue">
     <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" class="logo" alt="Quicktel Logo">
     <div class="badge">MOST POPULAR</div>
-    <h2>22GB</h2>
-    <p>Heavy data package</p>
-    <div class="validity"><i class="fa fa-clock-o"></i>30 days validity</div>
-    <a href="self.html" class="buy-button">Buy Now →</a>
+    <h2>🎉 22GB Ksh. 500 🎉</h2>
+    <p>Heavy data package for 30 days</p>
+    <div class="validity"><i class="fa fa-clock-o"></i> 30 days validity</div>
+    <a href="self.html">
+      <button class="buy-button">Buy Now →</button>
+    </a>
   </div>
 
   <!-- 40GB BEST VALUE -->
   <div class="card purple">
     <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" class="logo" alt="Quicktel Logo">
     <div class="badge purple">BEST VALUE</div>
-    <h2>40GB</h2>
-    <p>Massive data package</p>
-    <div class="validity purple"><i class="fa fa-clock-o"></i>30 days validity</div>
-    <a href="self.html" class="buy-button purple">Buy Now →</a>
+    <h2>🎉 40GB Ksh. 950 🎉</h2>
+    <p>Massive monthly bundle</p>
+    <div class="validity purple"><i class="fa fa-clock-o"></i> 30 days validity</div>
+    <a href="self.html">
+      <button class="buy-button purple">Buy Now →</button>
+    </a>
   </div>
 
   <!-- 800 MINS -->
   <div class="card red">
     <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" class="logo" alt="Quicktel Logo">
-    <h2>800 MINS</h2>
-    <p>Heavy talk time package</p>
-    <div class="validity red"><i class="fa fa-clock-o"></i>30 days validity</div>
-    <a href="self.html" class="buy-button red">Buy Now →</a>
+    <h2>☎️ 800 MINUTES Ksh. 300</h2>
+    <p>Call time package (valid 30 days)</p>
+    <div class="validity red"><i class="fa fa-clock-o"></i> 30 days validity</div>
+    <a href="self.html">
+      <button class="buy-button red">Buy Now →</button>
+    </a>
   </div>
 
 </div>
 
 <!-- Font Awesome for clock icon -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 
     <footer>
         <p>© 2025 Quicktel Bundles. All Rights Reserved.</p>
