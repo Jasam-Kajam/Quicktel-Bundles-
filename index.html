@@ -51,18 +51,23 @@
   }
 
   header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background: #fff;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
+    background: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
     height: 60px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     z-index: 1000;
+    transition: transform 0.3s ease-in-out;
+  }
+
+  header.hide {
+    transform: translateY(-100%);
   }
 
   .logo img {
@@ -107,12 +112,7 @@
     text-align: center;
     color: #6a1b9a;
     font-size: 2.2em;
-    margin: 20px 0;
-  }
-
-  main {
-    flex: 1;
-    padding-top: 70px; /* spacing below fixed header */
+    margin: 90px 0 20px; /* space for fixed header */
   }
 
   .dropdown-container {
@@ -222,7 +222,7 @@
     border-top: 1px solid #ddd;
   }
 </style>
-
+<head>
 <body>
 
     <header>
@@ -2280,5 +2280,23 @@ function buyForOthers(bundleName, price) {
             alert("Right-click is disabled on this site.");
         });
     </script>
+<script>
+  let lastScroll = 0;
+  const header = document.querySelector("header");
+
+  window.addEventListener("scroll", () => {
+    const currentScroll = window.pageYOffset;
+
+    if (currentScroll > lastScroll) {
+      // Scrolling down
+      header.classList.add("hide");
+    } else {
+      // Scrolling up
+      header.classList.remove("hide");
+    }
+
+    lastScroll = currentScroll;
+  });
+</script>
 </body>
 </html>
