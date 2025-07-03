@@ -121,13 +121,14 @@
         </div>
         <div class="hamburger" onclick="toggleMenu()"><span id="hamburgerIcon">&#9776;</span></div>
         <div class="menu" id="menu">
-  <a href="#" onclick="scrollToSection('bundles')">Bundles</a>
-  <a href="#" onclick="scrollToSection('minutes')">Minutes</a>
-  <a href="#" onclick="scrollToSection('sms')">SMS</a>
-  <a href="terms.html">Terms & Conditions</a>
-  <a href="privacy.html">Privacy Policy</a>
-  <a href="https://wa.me/254729952483" target="_blank">Support</a>
-</div>
+            <a href="#">Home</a>
+            <a href="#" onclick="selectMain('bundles')">Bundles</a>
+            <a href="#" onclick="selectMain('minutes')">Minutes</a>
+            <a href="#" onclick="selectMain('sms')">SMS</a>
+            <a href="terms.html">Terms & Conditions</a>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="https://wa.me/254729952483" target="_blank">Support</a>
+        </div>
     </header>
 <h1>QUICKTEL BUNDLES</h1>
 
@@ -1744,7 +1745,7 @@
     </a>
     <a href="monthly.html" class="card">
       <div class="card-icon">🗓️</div>
-      <div>GOMONTHLY BUNDLES</div>
+      <div>GO MONTHLY BUNDLES</div>
     </a>
   </div>
 
@@ -1763,6 +1764,62 @@
 </body>
 </html>
 
+<!-- 22GB MOST POPULAR -->
+<div class="bg-white rounded-xl shadow-md p-5 mb-6 border-l-4 border-blue-600">
+  <div class="flex justify-between items-start">
+    <div>
+      <span class="text-xs font-semibold bg-blue-100 text-blue-700 px-2 py-1 rounded-full">MOST POPULAR</span>
+      <h2 class="text-xl font-bold mt-2">22GB</h2>
+      <p class="text-gray-600">Heavy data package</p>
+      <div class="flex items-center text-sm text-blue-700 mt-2">
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2m6-2a10 10 0 11-20 0 10 10 0 0120 0z" />
+        </svg>
+        30 days validity
+      </div>
+    </div>
+    <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" alt="Quicktel Logo" class="w-12 h-12 object-contain ml-4">
+  </div>
+  <button class="mt-4 w-full bg-gradient-to-r from-indigo-500 to-blue-600 text-white py-2 rounded-lg font-semibold">Buy Now →</button>
+</div>
+
+<!-- 40GB BEST VALUE -->
+<div class="bg-white rounded-xl shadow-md p-5 mb-6 border-l-4 border-purple-600">
+  <div class="flex justify-between items-start">
+    <div>
+      <span class="text-xs font-semibold bg-purple-100 text-purple-700 px-2 py-1 rounded-full">BEST VALUE</span>
+      <h2 class="text-xl font-bold mt-2">40GB</h2>
+      <p class="text-gray-600">Massive data package</p>
+      <div class="flex items-center text-sm text-purple-700 mt-2">
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2m6-2a10 10 0 11-20 0 10 10 0 0120 0z" />
+        </svg>
+        30 days validity
+      </div>
+    </div>
+    <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" alt="Quicktel Logo" class="w-12 h-12 object-contain ml-4">
+  </div>
+  <button class="mt-4 w-full bg-gradient-to-r from-purple-500 to-indigo-700 text-white py-2 rounded-lg font-semibold">Buy Now →</button>
+</div>
+
+<!-- 800 MINS -->
+<div class="bg-white rounded-xl shadow-md p-5 mb-6 border-l-4 border-rose-500">
+  <div class="flex justify-between items-start">
+    <div>
+      <h2 class="text-xl font-bold">800 MINS</h2>
+      <p class="text-gray-600">Heavy talk time package</p>
+      <div class="flex items-center text-sm text-rose-700 mt-2">
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2m6-2a10 10 0 11-20 0 10 10 0 0120 0z" />
+        </svg>
+        30 days validity
+      </div>
+    </div>
+    <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" alt="Quicktel Logo" class="w-12 h-12 object-contain ml-4">
+  </div>
+  <button class="mt-4 w-full bg-gradient-to-r from-red-500 to-pink-600 text-white py-2 rounded-lg font-semibold">Buy Now →</button>
+</div>
+
 
     <footer>
         <p>© 2025 Quicktel Bundles. All Rights Reserved.</p>
@@ -1775,73 +1832,11 @@
 
     <script src="https://js.paystack.co/v1/inline.js"></script>
     <script>
-        <script>
-const subCategories = {
-  bundles: ['daily'],
-  minutes: ['short'],
-  sms: ['bulk']
-};
-
-function toggleMenu() {
-  const menu = document.getElementById('menu');
-  const icon = document.getElementById('hamburgerIcon');
-  if (menu.style.display === "block") {
-    menu.style.display = "none";
-    icon.innerHTML = "&#9776;";
-  } else {
-    menu.style.display = "block";
-    icon.innerHTML = "&times;";
-  }
-}
-
-function scrollToSection(sectionId) {
-  toggleMenu(); // Close the menu
-  document.getElementById('mainSelect').value = sectionId;
-  changeMain();
-
-  const section = document.getElementById(`${sectionId}-section`);
-  section.scrollIntoView({ behavior: 'smooth' });
-
-  // Add highlight
-  section.classList.add("highlighted");
-  setTimeout(() => {
-    section.classList.remove("highlighted");
-  }, 2000);
-}
-
-function changeMain() {
-  let main = document.getElementById('mainSelect').value;
-  document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
-  document.getElementById(main + '-section').style.display = 'block';
-  
-  let subSelect = document.getElementById('subSelect');
-  subSelect.innerHTML = '';
-  subCategories[main].forEach(sub => {
-    let option = document.createElement('option');
-    option.value = sub;
-    option.text = sub.charAt(0).toUpperCase() + sub.slice(1);
-    subSelect.appendChild(option);
-  });
-  changeSubCategory();
-}
-
-function changeSubCategory() {
-  let main = document.getElementById('mainSelect').value;
-  let sub = document.getElementById('subSelect').value;
-  document.querySelectorAll(`#${main}-section .sub-section`).forEach(s => s.style.display = 'none');
-  document.getElementById(`${main}-${sub}`).style.display = 'block';
-}
-
-function buySelf(bundleName, price) {
-  window.open(`self.html?bundle=${encodeURIComponent(bundleName)}&price=${price}`, '_blank');
-}
-
-function buyForOthers(bundleName, price) {
-  window.open(`others.html?bundle=${encodeURIComponent(bundleName)}&price=${price}`, '_blank');
-}
-window.onload = changeMain;
-</script>
-
+        const subCategories = {
+            bundles: ['daily', 'weekly', 'monthly', 'special'],
+            minutes: ['short', 'long', 'international'],
+            sms: ['bulk', 'personal', 'promo']
+        };
 
         function toggleMenu() {
             const menu = document.getElementById('menu');
