@@ -1782,8 +1782,10 @@
       border-radius: 16px;
       margin-bottom: 24px;
       box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+      width: 90%;
       max-width: 400px;
-      margin-inline: auto;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .card::before {
@@ -1914,17 +1916,7 @@
 
 <div class="card-container">
 
-  <div class="offer-box">
-    <div class="offer-label">POPULAR</div>
-    <div class="offer-title">300 MINS + 500SMS</div>
-    <div class="offer-desc">Perfect for frequent callers and texters</div>
-    <div class="offer-validity">⏱️ 30 days validity</div>
-    <a class="buy-btn" href="self.html?bundle=300MINS+500SMS&price=100">
-      Buy Now →
-    </a>
-  </div>
-
- <!-- 22GB -->
+  <!-- 22GB -->
   <div class="card blue">
     <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"
          class="logo" alt="Quicktel Logo">
@@ -1993,7 +1985,7 @@
 
   function submitPayment() {
     const phone = document.getElementById('safaricomNumber').value.trim();
-    if (!/^254\d{9}$/.test(phone)) {
+    if (!/^2547\d{8}$/.test(phone)) {
       alert("❌ Please enter a valid Safaricom number starting with 2547...");
       return;
     }
@@ -2030,7 +2022,6 @@
 
 </body>
 </html>
-
 
     <footer>
         <p>© 2025 Quicktel Bundles. All Rights Reserved.</p>
