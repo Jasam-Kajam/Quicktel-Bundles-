@@ -1782,43 +1782,128 @@
   </div>
   <button class="mt-4 w-full bg-gradient-to-r from-indigo-500 to-blue-600 text-white py-2 rounded-lg font-semibold">Buy Now →</button>
 </div>
+<style>
+  .card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    position: relative;
+  }
+
+  .badge {
+    font-size: 12px;
+    font-weight: bold;
+    background: #f0f0ff;
+    color: #6A5ACD;
+    padding: 5px 12px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+
+  .badge.purple {
+    color: #a855f7;
+    background: #f3e8ff;
+  }
+
+  .card h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+    color: #111;
+  }
+
+  .card p {
+    color: #555;
+    margin: 6px 0;
+  }
+
+  .validity {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    margin-top: 6px;
+    color: #5f5ee7;
+  }
+
+  .validity.purple {
+    color: #a855f7;
+  }
+
+  .validity.red {
+    color: #f43f5e;
+  }
+
+  .validity i {
+    margin-right: 6px;
+    color: inherit;
+  }
+
+  .buy-button {
+    margin-top: 16px;
+    display: block;
+    width: 100%;
+    padding: 12px;
+    font-weight: bold;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background-image: linear-gradient(to right, #6a5af9, #1d4ed8);
+  }
+
+  .buy-button.purple {
+    background-image: linear-gradient(to right, #8e2de2, #4a00e0);
+  }
+
+  .buy-button.red {
+    background-image: linear-gradient(to right, #f43f5e, #ec4899);
+  }
+
+  .logo {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+  }
+</style>
+
+<!-- 22GB MOST POPULAR -->
+<div class="card">
+  <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" class="logo" alt="Quicktel Logo">
+  <div class="badge">MOST POPULAR</div>
+  <h2>22GB</h2>
+  <p>Heavy data package</p>
+  <div class="validity"><i class="fa fa-clock-o"></i>30 days validity</div>
+  <button class="buy-button">Buy Now →</button>
+</div>
 
 <!-- 40GB BEST VALUE -->
-<div class="bg-white rounded-xl shadow-md p-5 mb-6 border-l-4 border-purple-600">
-  <div class="flex justify-between items-start">
-    <div>
-      <span class="text-xs font-semibold bg-purple-100 text-purple-700 px-2 py-1 rounded-full">BEST VALUE</span>
-      <h2 class="text-xl font-bold mt-2">40GB</h2>
-      <p class="text-gray-600">Massive data package</p>
-      <div class="flex items-center text-sm text-purple-700 mt-2">
-        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2m6-2a10 10 0 11-20 0 10 10 0 0120 0z" />
-        </svg>
-        30 days validity
-      </div>
-    </div>
-    <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" alt="Quicktel Logo" class="w-12 h-12 object-contain ml-4">
-  </div>
-  <button class="mt-4 w-full bg-gradient-to-r from-purple-500 to-indigo-700 text-white py-2 rounded-lg font-semibold">Buy Now →</button>
+<div class="card">
+  <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" class="logo" alt="Quicktel Logo">
+  <div class="badge purple">BEST VALUE</div>
+  <h2>40GB</h2>
+  <p>Massive data package</p>
+  <div class="validity purple"><i class="fa fa-clock-o"></i>30 days validity</div>
+  <button class="buy-button purple">Buy Now →</button>
 </div>
 
 <!-- 800 MINS -->
-<div class="bg-white rounded-xl shadow-md p-5 mb-6 border-l-4 border-rose-500">
-  <div class="flex justify-between items-start">
-    <div>
-      <h2 class="text-xl font-bold">800 MINS</h2>
-      <p class="text-gray-600">Heavy talk time package</p>
-      <div class="flex items-center text-sm text-rose-700 mt-2">
-        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2m6-2a10 10 0 11-20 0 10 10 0 0120 0z" />
-        </svg>
-        30 days validity
-      </div>
-    </div>
-    <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" alt="Quicktel Logo" class="w-12 h-12 object-contain ml-4">
-  </div>
-  <button class="mt-4 w-full bg-gradient-to-r from-red-500 to-pink-600 text-white py-2 rounded-lg font-semibold">Buy Now →</button>
+<div class="card">
+  <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" class="logo" alt="Quicktel Logo">
+  <h2>800 MINS</h2>
+  <p>Heavy talk time package</p>
+  <div class="validity red"><i class="fa fa-clock-o"></i>30 days validity</div>
+  <button class="buy-button red">Buy Now →</button>
 </div>
+
+<!-- Font Awesome for clock icon -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 
 
     <footer>
