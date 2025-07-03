@@ -1,267 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Quicktel Offers</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px 0;
-      background-color: #f3f4f6;
-    }
-
-    .card-container {
-      width: 100%;
-      padding-inline: 5%;
-    }
-
-    .card {
-      position: relative;
-      background: white;
-      padding: 20px 25px;
-      border-radius: 16px;
-      margin-bottom: 24px;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-      max-width: 400px;
-      margin-inline: auto;
-    }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 6px;
-      height: 100%;
-      border-radius: 16px 0 0 16px;
-    }
-
-    .blue::before { background: #3b82f6; }
-    .purple::before { background: #a855f7; }
-    .red::before { background: #ef4444; }
-
-    .card h2 { margin: 0; font-size: 1.4em; font-weight: bold; }
-    .card p { margin: 6px 0 10px; color: #555; }
-
-    .price { font-weight: bold; color: #1d4ed8; margin: 6px 0; }
-
-    .validity {
-      display: flex;
-      align-items: center;
-      font-size: 14px;
-      color: #5f5ee7;
-      margin: 5px 0;
-    }
-
-    .validity.purple { color: #a855f7; }
-    .validity.red { color: #ef4444; }
-    .validity i { margin-right: 6px; }
-
-    .buy-button {
-      margin-top: 12px;
-      display: block;
-      width: 100%;
-      padding: 12px;
-      font-weight: bold;
-      font-size: 1em;
-      text-align: center;
-      color: white;
-      border-radius: 8px;
-      background-image: linear-gradient(to right, #6a5af9, #1d4ed8);
-      border: none;
-      cursor: pointer;
-    }
-
-    .buy-button.purple {
-      background-image: linear-gradient(to right, #8e2de2, #4a00e0);
-    }
-
-    .buy-button.red {
-      background-image: linear-gradient(to right, #f43f5e, #ec4899);
-    }
-
-    .logo {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      width: 40px;
-      height: 40px;
-      object-fit: contain;
-    }
-
-    .phone-input-popup {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.6);
-      z-index: 9999;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .phone-box {
-      background: white;
-      padding: 24px;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 360px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      text-align: center;
-      animation: slideToCenter 0.4s ease-out forwards;
-      transform: translateY(-100%);
-      opacity: 0;
-    }
-
-    @keyframes slideToCenter {
-      from {
-        transform: translateY(-100%);
-        opacity: 0;
-      }
-      to {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
-
-    .phone-box input {
-      width: 100%;
-      padding: 12px;
-      font-size: 1em;
-      margin-top: 10px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-
-    .phone-box button {
-      margin-top: 14px;
-      padding: 12px;
-      width: 100%;
-      font-size: 1em;
-      background: #1d4ed8;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-  </style>
-</head>
-<body>
-
-<div class="card-container">
-
-  <!-- 22GB -->
-  <div class="card blue">
-    <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"
-         class="logo" alt="Quicktel Logo">
-    <h2>22GB Data Bundle</h2>
-    <div class="price">Price: KES 500</div>
-    <p>Heavy data package perfect for streaming and downloads.</p>
-    <div class="validity"><i class="fa fa-clock-o"></i> Valid for 30 days</div>
-    <button class="buy-button" onclick="openPhonePopup('22GB Data Bundle', 500)">Buy Now →</button>
-  </div>
-
-  <!-- 40GB -->
-  <div class="card purple">
-    <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"
-         class="logo" alt="Quicktel Logo">
-    <h2>40GB Data Bundle</h2>
-    <div class="price">Price: KES 950</div>
-    <p>Massive monthly bundle for heavy users and businesses.</p>
-    <div class="validity purple"><i class="fa fa-clock-o"></i> Valid for 30 days</div>
-    <button class="buy-button purple" onclick="openPhonePopup('40GB Data Bundle', 950)">Buy Now →</button>
-  </div>
-
-  <!-- 800 Minutes -->
-  <div class="card red">
-    <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"
-         class="logo" alt="Quicktel Logo">
-    <h2>800 MINUTES Voice</h2>
-    <div class="price">Price: KES 300</div>
-    <p>Talk longer with this affordable monthly voice package.</p>
-    <div class="validity red"><i class="fa fa-clock-o"></i> Valid for 30 days</div>
-    <button class="buy-button red" onclick="openPhonePopup('800 MINUTES Voice', 300)">Buy Now →</button>
-  </div>
-
-</div>
-
-<!-- Phone Input Popup -->
-<div class="phone-input-popup" id="popup">
-  <div class="phone-box" id="phoneBox">
-    <h3>Enter Safaricom Number</h3>
-    <input type="tel" id="safaricomNumber" placeholder="e.g. 2547XXXXXXXX">
-    <button onclick="submitPayment()">Proceed to Pay</button>
-  </div>
-</div>
-
-<!-- Paystack Script -->
-<script src="https://js.paystack.co/v1/inline.js"></script>
-<script>
-  let currentProduct = '';
-  let currentAmount = 0;
-
-  function openPhonePopup(product, amount) {
-    currentProduct = product;
-    currentAmount = amount;
-    document.getElementById('safaricomNumber').value = '';
-    const popup = document.getElementById('popup');
-    const phoneBox = document.getElementById('phoneBox');
-
-    popup.style.display = 'flex';
-    phoneBox.style.animation = 'slideToCenter 0.4s ease-out forwards';
-  }
-
-  function submitPayment() {
-    const phone = document.getElementById('safaricomNumber').value.trim();
-    if (!/^2547\d{8}$/.test(phone)) {
-      alert("❌ Please enter a valid Safaricom number starting with 2547...");
-      return;
-    }
-
-    document.getElementById('popup').style.display = 'none';
-
-    const handler = PaystackPop.setup({
-      key: 'pk_live_3b95d82d975d8cd88f2e0059b1d6dca62c1db036',
-      email: phone + '@quicktel.ke',
-      amount: currentAmount * 100,
-      currency: 'KES',
-      ref: 'QT' + Math.floor(Math.random() * 1000000000),
-      label: currentProduct,
-      metadata: {
-        custom_fields: [
-          {
-            display_name: "Safaricom Number",
-            variable_name: "safaricom_number",
-            value: phone
-          }
-        ]
-      },
-      callback: function(response) {
-        alert("✅ Payment successful! Ref: " + response.reference);
-      },
-      onClose: function() {
-        alert("❌ Payment cancelled.");
-      }
-    });
-
-    handler.openIframe();
-  }
-</script>
-
-</body>
-</html>
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
   <!-- Google AdSense Meta -->
   <meta name="google-adsense-account" content="ca-pub-2508586704139143">
 
@@ -2072,203 +1811,10 @@
 <head>
   <meta charset="UTF-8">
   <title>Quicktel Offers</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Quicktel Offers</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
- 
- <style>
-  .card-container {
-    width: 100%;
-    padding-inline: 5%;
-    box-sizing: border-box;
-  }
-
-  .card {
-    position: relative;
-    background: white;
-    color: #111;
-    padding: 20px 25px;
-    border-radius: 16px;
-    margin-bottom: 24px;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-    overflow: hidden;
-    max-width: 400px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .card::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 6px;
-    height: 100%;
-  }
-
-  .blue::before {
-    background: #3b82f6;
-  }
-
-  .purple::before {
-    background: #a855f7;
-  }
-
-  .red::before {
-    background: #ef4444;
-  }
-
-  .badge {
-    font-size: 12px;
-    font-weight: bold;
-    background: #f0f0ff;
-    color: #6A5ACD;
-    padding: 5px 12px;
-    border-radius: 20px;
-    display: inline-block;
-    margin-bottom: 10px;
-  }
-
-  .badge.purple {
-    color: #a855f7;
-    background: #f3e8ff;
-  }
-
-  .card h2 {
-    margin: 0;
-    font-size: 1.4em;
-    font-weight: bold;
-  }
-
-  .card p {
-    color: #555;
-    margin: 8px 0 15px;
-  }
-
-  .validity {
-    display: flex;
-    align-items: center;
-    font-size: 14px;
-    color: #5f5ee7;
-  }
-
-  .validity.purple {
-    color: #a855f7;
-  }
-
-  .validity.red {
-    color: #ef4444;
-  }
-
-  .validity i {
-    margin-right: 6px;
-  }
-
-  .buy-button {
-    margin-top: 16px;
-    display: block;
-    width: 100%;
-    padding: 12px;
-    font-weight: bold;
-    font-size: 1em;
-    text-align: center;
-    text-decoration: none;
-    color: white;
-    border-radius: 8px;
-    background-image: linear-gradient(to right, #6a5af9, #1d4ed8);
-    border: none;
-    cursor: pointer;
-  }
-
-  .buy-button.purple {
-    background-image: linear-gradient(to right, #8e2de2, #4a00e0);
-  }
-
-  .buy-button.red {
-    background-image: linear-gradient(to right, #f43f5e, #ec4899);
-  }
-
-  .logo {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    width: 40px;
-    height: 40px;
-    object-fit: contain;
-  }
-</style>
-
-<div class="card-container">
-
-  <!-- 22GB MOST POPULAR -->
-  <div class="card blue">
-    <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" class="logo" alt="Quicktel Logo">
-    <div class="badge">MOST POPULAR</div>
-    <h2>🎉 22GB Ksh. 500 🎉</h2>
-    <p>Heavy data package for 30 days</p>
-    <div class="validity"><i class="fa fa-clock-o"></i> 30 days validity</div>
-    <a href="self.html?product_name=22GB&amount=500&product_id=1">
-      <button class="buy-button">Buy Now →</button>
-    </a>
-  </div>
-
-  <!-- 40GB BEST VALUE -->
-  <div class="card purple">
-    <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" class="logo" alt="Quicktel Logo">
-    <div class="badge purple">BEST VALUE</div>
-    <h2>🎉 40GB Ksh. 950 🎉</h2>
-    <p>Massive monthly bundle</p>
-    <div class="validity purple"><i class="fa fa-clock-o"></i> 30 days validity</div>
-    <a href="self.html?product_name=40GB&amount=950&product_id=2">
-      <button class="buy-button purple">Buy Now →</button>
-    </a>
-  </div>
-
-  <!-- 800 MINS -->
-  <div class="card red">
-    <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" class="logo" alt="Quicktel Logo">
-    <h2>☎️ 800 MINUTES Ksh. 300</h2>
-    <p>Call time package (valid 30 days)</p>
-    <div class="validity red"><i class="fa fa-clock-o"></i> 30 days validity</div>
-    <a href="self.html?product_name=800MINS&amount=300&product_id=3">
-      <button class="buy-button red">Buy Now →</button>
-    </a>
-  </div>
-
-</div>
-
-<!-- Font Awesome for clock icon -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-
-
-    <footer>
-        <p>© 2025 Quicktel Bundles. All Rights Reserved.</p>
-        <p>
-            <a href="terms.html">Terms & Conditions</a> |
-            <a href="privacy.html">Privacy Policy</a> |
-            <a href="https://wa.me/254729952483" target="_blank">Support</a>
-        </p>
-    </footer>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Quicktel Offers</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -2281,22 +1827,15 @@
       padding-inline: 5%;
     }
 
-    .card-container a {
-      text-decoration: none;
-    }
-
     .card {
       position: relative;
       background: white;
-      color: #111;
       padding: 20px 25px;
       border-radius: 16px;
       margin-bottom: 24px;
       box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-      overflow: hidden;
       max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
+      margin-inline: auto;
     }
 
     .card::before {
@@ -2306,48 +1845,17 @@
       left: 0;
       width: 6px;
       height: 100%;
-      border-top-left-radius: 16px;
-      border-bottom-left-radius: 16px;
+      border-radius: 16px 0 0 16px;
     }
 
-    .blue::before {
-      background: #3b82f6;
-    }
+    .blue::before { background: #3b82f6; }
+    .purple::before { background: #a855f7; }
+    .red::before { background: #ef4444; }
 
-    .purple::before {
-      background: #a855f7;
-    }
+    .card h2 { margin: 0; font-size: 1.4em; font-weight: bold; }
+    .card p { margin: 6px 0 10px; color: #555; }
 
-    .red::before {
-      background: #ef4444;
-    }
-
-    .badge {
-      font-size: 12px;
-      font-weight: bold;
-      background: #f0f0ff;
-      color: #6A5ACD;
-      padding: 5px 12px;
-      border-radius: 20px;
-      display: inline-block;
-      margin-bottom: 10px;
-    }
-
-    .badge.purple {
-      color: #a855f7;
-      background: #f3e8ff;
-    }
-
-    .card h2 {
-      margin: 0;
-      font-size: 1.4em;
-      font-weight: bold;
-    }
-
-    .card p {
-      margin: 6px 0 10px;
-      color: #555;
-    }
+    .price { font-weight: bold; color: #1d4ed8; margin: 6px 0; }
 
     .validity {
       display: flex;
@@ -2357,17 +1865,9 @@
       margin: 5px 0;
     }
 
-    .validity.purple {
-      color: #a855f7;
-    }
-
-    .validity.red {
-      color: #ef4444;
-    }
-
-    .validity i {
-      margin-right: 6px;
-    }
+    .validity.purple { color: #a855f7; }
+    .validity.red { color: #ef4444; }
+    .validity i { margin-right: 6px; }
 
     .buy-button {
       margin-top: 12px;
@@ -2401,63 +1901,179 @@
       object-fit: contain;
     }
 
-    .price {
+    .phone-input-popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .phone-box {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 360px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      text-align: center;
+      animation: slideToCenter 0.4s ease-out forwards;
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+
+    @keyframes slideToCenter {
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .phone-box input {
+      width: 100%;
+      padding: 12px;
+      font-size: 1em;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    .phone-box button {
+      margin-top: 14px;
+      padding: 12px;
+      width: 100%;
+      font-size: 1em;
+      background: #1d4ed8;
+      color: white;
+      border: none;
+      border-radius: 8px;
       font-weight: bold;
-      color: #1d4ed8;
-      font-size: 1.1em;
-      margin-top: 4px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <div class="card-container">
+<div class="card-container">
 
-    <!-- 22GB -->
-    <div class="card blue">
-      <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"
-           class="logo" alt="Quicktel Logo">
-      <div class="badge">MOST POPULAR</div>
-      <h2>22GB Data Bundle</h2>
-      <div class="validity"><i class="fa fa-clock-o"></i> Valid for 30 days</div>
-      <p>Heavy data package perfect for streaming and downloads.</p>
-      <div class="price">KES 500</div>
-      <a href="self.html?product_name=22GB&amount=500&product_id=1">
-        <button class="buy-button">Buy Now →</button>
-      </a>
-    </div>
-
-    <!-- 40GB -->
-    <div class="card purple">
-      <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"
-           class="logo" alt="Quicktel Logo">
-      <div class="badge purple">BEST VALUE</div>
-      <h2>40GB Data Bundle</h2>
-      <div class="validity purple"><i class="fa fa-clock-o"></i> Valid for 30 days</div>
-      <p>Massive monthly bundle for heavy users and businesses.</p>
-      <div class="price">KES 950</div>
-      <a href="self.html?product_name=40GB&amount=950&product_id=2">
-        <button class="buy-button purple">Buy Now →</button>
-      </a>
-    </div>
-
-    <!-- 800 Minutes -->
-    <div class="card red">
-      <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"
-           class="logo" alt="Quicktel Logo">
-      <h2>800 MINUTES Voice</h2>
-      <div class="validity red"><i class="fa fa-clock-o"></i> Valid for 30 days</div>
-      <p>Talk longer with this affordable monthly voice package.</p>
-      <div class="price">KES 300</div>
-      <a href="self.html?product_name=800MINS&amount=300&product_id=3">
-        <button class="buy-button red">Buy Now →</button>
-      </a>
-    </div>
-
+  <!-- 22GB -->
+  <div class="card blue">
+    <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"
+         class="logo" alt="Quicktel Logo">
+    <h2>22GB Data Bundle</h2>
+    <div class="price">Price: KES 500</div>
+    <p>Heavy data package perfect for streaming and downloads.</p>
+    <div class="validity"><i class="fa fa-clock-o"></i> Valid for 30 days</div>
+    <button class="buy-button" onclick="openPhonePopup('22GB Data Bundle', 500)">Buy Now →</button>
   </div>
+
+  <!-- 40GB -->
+  <div class="card purple">
+    <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"
+         class="logo" alt="Quicktel Logo">
+    <h2>40GB Data Bundle</h2>
+    <div class="price">Price: KES 950</div>
+    <p>Massive monthly bundle for heavy users and businesses.</p>
+    <div class="validity purple"><i class="fa fa-clock-o"></i> Valid for 30 days</div>
+    <button class="buy-button purple" onclick="openPhonePopup('40GB Data Bundle', 950)">Buy Now →</button>
+  </div>
+
+  <!-- 800 Minutes -->
+  <div class="card red">
+    <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"
+         class="logo" alt="Quicktel Logo">
+    <h2>800 MINUTES Voice</h2>
+    <div class="price">Price: KES 300</div>
+    <p>Talk longer with this affordable monthly voice package.</p>
+    <div class="validity red"><i class="fa fa-clock-o"></i> Valid for 30 days</div>
+    <button class="buy-button red" onclick="openPhonePopup('800 MINUTES Voice', 300)">Buy Now →</button>
+  </div>
+
+</div>
+
+<!-- Phone Input Popup -->
+<div class="phone-input-popup" id="popup">
+  <div class="phone-box" id="phoneBox">
+    <h3>Enter Safaricom Number</h3>
+    <input type="tel" id="safaricomNumber" placeholder="e.g. 2547XXXXXXXX">
+    <button onclick="submitPayment()">Proceed to Pay</button>
+  </div>
+</div>
+
+<!-- Paystack Script -->
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script>
+  let currentProduct = '';
+  let currentAmount = 0;
+
+  function openPhonePopup(product, amount) {
+    currentProduct = product;
+    currentAmount = amount;
+    document.getElementById('safaricomNumber').value = '';
+    const popup = document.getElementById('popup');
+    const phoneBox = document.getElementById('phoneBox');
+
+    popup.style.display = 'flex';
+    phoneBox.style.animation = 'slideToCenter 0.4s ease-out forwards';
+  }
+
+  function submitPayment() {
+    const phone = document.getElementById('safaricomNumber').value.trim();
+    if (!/^2547\d{8}$/.test(phone)) {
+      alert("❌ Please enter a valid Safaricom number starting with 2547...");
+      return;
+    }
+
+    document.getElementById('popup').style.display = 'none';
+
+    const handler = PaystackPop.setup({
+      key: 'pk_live_3b95d82d975d8cd88f2e0059b1d6dca62c1db036',
+      email: phone + '@quicktel.ke',
+      amount: currentAmount * 100,
+      currency: 'KES',
+      ref: 'QT' + Math.floor(Math.random() * 1000000000),
+      label: currentProduct,
+      metadata: {
+        custom_fields: [
+          {
+            display_name: "Safaricom Number",
+            variable_name: "safaricom_number",
+            value: phone
+          }
+        ]
+      },
+      callback: function(response) {
+        alert("✅ Payment successful! Ref: " + response.reference);
+      },
+      onClose: function() {
+        alert("❌ Payment cancelled.");
+      }
+    });
+
+    handler.openIframe();
+  }
+</script>
 
 </body>
 </html>
+
+    <footer>
+        <p>© 2025 Quicktel Bundles. All Rights Reserved.</p>
+        <p>
+            <a href="terms.html">Terms & Conditions</a> |
+            <a href="privacy.html">Privacy Policy</a> |
+            <a href="https://wa.me/254729952483" target="_blank">Support</a>
+        </p>
+    </footer>
 
     <script src="https://js.paystack.co/v1/inline.js"></script>
     <script>
