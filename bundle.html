@@ -4,26 +4,25 @@
   <meta charset="UTF-8">
   <title>Quicktel Offers</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Paystack Script -->
   <script src="https://js.paystack.co/v1/inline.js"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f3f4f6;
       margin: 0;
-      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f9fafb;
     }
 
     .category-title {
-      font-size: 20px;
+      font-size: 22px;
       font-weight: bold;
-      margin: 20px 16px 10px;
+      margin: 30px 16px 10px;
       color: #111827;
-      background: linear-gradient(90deg, #3b82f6, #9333ea, #10b981);
-      background-size: 300% 300%;
+      text-align: left;
+      animation: gradientText 5s ease infinite;
+      background: linear-gradient(270deg, #06b6d4, #3b82f6, #9333ea);
+      background-size: 600% 600%;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: gradientText 6s ease infinite;
     }
 
     @keyframes gradientText {
@@ -45,14 +44,15 @@
       box-shadow: 0 6px 12px rgba(0,0,0,0.08);
       padding: 20px;
       text-align: center;
-      position: relative;
+      color: #111;
     }
 
-    .logo {
+    .bundle-card img.logo {
+      display: block;
+      margin: 0 auto 12px;
       width: 60px;
       height: 60px;
       object-fit: contain;
-      margin: 0 auto 12px;
     }
 
     .bundle-title {
@@ -98,7 +98,6 @@
     .self-button { background: #10b981; }
     .others-button { background: #3b82f6; }
 
-    /* Popup */
     .phone-input-popup {
       display: none;
       position: fixed;
@@ -119,6 +118,7 @@
       animation: slideToCenter 0.4s ease-out forwards;
       transform: translateY(-100%);
       opacity: 0;
+      text-align: center;
     }
 
     @keyframes slideToCenter {
@@ -129,19 +129,12 @@
     .offer-title {
       font-size: 1.2em;
       font-weight: bold;
+      margin-bottom: 12px;
       background: linear-gradient(270deg, #06b6d4, #3b82f6, #9333ea);
       background-size: 600% 600%;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: gradientText 4s ease infinite;
-      text-align: center;
-      margin-bottom: 12px;
-    }
-
-    .phone-box h3 {
-      font-size: 1em;
-      text-align: center;
-      margin-bottom: 10px;
+      animation: gradientText 5s ease infinite;
     }
 
     .phone-box input {
@@ -167,8 +160,8 @@
 </head>
 <body>
 
-<!-- Categories -->
-<div class="category-title">Daily Bundles</div>
+<!-- Daily Bundles -->
+<div class="category-title">Daily Bundles • <small style="font-size: 12px">Add More</small></div>
 <div class="bundle-container">
   <div class="bundle-card">
     <img src="https://via.placeholder.com/60x60?text=QUICKTEL" class="logo" alt="Quicktel Logo" />
@@ -193,7 +186,11 @@
       <button class="others-button" onclick="buyOthers('200MB Daily', 15)">Others</button>
     </div>
   </div>
+</div>
 
+<!-- Weekly Bundles -->
+<div class="category-title">Weekly Bundles • <small style="font-size: 12px">Add More</small></div>
+<div class="bundle-container">
   <div class="bundle-card">
     <img src="https://via.placeholder.com/60x60?text=QUICKTEL" class="logo" alt="Quicktel Logo" />
     <div class="bundle-title">5GB Weekly</div>
@@ -207,13 +204,13 @@
   </div>
 </div>
 
-<!-- Phone Input Popup -->
-<div class="phone-input-popup" id="popup" onclick="handleOutsideClick(event)">
+<!-- POPUP -->
+<div class="phone-input-popup" id="popup">
   <div class="phone-box" id="phoneBox">
-    <div class="offer-title" id="offerTitle">Offer - KES</div>
+    <div class="offer-title" id="offerTitle"></div>
     <h3 id="popupInstruction">Enter Safaricom Number</h3>
-    <input type="tel" id="input1" placeholder="Payer Number e.g. 2547XXXXXXXX">
-    <input type="tel" id="input2" placeholder="Recipient Number e.g. 2547XXXXXXXX" style="display:none">
+    <input type="tel" id="input1" placeholder="Payer: 2547XXXXXXXX">
+    <input type="tel" id="input2" placeholder="Recipient: 2547XXXXXXXX" style="display:none">
     <button onclick="submitPayment()">Proceed to Pay</button>
   </div>
 </div>
@@ -225,74 +222,66 @@
     offer = name;
     amount = price;
     forOthers = false;
-    showPopup("Enter Safaricom Number", false);
+    document.getElementById("offerTitle").textContent = `${offer} - KES ${amount}`;
+    document.getElementById("popupInstruction").textContent = "Enter Safaricom Number";
+    document.getElementById("input1").placeholder = "2547XXXXXXXX";
+    document.getElementById("input2").style.display = "none";
+    document.getElementById("input1").value = "";
+    document.getElementById("popup").style.display = "flex";
   }
 
   function buyOthers(name, price) {
     offer = name;
     amount = price;
     forOthers = true;
-    showPopup("Enter Payer & Recipient Numbers", true);
-  }
-
-  function showPopup(instruction, showSecondInput) {
     document.getElementById("offerTitle").textContent = `${offer} - KES ${amount}`;
-    document.getElementById("popupInstruction").textContent = instruction;
+    document.getElementById("popupInstruction").textContent = "Enter Payer & Recipient Numbers";
+    document.getElementById("input1").placeholder = "Payer: 2547XXXXXXXX";
+    document.getElementById("input2").placeholder = "Recipient: 2547XXXXXXXX";
+    document.getElementById("input2").style.display = "block";
     document.getElementById("input1").value = "";
     document.getElementById("input2").value = "";
-    document.getElementById("input2").style.display = showSecondInput ? "block" : "none";
     document.getElementById("popup").style.display = "flex";
   }
 
-  function handleOutsideClick(event) {
-    const popup = document.getElementById("phoneBox");
-    if (!popup.contains(event.target)) {
+  window.addEventListener("click", function(e) {
+    const box = document.getElementById("phoneBox");
+    if (!box.contains(e.target)) {
       document.getElementById("popup").style.display = "none";
     }
-  }
+  });
 
   function submitPayment() {
-    const phone1 = document.getElementById("input1").value.trim();
-    const phone2 = document.getElementById("input2").value.trim();
+    const num1 = document.getElementById("input1").value.trim();
+    const num2 = document.getElementById("input2").value.trim();
     const valid = /^2547\d{8}$/;
-
-    if (!valid.test(phone1) || (forOthers && !valid.test(phone2))) {
-      alert("❌ Enter valid number(s) starting with 2547...");
+    if (!valid.test(num1) || (forOthers && !valid.test(num2))) {
+      alert("Please enter valid Safaricom number(s) starting with 2547...");
       return;
     }
-
-    const email = phone1 + "@quicktel.ke";
-    const ref = "QT" + Math.floor(Math.random() * 1000000000);
-
-    PaystackPop.setup({
+    const email = num1 + "@quicktel.ke";
+    const handler = PaystackPop.setup({
       key: 'pk_live_3b95d82d975d8cd88f2e0059b1d6dca62c1db036',
       email: email,
       amount: amount * 100,
-      currency: "KES",
-      ref: ref,
+      currency: 'KES',
+      ref: 'QT' + Math.floor(Math.random() * 1000000000),
       label: offer,
       metadata: {
         custom_fields: [
-          {
-            display_name: "Payer",
-            variable_name: "payer_number",
-            value: phone1
-          },
-          ...(forOthers ? [{
-            display_name: "Recipient",
-            variable_name: "recipient_number",
-            value: phone2
-          }] : [])
+          { display_name: "Payer Number", variable_name: "payer", value: num1 },
+          ...(forOthers ? [{ display_name: "Recipient Number", variable_name: "recipient", value: num2 }] : [])
         ]
       },
       callback: function(response) {
         alert("✅ Payment successful! Ref: " + response.reference);
-        document.getElementById("popup").style.display = "none";
       },
       onClose: function() {
         alert("❌ Payment cancelled.");
       }
-    }).openIframe();
+    });
+    handler.openIframe();
+    document.getElementById("popup").style.display = "none";
   }
 </script>
 </body>
