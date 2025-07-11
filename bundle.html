@@ -1,104 +1,162 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Daily Bundles</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <title>Quicktel Offers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f9f9f9;
       margin: 0;
-      padding: 0;
-    }
-
-    h1 {
-      text-align: center;
-      margin-top: 30px;
-      color: #333;
-    }
-
-    .grid {
+      padding: 20px 0;
+      background-color: #f3f4f6;
+    }.card-container {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2 columns */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
   padding: 20px;
-  max-width: 900px;
-  margin: auto;
-    }
+}
 
-    .card {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      text-align: center;
-    }
+.card {
+  position: relative;
+  background: #111827;
+  color: white;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
 
-    .logo-card img {
-      width: 70px;
-      border-radius: 10px;
-      margin-bottom: 15px;
-    }
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 100%;
+  border-radius: 16px 0 0 16px;
+  background: #3b82f6;
+}
 
-    .bundle-title {
-      font-size: 1.3em;
-      font-weight: bold;
-      color: #2e7d32;
-      margin-bottom: 5px;
-    }
+.logo {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
 
-    .validity {
-      color: #666;
-      margin-bottom: 10px;
-    }
+.card h2 {
+  margin: 0;
+  font-size: 1.4em;
+}
 
-    .price {
-      font-size: 1.4em;
-      color: #d32f2f;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
+.price {
+  font-weight: bold;
+  color: #93c5fd;
+  margin: 8px 0;
+}
 
-    .buy-label {
-      color: #777;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
+.validity {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #60a5fa;
+}
 
-    .buttons {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
+.buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
 
-    .self-button, .others-button {
-      padding: 8px 16px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 1em;
-      font-weight: 600;
-    }
+.self-button, .others-button {
+  flex: 1;
+  padding: 10px;
+  font-weight: bold;
+  color: white;
+  background: #1d4ed8;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
 
-    .self-button {
-      background: #333;
-      color: #fff;
-    }
+.popup-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
 
-    .others-button {
-      background: #0288d1;
-      color: #fff;
-    }
+.popup-box {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 360px;
+  animation: slideToCenter 0.4s ease-out forwards;
+  transform: translateY(-100%);
+  opacity: 0;
+  text-align: center;
+}
+
+@keyframes slideToCenter {
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.popup-box input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.popup-box button {
+  padding: 12px;
+  width: 100%;
+  font-size: 1em;
+  background: #1d4ed8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
   </style>
 </head>
-<body>
-
-  <h1>Daily Bundles</h1>
-
-  <div class="grid">
-    <div class="card">
+<body><div class="card-container">
+  <div class="card">
+    <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" class="logo">
+    <h2>1GB Daily</h2>
+    <div class="price">KES 55</div>
+    <div class="validity"><i class="fa fa-clock-o"></i> Valid: 24 Hours</div>
+    <div class="buttons">
+      <button class="self-button" onclick="openPopup('self')">Self</button>
+      <button class="others-button" onclick="openPopup('others')">Others</button>
+    </div>
+  </div>
+  <div class="card">
+    <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" class="logo">
+    <h2>500MB Daily</h2>
+    <div class="price">KES 30</div>
+    <div class="validity"><i class="fa fa-clock-o"></i> Valid: 24 Hours</div>
+    <div class="buttons">
+      <button class="self-button" onclick="openPopup('self')">Self</button>
+      <button class="others-button" onclick="openPopup('others')">Others</button>
+    </div>
+  </div>
+ <div class="card">
       <div class="logo-card">
         <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" />
       </div>
@@ -153,19 +211,53 @@
         <button class="others-button" onclick="buyForOthers('1GB Daily', 55)">Others</button>
       </div>
     </div>
+  </div>  <!-- Add more cards as needed -->
+</div><!-- Popup --><div class="popup-overlay" id="popup" onclick="closePopup(event)">
+  <div class="popup-box" id="popupBox">
+    <h3 id="popupTitle">Enter Number</h3>
+    <div id="formFields"></div>
+    <button onclick="submitForm()">Proceed</button>
   </div>
+</div><script>
+  function openPopup(type) {
+    const popup = document.getElementById("popup");
+    const formFields = document.getElementById("formFields");
+    const popupTitle = document.getElementById("popupTitle");
 
-  <script>
-    function buySelf(bundle, price) {
-      alert(`Buying ${bundle} for KSh ${price} for self`);
-      // Add actual logic here
+    formFields.innerHTML = "";
+
+    if (type === 'self') {
+      popupTitle.textContent = "Enter Your Safaricom Number";
+      formFields.innerHTML = '<input type="tel" placeholder="2547XXXXXXXX" pattern="2547\\d{8}" required>';
+    } else {
+      popupTitle.textContent = "Enter Two Safaricom Numbers";
+      formFields.innerHTML = `
+        <input type="tel" placeholder="2547XXXXXXXX (1)" pattern="2547\\d{8}" required>
+        <input type="tel" placeholder="2547XXXXXXXX (2)" pattern="2547\\d{8}" required>
+      `;
     }
 
-    function buyForOthers(bundle, price) {
-      alert(`Buying ${bundle} for KSh ${price} for someone else`);
-      // Add actual logic here
-    }
-  </script>
+    popup.style.display = "flex";
+  }
 
-</body>
+  function closePopup(event) {
+    const popupBox = document.getElementById("popupBox");
+    if (!popupBox.contains(event.target)) {
+      document.getElementById("popup").style.display = "none";
+    }
+  }
+
+  function submitForm() {
+    const inputs = document.querySelectorAll("#formFields input");
+    for (const input of inputs) {
+      const value = input.value.trim();
+      if (!/^2547\d{8}$/.test(value)) {
+        alert("❌ Invalid Safaricom number: " + value);
+        return;
+      }
+    }
+    alert("✅ Numbers validated: " + Array.from(inputs).map(i => i.value).join(", "));
+    document.getElementById("popup").style.display = "none";
+  }
+</script></body>
 </html>
