@@ -16,12 +16,11 @@
       font-weight: bold;
       margin: 20px 16px 10px;
       color: #111827;
+      animation: gradientText 4s ease infinite;
       background: linear-gradient(270deg, #06b6d4, #3b82f6, #9333ea);
       background-size: 600% 600%;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: gradientText 4s ease infinite;
-      text-align: center;
     }
 
     .card-container {
@@ -97,6 +96,7 @@
       background: #3b82f6;
     }
 
+    /* Popup */
     .phone-input-popup {
       display: none;
       position: fixed;
@@ -117,11 +117,18 @@
       animation: slideToCenter 0.4s ease-out forwards;
       transform: translateY(-100%);
       opacity: 0;
+      position: relative;
     }
 
     @keyframes slideToCenter {
       from { transform: translateY(-100%); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
+    }
+
+    .phone-box h3 {
+      margin-bottom: 10px;
+      font-size: 1.1em;
+      color: #111827;
     }
 
     .offer-title {
@@ -140,13 +147,6 @@
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
-    }
-
-    .phone-box h3 {
-      margin-bottom: 10px;
-      font-size: 1.1em;
-      color: #111827;
-      text-align: center;
     }
 
     .phone-box input {
@@ -172,12 +172,11 @@
 </head>
 <body>
 
+<!-- Daily Category -->
 <div class="category-title">Daily Bundles</div>
 <div class="card-container">
   <div class="card">
-    <div class="logo-card">
-      <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg">
-    </div>
+    <div class="logo-card"><img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"></div>
     <div class="bundle-title">200MB Daily</div>
     <div class="validity">Valid: 24 Hours</div>
     <div class="price">KSh 15</div>
@@ -189,23 +188,7 @@
   </div>
 
   <div class="card">
-    <div class="logo-card">
-      <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg">
-    </div>
-    <div class="bundle-title">500MB Daily</div>
-    <div class="validity">Valid: 24 Hours</div>
-    <div class="price">KSh 30</div>
-    <div class="buy-label">BUY FOR:</div>
-    <div class="buttons">
-      <button class="self-button" onclick="buySelf('500MB Daily', 30)">Self</button>
-      <button class="others-button" onclick="buyOthers('500MB Daily', 30)">Others</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="logo-card">
-      <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg">
-    </div>
+    <div class="logo-card"><img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"></div>
     <div class="bundle-title">1GB Daily</div>
     <div class="validity">Valid: 24 Hours</div>
     <div class="price">KSh 55</div>
@@ -218,7 +201,7 @@
 </div>
 
 <!-- Popup -->
-<div class="phone-input-popup" id="popup">
+<div class="phone-input-popup" id="popup" onclick="outsideClick(event)">
   <div class="phone-box" id="phoneBox">
     <div class="offer-title" id="offerTitle">Offer - KES</div>
     <h3 id="popupInstruction">Enter Safaricom Number</h3>
@@ -228,7 +211,7 @@
   </div>
 </div>
 
-<!-- Paystack Script -->
+<!-- Paystack -->
 <script src="https://js.paystack.co/v1/inline.js"></script>
 <script>
   let offer = '', amount = 0, forOthers = false;
@@ -258,43 +241,40 @@
     document.getElementById("popup").style.display = "flex";
   }
 
-  // Dismiss popup when clicking outside
-  window.addEventListener("click", function(e) {
+  function outsideClick(e) {
     const box = document.getElementById("phoneBox");
     if (!box.contains(e.target)) {
       document.getElementById("popup").style.display = "none";
     }
-  });
+  }
 
   function submitPayment() {
-    const num1 = document.getElementById("input1").value.trim();
-    const num2 = document.getElementById("input2").value.trim();
+    const phone1 = document.getElementById("input1").value.trim();
+    const phone2 = document.getElementById("input2").value.trim();
     const valid = /^2547\d{8}$/;
 
-    if (!valid.test(num1) || (forOthers && !valid.test(num2))) {
+    if (!valid.test(phone1) || (forOthers && !valid.test(phone2))) {
       alert("❌ Please enter valid Safaricom number(s) starting with 2547...");
       return;
     }
 
-    const email = (forOthers ? num1 : num1) + "@quicktel.ke";
+    document.getElementById("popup").style.display = "none";
 
     PaystackPop.setup({
       key: 'pk_live_3b95d82d975d8cd88f2e0059b1d6dca62c1db036',
-      email: email,
+      email: `${phone1}@quicktel.ke`,
       amount: amount * 100,
       currency: 'KES',
       ref: 'QT' + Math.floor(Math.random() * 1000000000),
-      label: offer,
       metadata: {
         custom_fields: [
-          { display_name: "Offer", value: offer },
-          { display_name: "Payer", value: num1 },
-          { display_name: "Recipient", value: forOthers ? num2 : num1 }
+          { display_name: "Payer", variable_name: "payer", value: phone1 },
+          ...(forOthers ? [{ display_name: "Recipient", variable_name: "recipient", value: phone2 }] : []),
+          { display_name: "Offer", variable_name: "offer", value: offer }
         ]
       },
       callback: function(response) {
         alert("✅ Payment successful! Ref: " + response.reference);
-        document.getElementById("popup").style.display = "none";
       },
       onClose: function() {
         alert("❌ Payment cancelled.");
