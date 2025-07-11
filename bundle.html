@@ -1,46 +1,171 @@
-<div class="buttons">  
-                        <button class="self-button" onclick="buySelf('1GB Daily', 55)">Self</button>  
-                        <button class="others-button" onclick="buyForOthers('1GB Daily', 55)">Others</button>  
-                    </div>  
-                </div>  
-               <div class="card">  
-<div class="logo-card"><img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"></div>  
-<div class="bundle-title">200MB Daily</div>  
-<div class="validity">Valid: 24 Hours</div>  
-<div class="price">KSh 15</div>  
-<div class="buy-label">BUY FOR:</div>  
-<div class="buttons">  
-    <button class="self-button" onclick="buySelf('200MB Daily', 15)">Self</button>  
-    <button class="others-button" onclick="buyForOthers('200MB Daily', 15)">Others</button>  
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Daily Bundles</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
 
-</div>  <div class="card">  
-    <div class="logo-card"><img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"></div>  
-    <div class="bundle-title">500MB Daily</div>  
-    <div class="validity">Valid: 24 Hours</div>  
-    <div class="price">KSh 30</div>  
-    <div class="buy-label">BUY FOR:</div>  
-    <div class="buttons">  
-        <button class="self-button" onclick="buySelf('500MB Daily', 30)">Self</button>  
-        <button class="others-button" onclick="buyForOthers('500MB Daily', 30)">Others</button>  
-    </div>  
-</div>  <div class="card">  
-    <div class="logo-card"><img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"></div>  
-    <div class="bundle-title">750MB Daily</div>  
-    <div class="validity">Valid: 24 Hours</div>  
-    <div class="price">KSh 40</div>  
-    <div class="buy-label">BUY FOR:</div>  
-    <div class="buttons">  
-        <button class="self-button" onclick="buySelf('750MB Daily', 40)">Self</button>  
-        <button class="others-button" onclick="buyForOthers('750MB Daily', 40)">Others</button>  
-    </div>  
-</div>  <div class="card">  
-    <div class="logo-card"><img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"></div>  
-    <div class="bundle-title">1GB Daily</div>  
-    <div class="validity">Valid: 24 Hours</div>  
-    <div class="price">KSh 55</div>  
-    <div class="buy-label">BUY FOR:</div>  
-    <div class="buttons">  
-        <button class="self-button" onclick="buySelf('1GB Daily', 55)">Self</button>  
-        <button class="others-button" onclick="buyForOthers('1GB Daily', 55)">Others</button>  
-    </div>  
+    h1 {
+      text-align: center;
+      margin-top: 30px;
+      color: #333;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      text-align: center;
+    }
+
+    .logo-card img {
+      width: 70px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+
+    .bundle-title {
+      font-size: 1.3em;
+      font-weight: bold;
+      color: #2e7d32;
+      margin-bottom: 5px;
+    }
+
+    .validity {
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    .price {
+      font-size: 1.4em;
+      color: #d32f2f;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .buy-label {
+      color: #777;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .self-button, .others-button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: 600;
+    }
+
+    .self-button {
+      background: #333;
+      color: #fff;
+    }
+
+    .others-button {
+      background: #0288d1;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Daily Bundles</h1>
+
+  <div class="grid">
+    <div class="card">
+      <div class="logo-card">
+        <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" />
+      </div>
+      <div class="bundle-title">200MB Daily</div>
+      <div class="validity">Valid: 24 Hours</div>
+      <div class="price">KSh 15</div>
+      <div class="buy-label">BUY FOR:</div>
+      <div class="buttons">
+        <button class="self-button" onclick="buySelf('200MB Daily', 15)">Self</button>
+        <button class="others-button" onclick="buyForOthers('200MB Daily', 15)">Others</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="logo-card">
+        <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" />
+      </div>
+      <div class="bundle-title">500MB Daily</div>
+      <div class="validity">Valid: 24 Hours</div>
+      <div class="price">KSh 30</div>
+      <div class="buy-label">BUY FOR:</div>
+      <div class="buttons">
+        <button class="self-button" onclick="buySelf('500MB Daily', 30)">Self</button>
+        <button class="others-button" onclick="buyForOthers('500MB Daily', 30)">Others</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="logo-card">
+        <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" />
+      </div>
+      <div class="bundle-title">750MB Daily</div>
+      <div class="validity">Valid: 24 Hours</div>
+      <div class="price">KSh 40</div>
+      <div class="buy-label">BUY FOR:</div>
+      <div class="buttons">
+        <button class="self-button" onclick="buySelf('750MB Daily', 40)">Self</button>
+        <button class="others-button" onclick="buyForOthers('750MB Daily', 40)">Others</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="logo-card">
+        <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" />
+      </div>
+      <div class="bundle-title">1GB Daily</div>
+      <div class="validity">Valid: 24 Hours</div>
+      <div class="price">KSh 55</div>
+      <div class="buy-label">BUY FOR:</div>
+      <div class="buttons">
+        <button class="self-button" onclick="buySelf('1GB Daily', 55)">Self</button>
+        <button class="others-button" onclick="buyForOthers('1GB Daily', 55)">Others</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function buySelf(bundle, price) {
+      alert(`Buying ${bundle} for KSh ${price} for self`);
+      // Add actual logic here
+    }
+
+    function buyForOthers(bundle, price) {
+      alert(`Buying ${bundle} for KSh ${price} for someone else`);
+      // Add actual logic here
+    }
+  </script>
+
+</body>
+</html>
