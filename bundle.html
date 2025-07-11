@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Quicktel Offers</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -13,37 +13,55 @@
     }
 
     .card-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      display: flex;
+      flex-wrap: wrap;
       gap: 20px;
-      padding: 0 20px;
+      justify-content: center;
     }
 
     .card {
       background: #111827;
       color: white;
       border-radius: 16px;
+      width: 280px;
       padding: 20px;
-      position: relative;
       box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+      position: relative;
     }
 
-    .card img {
+    .logo-card img {
+      width: 40px;
+      height: 40px;
       position: absolute;
       top: 16px;
       right: 16px;
-      width: 40px;
     }
 
-    .card h2 {
-      margin: 0 0 10px;
+    .bundle-title {
+      font-size: 1.2em;
+      font-weight: bold;
     }
 
-    .price, .validity {
-      margin-bottom: 10px;
+    .validity {
+      color: #60a5fa;
+      font-size: 14px;
+      margin: 6px 0;
+    }
+
+    .price {
+      font-weight: bold;
+      color: #93c5fd;
+      margin: 6px 0;
+    }
+
+    .buy-label {
+      margin-top: 10px;
+      color: #ccc;
+      font-size: 14px;
     }
 
     .buttons {
+      margin-top: 10px;
       display: flex;
       gap: 10px;
     }
@@ -51,34 +69,35 @@
     .self-button, .others-button {
       flex: 1;
       padding: 10px;
-      font-weight: bold;
       border: none;
       border-radius: 8px;
-      cursor: pointer;
-      background: #2563eb;
+      background: linear-gradient(to right, #2563eb, #1e3a8a);
       color: white;
+      cursor: pointer;
+      font-weight: bold;
     }
 
-    /* Popup */
-    .popup-overlay {
+    /* Popup styles */
+    .phone-input-popup {
       display: none;
       position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
       background: rgba(0,0,0,0.6);
+      z-index: 9999;
       justify-content: center;
       align-items: center;
-      z-index: 9999;
     }
 
-    .popup-box {
+    .phone-box {
       background: white;
-      padding: 24px;
       border-radius: 12px;
+      padding: 24px;
       width: 90%;
       max-width: 360px;
       text-align: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      animation: slideToCenter 0.4s ease-out forwards;
+      animation: slideToCenter 0.5s ease forwards;
       transform: translateY(-100%);
       opacity: 0;
     }
@@ -98,46 +117,44 @@
       font-size: 1.2em;
       font-weight: bold;
       margin-bottom: 8px;
-      color: #1d4ed8;
-      animation: fadeSlideDown 0.5s ease-out;
+      background: linear-gradient(270deg, #1e40af, #3b82f6, #60a5fa, #3b82f6, #1e40af);
+      background-size: 600% 600%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientShift 3s ease infinite;
     }
 
-    @keyframes fadeSlideDown {
-      0% {
-        opacity: 0;
-        transform: translateY(-8px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
     .popup-subtitle {
-      font-size: 1em;
       margin-bottom: 10px;
+      font-weight: bold;
+      font-size: 14px;
       color: #333;
     }
 
-    .popup-box input {
+    .phone-box input {
       width: 100%;
-      padding: 12px;
+      padding: 10px;
       font-size: 1em;
-      margin-top: 6px;
       margin-bottom: 10px;
-      border-radius: 6px;
       border: 1px solid #ccc;
+      border-radius: 8px;
     }
 
-    .popup-box button {
-      padding: 12px;
+    .phone-box button {
       width: 100%;
-      font-weight: bold;
+      padding: 12px;
       font-size: 1em;
       background: #1d4ed8;
       color: white;
       border: none;
       border-radius: 8px;
+      font-weight: bold;
       cursor: pointer;
     }
   </style>
@@ -145,69 +162,76 @@
 <body>
 
 <div class="card-container">
-  <!-- Sample Offer -->
+  <!-- Example Cards -->
   <div class="card">
-    <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" alt="Logo">
-    <h2>1GB Daily</h2>
+    <div class="logo-card"><img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"></div>
+    <div class="bundle-title">1GB Daily</div>
     <div class="validity">Valid: 24 Hours</div>
     <div class="price">KES 55</div>
+    <div class="buy-label">BUY FOR:</div>
     <div class="buttons">
-      <button class="self-button" onclick="showPopup('1GB Daily – KES 55', false)">Self</button>
-      <button class="others-button" onclick="showPopup('1GB Daily – KES 55', true)">Others</button>
+      <button class="self-button" onclick="openPopup('1GB Daily – KES 55', 'self')">Self</button>
+      <button class="others-button" onclick="openPopup('1GB Daily – KES 55', 'others')">Others</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="logo-card"><img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg"></div>
+    <div class="bundle-title">500MB Daily</div>
+    <div class="validity">Valid: 24 Hours</div>
+    <div class="price">KES 30</div>
+    <div class="buy-label">BUY FOR:</div>
+    <div class="buttons">
+      <button class="self-button" onclick="openPopup('500MB Daily – KES 30', 'self')">Self</button>
+      <button class="others-button" onclick="openPopup('500MB Daily – KES 30', 'others')">Others</button>
     </div>
   </div>
 </div>
 
 <!-- Popup -->
-<div class="popup-overlay" id="popup" onclick="hidePopup(event)">
-  <div class="popup-box" id="popupBox">
-    <div id="popupTitle" class="popup-title">Offer – Amount</div>
+<div class="phone-input-popup" id="popup" onclick="dismissPopup(event)">
+  <div class="phone-box" id="phoneBox">
+    <div class="popup-title" id="popupTitle">1GB Daily – KES 55</div>
     <div class="popup-subtitle">Enter Safaricom Number</div>
-    <input type="tel" id="number1" placeholder="2547XXXXXXXX" />
-    <input type="tel" id="number2" placeholder="2547XXXXXXXX" style="display:none" />
-    <button onclick="submit()">Proceed to Pay</button>
+    <input type="tel" id="number1" placeholder="2547XXXXXXXX">
+    <input type="tel" id="number2" placeholder="2547XXXXXXXX" style="display: none;">
+    <button onclick="submitPopup()">Proceed</button>
   </div>
 </div>
 
 <script>
-  function showPopup(offerText, isOthers) {
-    document.getElementById('popup').style.display = 'flex';
-    const title = document.getElementById('popupTitle');
-    title.textContent = offerText;
-    title.classList.remove('popup-title');
-    void title.offsetWidth; // reflow
-    title.classList.add('popup-title');
-
+  function openPopup(offer, type) {
+    document.getElementById('popupTitle').textContent = offer;
     document.getElementById('number1').value = '';
     document.getElementById('number2').value = '';
-    document.getElementById('number2').style.display = isOthers ? 'block' : 'none';
+    document.getElementById('number2').style.display = type === 'others' ? 'block' : 'none';
+    document.getElementById('popup').style.display = 'flex';
   }
 
-  function hidePopup(event) {
-    const box = document.getElementById('popupBox');
+  function dismissPopup(event) {
+    const box = document.getElementById('phoneBox');
     if (!box.contains(event.target)) {
       document.getElementById('popup').style.display = 'none';
     }
   }
 
-  function submit() {
-    const n1 = document.getElementById('number1').value.trim();
-    const n2 = document.getElementById('number2').style.display === 'block'
+  function submitPopup() {
+    const num1 = document.getElementById('number1').value.trim();
+    const num2 = document.getElementById('number2').style.display === 'block'
       ? document.getElementById('number2').value.trim()
       : null;
 
-    if (!/^2547\d{8}$/.test(n1)) {
-      alert("❌ Enter a valid number 1 (format: 2547XXXXXXXX)");
+    if (!/^2547\d{8}$/.test(num1)) {
+      alert("Enter a valid Safaricom number for payer.");
+      return;
+    }
+    if (num2 && !/^2547\d{8}$/.test(num2)) {
+      alert("Enter a valid Safaricom number for recipient.");
       return;
     }
 
-    if (n2 && !/^2547\d{8}$/.test(n2)) {
-      alert("❌ Enter a valid number 2 (format: 2547XXXXXXXX)");
-      return;
-    }
-
-    alert("✅ Numbers accepted. Proceeding...");
     document.getElementById('popup').style.display = 'none';
+    alert("✅ Proceeding with:\nPayer: " + num1 + (num2 ? "\nRecipient: " + num2 : ""));
   }
 </script>
 
