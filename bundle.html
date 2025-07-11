@@ -165,25 +165,90 @@
 </head>
 <body>
 
-<div class="card-container">
-  <!-- Example Card -->
-  <div class="card">
-    <div class="logo-card">
-      <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" alt="logo">
+  <div class="card-container">
+
+  <!-- Daily Bundles -->
+  <h2 class="category-title">📆 Daily Bundles</h2>
+  <div class="card-grid">
+    <!-- Insert daily cards here -->
+    <!-- Example: -->
+    <div class="card">
+      <div class="logo-card">
+        <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" alt="Logo">
+      </div>
+      <div class="bundle-title">100MB Daily</div>
+      <div class="validity">Valid: 24 Hours</div>
+      <div class="price">KSh 10</div>
+      <div class="buy-label">BUY FOR:</div>
+      <div class="buttons">
+        <button class="self-button" onclick="buySelf('100MB Daily', 10)">Self</button>
+        <button class="others-button" onclick="buyForOthers('100MB Daily', 10)">Others</button>
+      </div>
     </div>
-    <div class="bundle-title">200MB Daily</div>
-    <div class="validity">Valid: 24 Hours</div>
-    <div class="price">KSh 15</div>
-    <div class="buy-label">BUY FOR:</div>
-    <div class="buttons">
-      <button class="self-button" onclick="buySelf('200MB Daily', 15)">Self</button>
-      <button class="others-button" onclick="buyForOthers('200MB Daily', 15)">Others</button>
+
+    <!-- Repeat for 200MB, 500MB, 750MB, 1GB, 2GB -->
+  </div>
+
+  <!-- Weekly Bundles -->
+  <h2 class="category-title">🗓️ Weekly Bundles</h2>
+  <div class="card-grid">
+    <!-- 5GB Weekly -->
+    <div class="card">
+      <div class="logo-card"><img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" alt="Logo"></div>
+      <div class="bundle-title">5GB Weekly</div>
+      <div class="validity">Valid: 7 Days</div>
+      <div class="price">KSh 199</div>
+      <div class="buy-label">BUY FOR:</div>
+      <div class="buttons">
+        <button class="self-button" onclick="buySelf('5GB Weekly', 199)">Self</button>
+        <button class="others-button" onclick="buyForOthers('5GB Weekly', 199)">Others</button>
+      </div>
+    </div>
+
+    <!-- 10GB Weekly -->
+    <div class="card">
+      <div class="logo-card"><img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" alt="Logo"></div>
+      <div class="bundle-title">10GB Weekly</div>
+      <div class="validity">Valid: 7 Days</div>
+      <div class="price">KSh 350</div>
+      <div class="buy-label">BUY FOR:</div>
+      <div class="buttons">
+        <button class="self-button" onclick="buySelf('10GB Weekly', 350)">Self</button>
+        <button class="others-button" onclick="buyForOthers('10GB Weekly', 350)">Others</button>
+      </div>
     </div>
   </div>
 
-  <!-- Repeat with more cards... -->
-  <!-- Add your other 5 cards here with different data -->
+  <!-- Monthly Bundles -->
+  <h2 class="category-title">📅 Monthly Bundles</h2>
+  <div class="card-grid">
+    <!-- 15GB Monthly -->
+    <div class="card">
+      <div class="logo-card"><img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" alt="Logo"></div>
+      <div class="bundle-title">15GB Monthly</div>
+      <div class="validity">Valid: 30 Days</div>
+      <div class="price">KSh 450</div>
+      <div class="buy-label">BUY FOR:</div>
+      <div class="buttons">
+        <button class="self-button" onclick="buySelf('15GB Monthly', 450)">Self</button>
+        <button class="others-button" onclick="buyForOthers('15GB Monthly', 450)">Others</button>
+      </div>
+    </div>
 
+    <!-- 30GB Monthly -->
+    <div class="card">
+      <div class="logo-card"><img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" alt="Logo"></div>
+      <div class="bundle-title">30GB Monthly</div>
+      <div class="validity">Valid: 30 Days</div>
+      <div class="price">KSh 850</div>
+      <div class="buy-label">BUY FOR:</div>
+      <div class="buttons">
+        <button class="self-button" onclick="buySelf('30GB Monthly', 850)">Self</button>
+        <button class="others-button" onclick="buyForOthers('30GB Monthly', 850)">Others</button>
+      </div>
+    </div>
+  </div>
+</div>
 </div>
 
 <!-- Popup -->
