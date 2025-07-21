@@ -1876,26 +1876,43 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Quicktel Embed</title>
+  <title>Auto Horizontal Scroll Iframe</title>
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+    .iframe-wrapper {
+      width: 100vw;
+      height: 600px;
+      overflow-x: scroll;
+      overflow-y: hidden;
+      white-space: nowrap;
     }
+
     iframe {
-      width: 420px;
-      height: 700px;
+      height: 100%;
+      width: 2000px; /* make this bigger than viewport to enable scroll */
       border: none;
-      overflow: hidden;
     }
   </style>
 </head>
 <body>
-  <iframe src="https://quicktel-bundles.onrender.com/quicktel.html"></iframe>
+  <div class="iframe-wrapper" id="scroller">
+    <iframe src="https://quicktel-bundles.onrender.com/quicktel.html"></iframe>
+  </div>
+
+  <script>
+    const scroller = document.getElementById('scroller');
+    let scrollAmount = 0;
+
+    function autoScroll() {
+      scrollAmount += 1;
+      if (scrollAmount >= scroller.scrollWidth - scroller.clientWidth) {
+        scrollAmount = 0;
+      }
+      scroller.scrollLeft = scrollAmount;
+      requestAnimationFrame(autoScroll);
+    }
+
+    autoScroll();
+  </script>
 </body>
 </html>
 
