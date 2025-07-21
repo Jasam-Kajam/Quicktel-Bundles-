@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Package Cards</title>
+  <title>Wide Package Cards</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -15,7 +15,7 @@
 
     .card {
       width: 100%;
-      max-width: 400px; /* Responsive: max width on desktop */
+      max-width: 800px; /* Doubled width */
       background: #fff;
       border-radius: 20px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
@@ -48,13 +48,13 @@
     }
 
     .card h2 {
-      font-size: 26px;
+      font-size: 28px;
       margin: 60px 0 10px;
       color: #1e1e1e;
     }
 
     .card p {
-      font-size: 16px;
+      font-size: 18px;
       color: #555;
       margin-bottom: 20px;
     }
@@ -62,7 +62,7 @@
     .validity {
       display: flex;
       align-items: center;
-      font-size: 14px;
+      font-size: 15px;
       color: #777;
       margin-bottom: 25px;
     }
@@ -73,8 +73,8 @@
 
     .card button {
       width: 100%;
-      padding: 14px;
-      font-size: 16px;
+      padding: 16px;
+      font-size: 17px;
       font-weight: bold;
       border: none;
       border-radius: 10px;
@@ -111,6 +111,25 @@
 
     .talk-time button {
       background: linear-gradient(90deg, #f43f5e, #d946ef);
+    }
+
+    @media (max-width: 850px) {
+      .card {
+        padding: 25px 20px;
+      }
+
+      .card h2 {
+        font-size: 24px;
+      }
+
+      .card p {
+        font-size: 16px;
+      }
+
+      .card button {
+        font-size: 16px;
+        padding: 14px;
+      }
     }
   </style>
 </head>
