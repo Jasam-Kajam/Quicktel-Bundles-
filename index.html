@@ -1683,9 +1683,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quicktel Offers</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       margin: 0;
@@ -1694,38 +1694,42 @@
       color: #1e293b;
     }
 
+    header, main {
+      max-width: 1000px;
+      margin: auto;
+      padding: 20px;
+    }
+
     h2 {
       text-align: center;
-      margin: 20px 0;
+      margin: 30px 0 20px;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 15px;
-      padding: 0 20px;
-      max-width: 800px;
-      margin: auto;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 16px;
+      padding: 0 10px;
     }
 
     .card {
       background: white;
-      border-radius: 10px;
+      border-radius: 12px;
       padding: 20px;
       text-align: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-      transition: transform 0.2s;
       text-decoration: none;
-      color: #111;
+      color: inherit;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      transition: transform 0.2s ease;
     }
 
     .card:hover {
-      transform: translateY(-3px);
+      transform: translateY(-5px);
     }
 
     .card-icon {
-      font-size: 30px;
-      margin-bottom: 10px;
+      font-size: 32px;
+      margin-bottom: 8px;
     }
 
     .offer-box {
@@ -1743,21 +1747,21 @@
       color: #1d4ed8;
       font-size: 12px;
       padding: 4px 10px;
-      border-radius: 20px;
+      border-radius: 9999px;
       font-weight: bold;
-      margin-bottom: 10px;m
+      margin-bottom: 10px;
     }
 
     .offer-title {
       font-size: 18px;
       font-weight: bold;
-      margin: 5px 0;
+      margin-top: 5px;
     }
 
     .offer-desc {
       font-size: 14px;
       color: #555;
-      margin-bottom: 10px;
+      margin: 10px 0;
     }
 
     .offer-validity {
@@ -1765,96 +1769,103 @@
       color: #475569;
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
       margin-bottom: 15px;
     }
 
     .buy-btn {
-      display: inline-block;
       background: linear-gradient(to right, #3b82f6, #6366f1);
       color: white;
       text-align: center;
       padding: 12px;
-      border: none;
       width: 100%;
+      border: none;
       border-radius: 10px;
-      cursor: pointer;
       font-weight: bold;
       font-size: 14px;
+      cursor: pointer;
       text-decoration: none;
+      display: inline-block;
     }
 
     .buy-btn:hover {
-      opacity: 0.9;
+      opacity: 0.95;
     }
-iframe {
-  width: 100%;
-  max-width: 100%;
-  height: auto;
-  min-height: 600px; /* fallback height */
-  border: none;
-  border-radius: 6px;
-}
-.responsive-iframe-container {
-  position: relative;
-  width: 100%;
-  padding-bottom: 56.25%; /* 16:9 ratio */
-  height: 0;
-  overflow: hidden;
-  border-radius: 6px;
-}
 
-.responsive-iframe-container iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border: none;
-  border-radius: 6px;
-}
+    .responsive-iframe-container {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+
+    .responsive-iframe-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 8px;
+    }
   </style>
 </head>
 <body>
 
-  <h2>Purchase More Offers</h2>
+  <header>
+    <h2>Purchase More Offers</h2>
+  </header>
 
-  <div class="grid">
-    <a href="special.html" class="card">
-      <div class="card-icon">💡</div>
-      <div>SPECIAL OFFERS</div>
-    </a>
-    <a href="https://bingwasokoni.co.ke/?ref=2PHFU3FB" class="card">
-      <div class="card-icon">📦</div>
-      <div>BINGWA BUNDLES</div>
-    </a>
-    <a href="airtel.html" class="card">
-      <div class="card-icon">☁️</div>
-      <div>AIRTEL DATA</div>
-    </a>
-    <a href="bulk.html" class="card">
-      <div class="card-icon">🧃</div>
-      <div>BULK BUNDLES</div>
-    </a>
-    <a href="allinone.html" class="card">
-      <div class="card-icon">🟢</div>
-      <div>ALL IN ONE</div>
-    </a>
-    <a href="sms.html" class="card">
-      <div class="card-icon">💬</div>
-      <div>SMS OFFERS</div>
-    </a>
-    <a href="minutes.html" class="card">
-      <div class="card-icon">📞</div>
-      <div>MINUTES OFFERS</div>
-    </a>
-    <a href="monthly.html" class="card">
-      <div class="card-icon">🗓️</div>
-      <div>GO MONTHLY BUNDLES</div>
-    </a>
-  </div>
+  <main>
+    <section class="grid">
+      <a href="special.html" class="card">
+        <div class="card-icon">💡</div>
+        <div>SPECIAL OFFERS</div>
+      </a>
+      <a href="https://bingwasokoni.co.ke/?ref=2PHFU3FB" class="card" target="_blank">
+        <div class="card-icon">📦</div>
+        <div>BINGWA BUNDLES</div>
+      </a>
+      <a href="airtel.html" class="card">
+        <div class="card-icon">☁️</div>
+        <div>AIRTEL DATA</div>
+      </a>
+      <a href="bulk.html" class="card">
+        <div class="card-icon">🧃</div>
+        <div>BULK BUNDLES</div>
+      </a>
+      <a href="allinone.html" class="card">
+        <div class="card-icon">🟢</div>
+        <div>ALL IN ONE</div>
+      </a>
+      <a href="sms.html" class="card">
+        <div class="card-icon">💬</div>
+        <div>SMS OFFERS</div>
+      </a>
+      <a href="minutes.html" class="card">
+        <div class="card-icon">📞</div>
+        <div>MINUTES OFFERS</div>
+      </a>
+      <a href="monthly.html" class="card">
+        <div class="card-icon">🗓️</div>
+        <div>GO MONTHLY BUNDLES</div>
+      </a>
+    </section>
 
-  <h2>Go Monthly Bingwa Offers</h2>
+    <h2>Go Monthly Bingwa Offers</h2>
+
+    <!-- Add any offer boxes or iframe embed here if needed -->
+    <!-- Example iframe block (optional) -->
+    <!--
+    <div class="responsive-iframe-container">
+      <iframe src="your-offer-source.html"></iframe>
+    </div>
+    -->
+
+  </main>
 
 </body>
 </html>
