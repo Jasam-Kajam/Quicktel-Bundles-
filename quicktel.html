@@ -12,7 +12,12 @@
       align-items: center;
       padding: 40px 20px;
     }
-
+    .card-row {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: nowrap; /* optional: prevent wrapping */
+}
     .card {
       width: 100%;
       max-width: 800px; /* Doubled width */
@@ -135,42 +140,44 @@
 </head>
 <body>
 
-  <div class="card most-popular">
-    <div class="badge">MOST POPULAR</div>
-    <img class="logo" src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" alt="Logo">
-    <h2>22GB</h2>
-    <p>Heavy data package</p>
-    <div class="validity">
-      <i>⏱</i> 30 days validity
+  <div class="card-row">
+    <div class="card most-popular">
+      <div class="badge">MOST POPULAR</div>
+      <img class="logo" src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" alt="Logo">
+      <h2>22GB</h2>
+      <p>Heavy data package</p>
+      <div class="validity">
+        <i>⏱</i> 30 days validity
+      </div>
+      <button>
+        Buy Now <i>→</i>
+      </button>
     </div>
-    <button>
-      Buy Now <i>→</i>
-    </button>
-  </div>
 
-  <div class="card best-value">
-    <div class="badge">BEST VALUE</div>
-    <img class="logo" src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" alt="Logo">
-    <h2>40GB</h2>
-    <p>Massive data package</p>
-    <div class="validity">
-      <i>⏱</i> 30 days validity
+    <div class="card best-value">
+      <div class="badge">BEST VALUE</div>
+      <img class="logo" src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" alt="Logo">
+      <h2>40GB</h2>
+      <p>Massive data package</p>
+      <div class="validity">
+        <i>⏱</i> 30 days validity
+      </div>
+      <button>
+        Buy Now <i>→</i>
+      </button>
     </div>
-    <button>
-      Buy Now <i>→</i>
-    </button>
-  </div>
 
-  <div class="card talk-time">
-    <img class="logo" src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" alt="Logo">
-    <h2>800 MINS</h2>
-    <p>Heavy talk time package</p>
-    <div class="validity">
-      <i>⏱</i> 30 days validity
+    <div class="card talk-time">
+      <img class="logo" src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" alt="Logo">
+      <h2>800 MINS</h2>
+      <p>Heavy talk time package</p>
+      <div class="validity">
+        <i>⏱</i> 30 days validity
+      </div>
+      <button>
+        Buy Now <i>→</i>
+      </button>
     </div>
-    <button>
-      Buy Now <i>→</i>
-    </button>
   </div>
 
 </body>
