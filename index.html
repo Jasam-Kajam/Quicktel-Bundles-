@@ -51,21 +51,38 @@
 
   header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 100px 160px;
-  background-color: #fff;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background-color: #f0f0f0;
+  position: relative;
+  transition: transform 0.3s ease; /* for smooth hide/show */
+}
+
+header.hide {
+  transform: translateY(-100%);
 }
 
 .logo img {
-  height: 40px;
+  width: 50px;
+  height: auto;
+  border-radius: 8px;
+  display: block;
 }
 
 .hamburger {
-  font-size: 24px;
+  font-size: 30px;
   background: none;
   border: none;
+  color: #6a1b9a;
   cursor: pointer;
+  user-select: none;
+  padding: 4px;
+  transition: color 0.2s ease;
+}
+
+.hamburger:hover {
+  color: #4a148c; /* slightly darker purple on hover */
 }
 
 .menu {
