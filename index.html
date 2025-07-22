@@ -55,29 +55,37 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 16px;  /* ↓ smaller padding */
+  padding: 8px 16px;
   background-color: #f0f0f0;
   position: relative;
+  transition: transform 0.3s ease; /* for smooth hide/show */
 }
 
-  header.hide {
-    transform: translateY(-100%);
-  }
+header.hide {
+  transform: translateY(-100%);
+}
 
-  .logo img {
-    width: 50px;
-    border-radius: 8px;
-  }
+.logo img {
+  width: 50px;
+  height: auto;
+  border-radius: 8px;
+  display: block;
+}
 
-  .hamburger {
-    font-size: 30px;
-    cursor: pointer;
-    user-select: none;
-    background: none;
-    border: none;
-    color: #6a1b9a;
-  }
+.hamburger {
+  font-size: 30px;
+  background: none;
+  border: none;
+  color: #6a1b9a;
+  cursor: pointer;
+  user-select: none;
+  padding: 4px;
+  transition: color 0.2s ease;
+}
 
+.hamburger:hover {
+  color: #4a148c; /* slightly darker purple on hover */
+}
   .menu {
     display: none;
     position: absolute;
