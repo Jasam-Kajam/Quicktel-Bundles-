@@ -2043,132 +2043,142 @@ h1 {
     </footer>
 
     <script src="https://js.paystack.co/v1/inline.js"></script>
-    <script>
 <script>
-// Auto-redirect if ref is present
+  // Auto-redirect if ref is present
   window.onload = function () {
     const params = new URLSearchParams(window.location.search);
     const ref = params.get("ref");
     if (ref === "2PHFU3FB") {
       window.location.href = "https://bingwasokoni.co.ke/minutes.php";
+    } else {
+      changeMain(); // Set default visible section
     }
   };
 
-  // Toggle dropdown menu
-  <script>
-function toggleMenu() {
-  document.getElementById("dropdownMenu").classList.toggle("show");
-}
-</script>
-  // Hide menu when clicking outside
-  window.addEventListener('click', function (e) {
+  // Dropdown menu toggle
+  function toggleMenu() {
+    const menu = document.getElementById("menu");
+    const icon = document.getElementById("hamburgerIcon");
+    if (menu.style.display === "block") {
+      menu.style.display = "none";
+      icon.innerHTML = "&#9776;";
+    } else {
+      menu.style.display = "block";
+      icon.innerHTML = "&times;";
+    }
+  }
+
+  // Hide dropdown menu when clicking outside
+  window.addEventListener("click", function (e) {
     const menu = document.getElementById("dropdownMenu");
     const button = document.querySelector(".hamburger");
-    if (!menu.contains(e.target) && !button.contains(e.target)) {
+    if (menu && button && !menu.contains(e.target) && !button.contains(e.target)) {
       menu.style.display = "none";
     }
   });
-</script>
-<script>
-        const subCategories = {
-            bundles: ['daily', 'weekly', 'monthly', 'special'],
-            minutes: ['short', 'long', 'international'],
-            sms: ['bulk', 'personal', 'promo']
-        };
 
-        function toggleMenu() {
-            const menu = document.getElementById('menu');
-            const icon = document.getElementById('hamburgerIcon');
-            if (menu.style.display === "block") {
-                menu.style.display = "none";
-                icon.innerHTML = "&#9776;";
-            } else {
-                menu.style.display = "block";
-                icon.innerHTML = "&times;";
-            }
-        }
+  // Subcategory data
+  const subCategories = {
+    bundles: ["daily", "weekly", "monthly", "special"],
+    minutes: ["short", "long", "international"],
+    sms: ["bulk", "personal", "promo"]
+  };
 
-        function selectMain(main) {
-            document.getElementById('mainSelect').value = main;
-            changeMain();
-            toggleMenu();
-        }
+  // Change visible main section
+  function selectMain(main) {
+    document.getElementById("mainSelect").value = main;
+    changeMain();
+    toggleMenu();
+  }
 
-        function changeMain() {
-            let main = document.getElementById('mainSelect').value;
-            document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
-            document.getElementById(main + '-section').style.display = 'block';
+  // Update section and subcategories
+  function changeMain() {
+    let main = document.getElementById("mainSelect").value;
+    document.querySelectorAll(".section").forEach(s => s.style.display = "none");
+    document.getElementById(main + "-section").style.display = "block";
 
-            let subSelect = document.getElementById('subSelect');
-            subSelect.innerHTML = '';
-            subCategories[main].forEach(sub => {
-                let option = document.createElement('option');
-                option.value = sub;
-                option.text = sub.charAt(0).toUpperCase() + sub.slice(1);
-                subSelect.appendChild(option);
-            });
-            changeSubCategory();
-        }
+    let subSelect = document.getElementById("subSelect");
+    subSelect.innerHTML = '';
+    subCategories[main].forEach(sub => {
+      let option = document.createElement("option");
+      option.value = sub;
+      option.text = sub.charAt(0).toUpperCase() + sub.slice(1);
+      subSelect.appendChild(option);
+    });
 
-        function changeSubCategory() {
-            let main = document.getElementById('mainSelect').value;
-            let sub = document.getElementById('subSelect').value;
-            document.querySelectorAll(`#${main}-section .sub-section`).forEach(s => s.style.display = 'none');
-            document.getElementById(`${main}-${sub}`).style.display = 'block';
-        }
+    changeSubCategory();
+  }
 
-        function buySelf(bundleName, price) {
+  // Show selected subcategory
+  function changeSubCategory() {
+    let main = document.getElementById("mainSelect").value;
+    let sub = document.getElementById("subSelect").value;
+    document.querySelectorAll(`#${main}-section .sub-section`).forEach(s => s.style.display = "none");
+    document.getElementById(`${main}-${sub}`).style.display = "block";
+  }
+
+  // Paystack purchase for self
+  function buySelf(bundleName, price) {
     const phone = prompt("Enter your M-PESA number:");
-    if(!phone) return;
+    if (!phone) return;
     let handler = PaystackPop.setup({
-        key: 'pk_live_3b95d82d975d8cd88f2e0059b1d6dca62c1db036',
-        email: 'customer@quicktel.com',
-        amount: price * 100,
-        currency: 'KES',
-        metadata: {
-            custom_fields: [
-                { display_name: "Bundle", variable_name: "bundle", value: bundleName },
-                { display_name: "Payer", variable_name: "payer", value: phone },
-                { display_name: "Recipient", variable_name: "recipient", value: phone }
-            ]
-        },
-        callback: function(response) { alert("Payment successful: " + response.reference); },
-        onClose: function() { alert("Transaction cancelled"); }
+      key: 'pk_live_3b95d82d975d8cd88f2e0059b1d6dca62c1db036',
+      email: 'customer@quicktel.com',
+      amount: price * 100,
+      currency: 'KES',
+      metadata: {
+        custom_fields: [
+          { display_name: "Bundle", variable_name: "bundle", value: bundleName },
+          { display_name: "Payer", variable_name: "payer", value: phone },
+          { display_name: "Recipient", variable_name: "recipient", value: phone }
+        ]
+      },
+      callback: function (response) {
+        alert("Payment successful: " + response.reference);
+      },
+      onClose: function () {
+        alert("Transaction cancelled");
+      }
     });
     handler.openIframe();
-}
+  }
 
-function buyForOthers(bundleName, price) {
+  // Paystack purchase for others
+  function buyForOthers(bundleName, price) {
     const payerPhone = prompt("Enter your M-PESA number:");
-    if(!payerPhone) return;
+    if (!payerPhone) return;
     const recipientPhone = prompt("Enter recipient's phone number:");
-    if(!recipientPhone) return;
+    if (!recipientPhone) return;
 
     let handler = PaystackPop.setup({
-        passkey: '7f2d6b0bbdaa4db57002b6e1cefef48b2bd3d95dffcad195a274f',
-        email: 'customer@quicktel.com',
-        amount: price * 100,
-        currency: 'KES',
-        metadata: {
-            custom_fields: [
-                { display_name: "Bundle", variable_name: "bundle", value: bundleName },
-                { display_name: "Payer", variable_name: "payer", value: payerPhone },
-                { display_name: "Recipient", variable_name: "recipient", value: recipientPhone }
-            ]
-        },
-        callback: function(response) { alert("Payment successful: " + response.reference); },
-        onClose: function() { alert("Transaction cancelled"); }
+      key: 'pk_live_3b95d82d975d8cd88f2e0059b1d6dca62c1db036',
+      email: 'customer@quicktel.com',
+      amount: price * 100,
+      currency: 'KES',
+      metadata: {
+        custom_fields: [
+          { display_name: "Bundle", variable_name: "bundle", value: bundleName },
+          { display_name: "Payer", variable_name: "payer", value: payerPhone },
+          { display_name: "Recipient", variable_name: "recipient", value: recipientPhone }
+        ]
+      },
+      callback: function (response) {
+        alert("Payment successful: " + response.reference);
+      },
+      onClose: function () {
+        alert("Transaction cancelled");
+      }
     });
     handler.openIframe();
-}
-        window.onload = changeMain;
+  }
 
-        document.addEventListener('contextmenu', function(event) {
-            event.preventDefault();
-            alert("Right-click is disabled on this site.");
-        });
-    </script>
-<script>
+  // Disable right-click
+  document.addEventListener("contextmenu", function (event) {
+    event.preventDefault();
+    alert("Right-click is disabled on this site.");
+  });
+
+  // Hide/show header on scroll
   let lastScroll = 0;
   const header = document.querySelector("header");
 
@@ -2176,11 +2186,9 @@ function buyForOthers(bundleName, price) {
     const currentScroll = window.pageYOffset;
 
     if (currentScroll > lastScroll) {
-      // Scrolling down
-      header.classList.add("hide");
+      header.classList.add("hide"); // Scrolling down
     } else {
-      // Scrolling up
-      header.classList.remove("hide");
+      header.classList.remove("hide"); // Scrolling up
     }
 
     lastScroll = currentScroll;
