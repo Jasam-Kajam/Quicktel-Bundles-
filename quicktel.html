@@ -12,12 +12,14 @@
       align-items: center;
       padding: 40px 20px;
     }
+
     .card-row {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  flex-wrap: nowrap; /* optional: prevent wrapping */
-}
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: nowrap; /* optional: prevent wrapping */
+    }
+
     .card {
       width: 100%;
       max-width: 800px; /* Doubled width */
@@ -180,74 +182,74 @@
     </div>
   </div>
 
-<!-- Phone Input Popup -->
-<div class="phone-input-popup" id="popup" onclick="dismissPopup(event)">
-  <div class="phone-box" id="phoneBox">
-    <h3>Enter Safaricom Number</h3>
-    <input type="tel" id="safaricomNumber" placeholder="e.g. 2547XXXXXXXX">
-    <button onclick="submitPayment()">Proceed to Pay</button>
+  <!-- Phone Input Popup -->
+  <div class="phone-input-popup" id="popup" onclick="dismissPopup(event)">
+    <div class="phone-box" id="phoneBox">
+      <h3>Enter Safaricom Number</h3>
+      <input type="tel" id="safaricomNumber" placeholder="e.g. 2547XXXXXXXX">
+      <button onclick="submitPayment()">Proceed to Pay</button>
+    </div>
   </div>
-</div>
 
-<!-- Paystack Script -->
-<script src="https://js.paystack.co/v1/inline.js"></script>
-<script>
-  let currentProduct = '';
-  let currentAmount = 0;
+  <!-- Paystack Script -->
+  <script src="https://js.paystack.co/v1/inline.js"></script>
+  <script>
+    let currentProduct = '';
+    let currentAmount = 0;
 
-  function openPhonePopup(product, amount) {
-    currentProduct = product;
-    currentAmount = amount;
-    document.getElementById('safaricomNumber').value = '';
-    const popup = document.getElementById('popup');
-    const phoneBox = document.getElementById('phoneBox');
-    popup.style.display = 'flex';
-    phoneBox.style.animation = 'slideToCenter 0.4s ease-out forwards';
-  }
-
-  function dismissPopup(event) {
-    const phoneBox = document.getElementById('phoneBox');
-    if (!phoneBox.contains(event.target)) {
-      document.getElementById('popup').style.display = 'none';
-    }
-  }
-
-  function submitPayment() {
-    const phone = document.getElementById('safaricomNumber').value.trim();
-    if (!/^2547\d{8}$/.test(phone)) {
-      alert("❌ Please enter a valid Safaricom number starting with 2547...");
-      return;
+    function openPhonePopup(product, amount) {
+      currentProduct = product;
+      currentAmount = amount;
+      document.getElementById('safaricomNumber').value = '';
+      const popup = document.getElementById('popup');
+      const phoneBox = document.getElementById('phoneBox');
+      popup.style.display = 'flex';
+      phoneBox.style.animation = 'slideToCenter 0.4s ease-out forwards';
     }
 
-    document.getElementById('popup').style.display = 'none';
-
-    const handler = PaystackPop.setup({
-      key: 'pk_live_3b95d82d975d8cd88f2e0059b1d6dca62c1db036',
-      email: phone + '@quicktel.ke',
-      amount: currentAmount * 100,
-      currency: 'KES',
-      ref: 'QT' + Math.floor(Math.random() * 1000000000),
-      label: currentProduct,
-      metadata: {
-        custom_fields: [
-          {
-            display_name: "Safaricom Number",
-            variable_name: "safaricom_number",
-            value: phone
-          }
-        ]
-      },
-      callback: function(response) {
-        alert("✅ Payment successful! Ref: " + response.reference);
-      },
-      onClose: function() {
-        alert("❌ Payment cancelled.");
+    function dismissPopup(event) {
+      const phoneBox = document.getElementById('phoneBox');
+      if (!phoneBox.contains(event.target)) {
+        document.getElementById('popup').style.display = 'none';
       }
-    });
+    }
 
-    handler.openIframe();
-  }
-</script>
+    function submitPayment() {
+      const phone = document.getElementById('safaricomNumber').value.trim();
+      if (!/^2547\d{8}$/.test(phone)) {
+        alert("❌ Please enter a valid Safaricom number starting with 2547...");
+        return;
+      }
+
+      document.getElementById('popup').style.display = 'none';
+
+      const handler = PaystackPop.setup({
+        key: 'pk_live_3b95d82d975d8cd88f2e0059b1d6dca62c1db036',
+        email: phone + '@quicktel.ke',
+        amount: currentAmount * 100,
+        currency: 'KES',
+        ref: 'QT' + Math.floor(Math.random() * 1000000000),
+        label: currentProduct,
+        metadata: {
+          custom_fields: [
+            {
+              display_name: "Safaricom Number",
+              variable_name: "safaricom_number",
+              value: phone
+            }
+          ]
+        },
+        callback: function(response) {
+          alert("✅ Payment successful! Ref: " + response.reference);
+        },
+        onClose: function() {
+          alert("❌ Payment cancelled.");
+        }
+      });
+
+      handler.openIframe();
+    }
+  </script>
 
 </body>
 </html>
