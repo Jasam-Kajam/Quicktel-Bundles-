@@ -1883,31 +1883,49 @@ header.hide {
     }
 
     iframe {
-      height: 400%;
-      width: 900px; /* make this bigger than viewport to enable scroll */
+      height: 100%;
+      width: 1200px; /* Wider than viewport to enable scrolling */
       border: none;
     }
   </style>
 </head>
 <body>
   <div class="iframe-wrapper" id="scroller">
-    <iframe src="https://quicktel-bundles.onrender.com/quicktel.html"></iframe>
+    <iframe id="iframe" src="https://quicktel-bundles.onrender.com/quicktel.html"></iframe>
   </div>
 
   <script>
     const scroller = document.getElementById('scroller');
+    const iframe = document.getElementById('iframe');
+
     let scrollAmount = 0;
+    let isPaused = false;
 
     function autoScroll() {
-      scrollAmount += 1;
-      if (scrollAmount >= scroller.scrollWidth - scroller.clientWidth) {
-        scrollAmount = 0;
+      if (!isPaused) {
+        scrollAmount += 1;
+        if (scrollAmount >= scroller.scrollWidth - scroller.clientWidth) {
+          scrollAmount = 0;
+        }
+        scroller.scrollLeft = scrollAmount;
       }
-      scroller.scrollLeft = scrollAmount;
       requestAnimationFrame(autoScroll);
     }
 
+    // Start auto scrolling
     autoScroll();
+
+    // Pause on iframe focus (like clicking Buy button)
+    iframe.addEventListener('mouseenter', () => {
+      isPaused = true;
+    });
+
+    // Resume scrolling when clicking outside iframe
+    document.addEventListener('click', (e) => {
+      if (!iframe.contains(e.target)) {
+        isPaused = false;
+      }
+    });
   </script>
 </body>
 </html>
