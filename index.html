@@ -273,20 +273,55 @@ h1, .title {
     font-size: 0.9em;
     border-top: 1px solid #ddd;
   }
+/* Flex container for logo and hamburger */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  margin-bottom: 10px;
+}
+
+/* Logo size */
+.logo {
+  height: 40px;
+}
+
+/* Hamburger button */
+.hamburger {
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Menu dropdown - style as needed */
+.menu {
+  display: none;
+  flex-direction: column;
+  padding: 10px;
+}
+
+/* Show menu when toggled */
+.menu.show {
+  display: flex;
+}
+
+/* Reduce spacing above title */
+h1 {
+  margin-top: 10px;
+}
 </style>
 </head>
 
 <body>
-<div class="top-bar">
-  <img src="your-logo.png" alt="Quicktel Logo" class="logo">
-  <div class="hamburger">&#9776;</div>
-</div>
-
-   <header>
-  <div class="logo">
-    <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" alt="Logo">
+  <!-- Top Bar with Logo and Hamburger -->
+  <div class="top-bar">
+    <img src="https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg" alt="Quicktel Logo" class="logo">
+    <button class="hamburger" onclick="toggleMenu()">☰</button>
   </div>
-  <button class="hamburger" onclick="toggleMenu()">☰</button>
+
+  <!-- Dropdown Menu -->
   <div class="menu" id="dropdownMenu">
     <a href="#bundles">Bundles</a>
     <a href="#minutes">Minutes</a>
@@ -295,9 +330,9 @@ h1, .title {
     <a href="privacy.html">Privacy Policy</a>
     <a href="https://wa.me/254729952483" target="_blank">Support</a>
   </div>
-</header>
 
-<h1>QUICKTEL BUNDLES</h1>
+  <!-- Title -->
+  <h1>QUICKTEL BUNDLES</h1>
 
 <!-- Ad appears below the heading -->
 <ins class="adsbygoogle"
