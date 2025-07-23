@@ -2055,11 +2055,11 @@ h1 {
   };
 
   // Toggle dropdown menu
-  function toggleMenu() {
-    const menu = document.getElementById('dropdownMenu');
-    menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-  }
-  
+  <script>
+function toggleMenu() {
+  document.getElementById("dropdownMenu").classList.toggle("show");
+}
+</script>
   // Hide menu when clicking outside
   window.addEventListener('click', function (e) {
     const menu = document.getElementById("dropdownMenu");
