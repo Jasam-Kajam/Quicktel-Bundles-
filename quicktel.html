@@ -268,14 +268,15 @@
       </button>
     </div>
 
-  <!-- Phone Input Popup -->
-  <div class="phone-input-popup" id="popup" onclick="dismissPopup(event)">
-    <div class="phone-box" id="phoneBox">
-      <h3>Enter Safaricom Number</h3>
-      <input type="tel" id="safaricomNumber" placeholder="e.g. 2547XXXXXXXX">
-      <button onclick="submitPayment()">Proceed to Pay</button>
-    </div>
+<!-- Phone Input Popup -->
+<div class="phone-input-popup" id="popup" onclick="dismissPopup(event)" style="display: none;">
+  <div class="phone-box" id="phoneBox">
+    <h3>Enter Safaricom Number</h3>
+    <p id="amountDisplay" style="font-weight: bold; margin: 10px 0;"></p> <!-- Amount shown here -->
+    <input type="tel" id="safaricomNumber" placeholder="e.g. 2547XXXXXXXX">
+    <button onclick="submitPayment()">Proceed to Pay</button>
   </div>
+</div>
 
   <!-- Paystack Script -->
   <script src="https://js.paystack.co/v1/inline.js"></script>
