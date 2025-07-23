@@ -2045,13 +2045,7 @@ h1 {
     <script src="https://js.paystack.co/v1/inline.js"></script>
     <script>
 <script>
-  // Toggle dropdown menu
-  function toggleMenu() {
-    const menu = document.getElementById('dropdownMenu');
-    menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-  }
-
-  // Auto-redirect if ref is present
+// Auto-redirect if ref is present
   window.onload = function () {
     const params = new URLSearchParams(window.location.search);
     const ref = params.get("ref");
@@ -2060,6 +2054,12 @@ h1 {
     }
   };
 
+  // Toggle dropdown menu
+  function toggleMenu() {
+    const menu = document.getElementById('dropdownMenu');
+    menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+  }
+  
   // Hide menu when clicking outside
   window.addEventListener('click', function (e) {
     const menu = document.getElementById("dropdownMenu");
