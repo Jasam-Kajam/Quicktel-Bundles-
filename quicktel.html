@@ -138,6 +138,64 @@
         padding: 14px;
       }
     }
+
+    /* --- Popup Modal Styles --- */
+    .phone-input-popup {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .phone-box {
+      background: #fff;
+      padding: 30px 25px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      animation: slideToCenter 0.4s ease-out forwards;
+    }
+
+    @keyframes slideToCenter {
+      from {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .phone-box h3 {
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+
+    .phone-box input {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 20px;
+    }
+
+    .phone-box button {
+      width: 100%;
+      background-color: #4f58ff;
+      color: white;
+      font-weight: bold;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -151,7 +209,7 @@
       <div class="validity">
         <i>⏱</i> 30 days validity
       </div>
-      <button>
+      <button onclick="openPhonePopup('22GB', 1000)">
         Buy Now <i>→</i>
       </button>
     </div>
@@ -164,7 +222,7 @@
       <div class="validity">
         <i>⏱</i> 30 days validity
       </div>
-      <button>
+      <button onclick="openPhonePopup('40GB', 1500)">
         Buy Now <i>→</i>
       </button>
     </div>
@@ -176,7 +234,7 @@
       <div class="validity">
         <i>⏱</i> 30 days validity
       </div>
-      <button>
+      <button onclick="openPhonePopup('800 MINS', 1200)">
         Buy Now <i>→</i>
       </button>
     </div>
