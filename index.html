@@ -41,6 +41,7 @@
 </head>
 
   <style>
+  /* Base Styles */
   html, body {
     margin: 0;
     padding: 0;
@@ -56,71 +57,76 @@
     min-height: 100vh;
   }
 
+  /* Header */
   header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 16px;
-  background-color: #f0f0f0;
-  position: relative;
-  transition: transform 0.3s ease; /* for smooth hide/show */
-}
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    background-color: #f0f0f0;
+    position: relative;
+    transition: transform 0.3s ease;
+  }
 
-header.hide {
-  transform: translateY(-100%);
-}
+  header.hide {
+    transform: translateY(-100%);
+  }
 
-.logo img {
-  width: 50px;
-  height: auto;
-  border-radius: 8px;
-  display: block;
-}
+  .logo img {
+    width: 50px;
+    height: auto;
+    border-radius: 8px;
+    display: block;
+  }
 
-.hamburger {
-  font-size: 30px;
-  background: none;
-  border: none;
-  color: #6a1b9a;
-  cursor: pointer;
-  user-select: none;
-  padding: 4px;
-  transition: color 0.2s ease;
-}
+  /* Hamburger Button */
+  .hamburger {
+    font-size: 30px;
+    background: none;
+    border: none;
+    color: #6a1b9a;
+    cursor: pointer;
+    padding: 4px;
+    user-select: none;
+    transition: color 0.2s ease;
+  }
 
-.hamburger:hover {
-  color: #4a148c; /* slightly darker purple on hover */
-}
+  .hamburger:hover {
+    color: #4a148c;
+  }
 
-.menu {
-  display: none; /* Shown only when hamburger is clicked */
-  flex-direction: column;
-  position: absolute;
-  top: 60px;
-  right: 16px;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  padding: 10px;
-}
+  /* Dropdown Menu */
+  .menu {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 60px;
+    right: 16px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+  }
 
-.menu a {
-  text-decoration: none;
-  padding: 8px 0;
-  display: block;
-  color: #333;
-}
+  .menu a {
+    display: block;
+    padding: 8px 0;
+    text-decoration: none;
+    color: #333;
+  }
 
   .menu a:last-child {
     border-bottom: none;
   }
 
+  /* Page Title */
   h1 {
     text-align: center;
     color: #6a1b9a;
     font-size: 2.2em;
-    margin: 90px 0 20px; /* space for fixed header */
+    margin: 90px 0 20px;
   }
 
+  /* Dropdown Select */
   .dropdown-container {
     text-align: center;
     margin-bottom: 20px;
@@ -129,14 +135,15 @@ header.hide {
   select {
     font-size: 1.1em;
     padding: 10px 20px;
-    border-radius: 10px;
     border: 2px solid purple;
+    border-radius: 10px;
     margin: 0 10px;
     background: white;
     color: #333;
     cursor: pointer;
   }
 
+  /* Card Grid */
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -148,7 +155,7 @@ header.hide {
   .card {
     background: #fff;
     border-radius: 20px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     padding: 25px 20px;
     text-align: center;
     transition: transform 0.3s ease;
@@ -181,18 +188,19 @@ header.hide {
 
   .price {
     font-size: 1.4em;
-    color: red;
     font-weight: bold;
+    color: red;
     margin-bottom: 15px;
   }
 
   .buy-label {
     font-size: 1em;
-    color: #FFD700;
     font-weight: 600;
+    color: #FFD700;
     margin-bottom: 10px;
   }
 
+  /* Buttons */
   .buttons {
     display: flex;
     justify-content: center;
@@ -200,25 +208,26 @@ header.hide {
     flex-wrap: wrap;
   }
 
-  .self-button, .others-button {
+  .self-button,
+  .others-button {
     border: none;
     border-radius: 8px;
     padding: 10px 20px;
     font-size: 1em;
     font-weight: 500;
     cursor: pointer;
+    color: white;
   }
 
   .self-button {
     background-color: #333;
-    color: white;
   }
 
   .others-button {
     background-color: #007bff;
-    color: white;
   }
 
+  /* Footer */
   footer {
     text-align: center;
     padding: 20px;
