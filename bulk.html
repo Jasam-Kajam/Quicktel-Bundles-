@@ -33,6 +33,7 @@
       max-width: 400px;
       margin: 20px auto;
       box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      border-left: 4px solid #2a3bff;
     }
 
     .offer-label {
@@ -82,6 +83,124 @@
     .buy-btn:hover {
       opacity: 0.9;
     }
+        /* Popup Styles */
+    .popup-overlay {
+      position: fixed;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: top 0.5s ease, opacity 0.5s ease;
+      z-index: 9999;
+    }
+
+    .popup-overlay.active {
+      top: 0;
+      opacity: 1;
+    }
+
+    .popup {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .popup input {
+      width: 90%;
+      padding: 15px;
+      margin-top: 4px;
+    }
+/* Custom popup styles */
+#customConfirmOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    display: none;
+}
+#customConfirmBox {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 320px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    color: green;
+}
+#customConfirmBox h3 {
+    margin-bottom: 10px;
+    border-radius: 5000px;
+    color: black;
+}
+#customConfirmBox button {
+    padding: 8px 14px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.confirm-yes {
+    background: #28a745;
+    color: white;
+}
+.confirm-no {
+    background: #dc3545;
+    color: white;
+}
+.offer-box img {
+      width: 180px;
+      height: 100px;
+      margin-bottom: 100px;
+      margin-top: 92px;
+      float: right;
+      border-radius: 10px;
+}
+button {
+      width: 100%;
+      padding: 8px;
+      font-size: 17px;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      background: #28a745;
+    }
+    .pay-now {
+      background: #dc3545;
+      margin-top: 10px;
+    }
+    .cancel {
+      background: #dc3545;
+      margin-top: 10px;
+    }
+           /* Footer */
+  footer {
+    text-align: center;
+    padding: 10px;
+    background: #fff;
+    color: #dc3545;
+    font-size: 0.9em;
+    border-top: 10px solid #2aaf;
+    border-bottom: 10px solid #2aaf;
+    border-left: 10px solid #dc3;
+    border-right: 15px solid #2a3bff;
+  }
   </style>
 </head>
 <body>
@@ -95,7 +214,7 @@
     <div class="offer-title">30GB @ Ksh 950</div>
     <div class="offer-desc">Power users' favorite monthly bundle</div>
     <div class="offer-validity">30 days</div>
-    <a class="buy-btn" href="self.html?bundle=30GB&price=950">Buy Now →</a>
+<button class="buy-btn" onclick="openPhonePopup('30GB', 950)">Buy Now →</button>
   </div>
 
   <div class="offer-box">
@@ -103,7 +222,7 @@
     <div class="offer-title">50GB @ Ksh 1400</div>
     <div class="offer-desc">Stream, work, and download all month</div>
     <div class="offer-validity">30 days</div>
-    <a class="buy-btn" href="self.html?bundle=50GB&price=1400">Buy Now →</a>
+    <button class="buy-btn" onclick="openPhonePopup('50GB', 1400)">Buy Now →</button>
   </div>
 
   <div class="offer-box">
@@ -111,7 +230,7 @@
     <div class="offer-title">75GB @ Ksh 1900</div>
     <div class="offer-desc">For gaming, streaming and more</div>
     <div class="offer-validity">30 days</div>
-    <a class="buy-btn" href="self.html?bundle=75GB&price=1900">Buy Now →</a>
+<button class="buy-btn" onclick="openPhonePopup('75GB', 1900)">Buy Now →</button>
   </div>
 
   <div class="offer-box">
@@ -119,7 +238,7 @@
     <div class="offer-title">100GB @ Ksh 2300</div>
     <div class="offer-desc">Maximum data for best price</div>
     <div class="offer-validity">30 days</div>
-    <a class="buy-btn" href="self.html?bundle=100GB&price=2300">Buy Now →</a>
+    <button class="buy-btn" onclick="openPhonePopup('100GB', 2300)">Buy Now →</button>
   </div>
 
   <div class="offer-box">
@@ -127,7 +246,7 @@
     <div class="offer-title">150GB @ Ksh 3000</div>
     <div class="offer-desc">Great for shared office use</div>
     <div class="offer-validity">30 days</div>
-    <a class="buy-btn" href="self.html?bundle=150GB&price=3000">Buy Now →</a>
+    <button class="buy-btn" onclick="openPhonePopup('150GB', 3000)">Buy Now →</button>
   </div>
 
   <div class="offer-box">
@@ -135,7 +254,7 @@
     <div class="offer-title">200GB @ Ksh 3700</div>
     <div class="offer-desc">Big bundle for the whole household</div>
     <div class="offer-validity">45 days</div>
-    <a class="buy-btn" href="self.html?bundle=200GB&price=3700">Buy Now →</a>
+   <button class="buy-btn" onclick="openPhonePopup('200GB', 3700)">Buy Now →</button>
   </div>
 
   <div class="offer-box">
@@ -143,7 +262,7 @@
     <div class="offer-title">300GB @ Ksh 4800</div>
     <div class="offer-desc">Content creators and teams</div>
     <div class="offer-validity">60 days</div>
-    <a class="buy-btn" href="self.html?bundle=300GB&price=4800">Buy Now →</a>
+   <button class="buy-btn" onclick="openPhonePopup('300GB', 4800)">Buy Now →</button>
   </div>
 
   <div class="offer-box">
@@ -151,8 +270,179 @@
     <div class="offer-title">500GB @ Ksh 6900</div>
     <div class="offer-desc">Ultimate data pack for top users</div>
     <div class="offer-validity">90 days</div>
-    <a class="buy-btn" href="self.html?bundle=500GB&price=6900">Buy Now →</a>
+   <button class="buy-btn" onclick="openPhonePopup('500GB', 6900)">Buy Now →</button>
   </div>
+   <!-- Payment Popup -->
+  <div class="popup-overlay" id="popupOverlay">
+    <div class="popup">
+      <h3>Enter Payment Details</h3>
+      <input type="text" id="popupPhone" placeholder="MPESA Number (2547...)" maxlength="12">
+      <input type="hidden" id="popupAmount">
+      <input type="hidden" id="popupTitle">
+      <button id="submitPayment">Pay Now</button>
+      <button class="cancel" onclick="closePopup()">Cancel</button>
+    </div>
+  </div>
+  <div id="customConfirmOverlay">
+    <div id="customConfirmBox">
+        <h3>Confirm Your Purchase</h3>
+        <div id="confirmDetails"></div>
+        <button class="confirm-yes">Proceed to Pay</button>
+        <button class="confirm-no">Cancel</button>
+    </div>
+</div>
+ <footer>
+        <div>&copy; <span id="year"></span> Quicktel-Bundle. All rights reserved.
+        <p>
+            <a href="https://quicktel-bundle.onrender.com/terms.html">Terms & Conditions</a> |
+            <a href="quicktel-bundle.onrender.com/privacy.html">Privacy Policy</a> |
+            <a href="https://samuwa-educanews.onrender.com/contac.html" target="_blank">Support</a>
+        </p>
+    </footer>
+<script>
+// ===== Utility =====
+const $ = (id) => document.getElementById(id);
 
+// ===== Disable right click =====
+document.addEventListener("contextmenu", (e) => e.preventDefault()); 
+// ===== Mobile menu =====
+const menuEl = document.querySelector(".menu");
+const hamburgerEl = $("hamburger");
+if (hamburgerEl) {
+  hamburgerEl.addEventListener("click", () => {
+    if (menuEl) menuEl.classList.toggle("show");
+  });
+}
+
+// ===== Footer year =====
+const yearEl = $("year");
+if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+// ===== Category filtering =====
+const gridCards = document.querySelectorAll("#bundleGrid .card");
+function filterCategory(category) {
+  gridCards.forEach((card) => {
+    card.style.display =
+      !category || card.dataset.category === category ? "" : "none";
+  });
+}
+const mainSelect = $("mainSelect");
+if (mainSelect) {
+  mainSelect.addEventListener("change", () => filterCategory(mainSelect.value));
+  filterCategory(mainSelect.value || "bundles");
+}
+document.querySelectorAll('.menu a[data-section]').forEach((link) => {
+  link.addEventListener("click", (e) => {
+    e.preventDefault();
+    const section = link.getAttribute("data-section");
+    if (mainSelect && section) mainSelect.value = section;
+    filterCategory(section);
+    if (menuEl) menuEl.classList.remove("show");
+  });
+});
+
+// ===== Custom Confirm dialog =====
+function customConfirm(product, amount) {
+  return new Promise((resolve) => {
+    const overlay = $("customConfirmOverlay");
+    const details = $("confirmDetails");
+    const yesBtn = document.querySelector(".confirm-yes");
+    const noBtn = document.querySelector(".confirm-no");
+
+    if (!overlay || !details || !yesBtn || !noBtn) {
+      resolve(window.confirm(`Confirm purchase:\n${product}\nKES ${amount}`));
+      return;
+    }
+
+    details.innerHTML =
+      `📦 <strong>${product}</strong><br>💰 Amount: <strong>KES ${amount}</strong>`;
+    overlay.style.display = "flex";
+
+    const cleanup = () => {
+      overlay.style.display = "none";
+      yesBtn.removeEventListener("click", onYes);
+      noBtn.removeEventListener("click", onNo);
+      overlay.removeEventListener("click", onOverlay);
+      document.removeEventListener("keydown", onEsc);
+    };
+
+    const onYes = () => { cleanup(); resolve(true); };
+    const onNo = () => { cleanup(); resolve(false); };
+    const onOverlay = (ev) => { if (ev.target === overlay) { cleanup(); resolve(false); } };
+    const onEsc = (ev) => { if (ev.key === "Escape") { cleanup(); resolve(false); } };
+
+    yesBtn.addEventListener("click", onYes, { once: true });
+    noBtn.addEventListener("click", onNo, { once: true });
+    overlay.addEventListener("click", onOverlay, { once: true });
+    document.addEventListener("keydown", onEsc, { once: true });
+  });
+}
+
+// ===== Payment popup =====
+function openPopup() {
+  $("popupOverlay")?.classList.add("active");
+}
+function closePopup() {
+  $("popupOverlay")?.classList.remove("active");
+}
+window.closePopup = closePopup;
+
+// ===== Flow: Buy -> Confirm -> Popup =====
+window.openPhonePopup = async function (product, amount) {
+  const proceed = await customConfirm(product, amount);
+  if (!proceed) return;
+
+  const phoneInput = $("popupPhone");
+  const amountInput = $("popupAmount");
+  const titleInput = $("popupTitle");
+
+  if (amountInput) { amountInput.value = amount; amountInput.readOnly = true; }
+  if (titleInput) { titleInput.value = product; titleInput.readOnly = true; }
+  if (phoneInput) { phoneInput.value = ""; phoneInput.focus(); }
+
+  openPopup();
+};
+
+// ===== Submit payment =====
+const submitBtn = $("submitPayment");
+if (submitBtn) {
+  submitBtn.addEventListener("click", async () => {
+    const phone = ($("popupPhone")?.value || "").trim();
+    const amount = $("popupAmount")?.value || "";
+
+    // Validate phone
+    if (!phone || !/^254\d{9}$/.test(phone)) {
+      alert("❌ Please enter a valid Safaricom number (format: 2547XXXXXXXX)");
+      return;
+    }
+    if (!amount || isNaN(amount) || Number(amount) <= 0) {
+      alert("❌ Invalid amount.");
+      return;
+    }
+
+    submitBtn.disabled = true;
+    const originalLabel = submitBtn.textContent;
+    submitBtn.textContent = "Processing...";
+
+    try {
+      const response = await fetch("https://samsoft-coral.vercel.app/stkpush", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone, amount })
+      });
+
+      const result = await response.json();
+      alert(result.message || JSON.stringify(result));
+    } catch (err) {
+      console.error(err);
+      alert("❌ Payment failed. Please try again.");
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalLabel || "Pay Now";
+      closePopup();
+    }
+  });
+}
+</script>
 </body>
 </html>
