@@ -1,4 +1,11 @@
+# robots.txt for Quicktel Bundle
+# This file tells search engines which pages they can crawl and where the sitemap is located
+
 User-agent: *
 Allow: /
 
+# Disallow private or unnecessary files (optional — adjust as needed)
+Disallow: /index.ejs
+
+# Sitemap location
 Sitemap: https://quicktel-bundle.onrender.com/sitemap.xml
