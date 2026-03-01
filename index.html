@@ -1092,7 +1092,7 @@ if (submitBtn) {
     submitBtn.textContent = "Processing Payment...";
 
     try {
-      const response = await fetch("https://samsoft-production.up.railway.app/stkpush", {
+      const response = await fetch("https://samsoft-production-e893.up.railway.app/stkpush", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phone, amount })
