@@ -1654,8 +1654,9 @@
         function buySelf(bundleName, price) {
     const phone = prompt("Enter your M-PESA number:");
     if(!phone) return;
+
     let handler = PaystackPop.setup({
-        key: '',
+        key: 'pk_live_3b95d82d975d8cd88f2e0059b1d6dca62c1db036',
         email: 'customer@quicktel.com',
         amount: price * 100,
         currency: 'KES',
@@ -1666,9 +1667,14 @@
                 { display_name: "Recipient", variable_name: "recipient", value: phone }
             ]
         },
-        callback: function(response) { alert("Payment successful: " + response.reference); },
-        onClose: function() { alert("Transaction cancelled"); }
+        callback: function(response) {
+            alert("Payment successful: " + response.reference);
+        },
+        onClose: function() {
+            alert("Transaction cancelled");
+        }
     });
+
     handler.openIframe();
 }
 
