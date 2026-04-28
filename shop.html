@@ -238,6 +238,20 @@
       float: right;
       border-radius: 10px;
 }
+.package-card {
+    width: 100%;
+    box-sizing: border-box;
+}@media (max-width: 768px) {
+    .packages-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .packages-container {
+        grid-template-columns: 1fr;
+    }
+}
   </style>
 <style>
 .spinner {
