@@ -1077,15 +1077,35 @@ if (submitBtn) {
     const phone = ($("popupPhone")?.value || "").trim();
     const amount = $("popupAmount")?.value || "";
 
-    // Validate phone
-    if (!phone || !/^254\d{9}$/.test(phone)) {
-      alert("❌ Please enter a valid Safaricom number (format: 2547XXXXXXXX)");
-      return;
-    }
-    if (!amount || isNaN(amount) || Number(amount) <= 0) {
-      alert("❌ Invalid amount.");
-      return;
-    }
+    // Normalize phone (07/01 → 254)
+function formatPhone(phone) {
+  phone = phone.trim();
+
+  if (phone.startsWith("07") || phone.startsWith("01")) {
+    return "254" + phone.slice(1);
+  }
+
+  if (phone.startsWith("+254")) {
+    return phone.slice(1);
+  }
+
+  return phone;
+}
+
+// Apply formatting
+phone = formatPhone(phone);
+
+// Validate phone (internal format only)
+if (!phone || !/^254\d{9}$/.test(phone)) {
+  alert("❌ Please enter a valid phone number");
+  return;
+}
+
+// Validate amount
+if (!amount || isNaN(amount) || Number(amount) <= 0) {
+  alert("❌ Invalid amount.");
+  return;
+}
 
     submitBtn.disabled = true;
     const originalLabel = submitBtn.textContent;
