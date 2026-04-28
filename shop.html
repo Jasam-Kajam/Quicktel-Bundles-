@@ -47,14 +47,14 @@
     max-width: 100%;
 }
     body {
-      display: flex; flex-direction: column; min-height: 100vh;
+      display: flex; flex-direction: column; min-height: 10vh;
     }
     header {
       display: flex; justify-content: space-between; align-items: center;
       padding: 10px 20px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       position: relative;
     }
-    .logo img { height: 75px; width: 150px; border-radius: 8px; }
+    .logo img { height: 65px; width: 110px; border-radius: 8px; }
     .hamburger { font-size: 30px; cursor: pointer; user-select: none; background: none; border: none; }
     .menu {
       display: none; position: absolute; right: 20px; top: 60px;
@@ -78,25 +78,25 @@
       grid-template-columns: repeat(3, 1fr);
       gap: 4px;
       padding: 9px;      
-      justify-items: center;
+      justify-items: left;
     }
     .card {
-      background: #fff; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-      padding: 10px 10px; text-align: center; transition: transform 0.3s ease;
-      width: 45%;
-      max-width: 150px;
+      background: #fff; border-radius: 20px; box-shadow: 0 20px 20px rgba(0,0,0,0.1);
+      padding: 9px 14px; text-align: center; transition: transform 0.3s ease;
+      width: 50%;
+      max-width: 100px;
       border-left: 4px solid #6a1b9a;
       border-right: 4px solid #555;
     }
     .card:hover { transform: translateY(-5px); }
     .logo-card img { width: 80px; border-radius: 10px; margin-bottom: 10px; }
-    .bundle-title { font-size: 1.5em; font-weight: 600; color: green; margin-bottom: 8px; }
+    .bundle-title { font-size: 1.2em; font-weight: 600; color: green; margin-bottom: 8px; }
     .validity { font-size: 1.1em; color: #555; margin-bottom: 10px; }
     .price { font-size: 1.4em; color: red; font-weight: bold; margin-bottom: 15px; }
     .buy-label { font-size: 1em; color: #6a1b9a; font-weight: 600; margin-bottom: 10px; }
     .buttons { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
     .self-button, .others-button {
-      border: none; border-radius: 8px; padding: 10px 20px; font-size: 1em; font-weight: 500; cursor: pointer; text-align: center;
+      border: none; border-radius: 8px; padding: 10px 2px; font-size: 1em; font-weight: 500; cursor: pointer; text-align: center;
     }
     .self-button { background-color: #333; color: white; }
     .others-button { background-color: #007bff; color: white; }
