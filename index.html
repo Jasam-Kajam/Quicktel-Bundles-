@@ -3572,6 +3572,7 @@
 
 /* =========================================================
    QUICKTEL BUNDLES — PAYMENT FRONTEND
+   POST-BASED STK PUSH INTEGRATION
 ========================================================= */
 
 const $ = (id) => document.getElementById(id);
@@ -3583,6 +3584,8 @@ const $ = (id) => document.getElementById(id);
 
 const QUICKTEL_STK_PUSH_URL =
     "https://samsoft-coral.vercel.app/api/stkpush";
+
+const PAYMENT_TIMEOUT = 45000;
 
 let quicktelPaymentInProgress = false;
 
@@ -3623,7 +3626,10 @@ if (hamburger && menu) {
         link.addEventListener("click", () => {
             menu.classList.remove("show");
 
-            hamburger.setAttribute("aria-expanded", "false");
+            hamburger.setAttribute(
+                "aria-expanded",
+                "false"
+            );
 
             hamburger.innerHTML =
                 '<span class="material-symbols-rounded">menu</span>';
@@ -3669,6 +3675,7 @@ window.selectMain = function (main) {
     }
 
     mainSelect.value = main;
+
     filterCategory(main);
 };
 
@@ -3729,7 +3736,11 @@ function customConfirm(product, amount) {
         `;
 
         overlay.style.display = "flex";
-        overlay.setAttribute("aria-hidden", "false");
+
+        overlay.setAttribute(
+            "aria-hidden",
+            "false"
+        );
 
         document.body.classList.add("modal-open");
 
@@ -3741,7 +3752,11 @@ function customConfirm(product, amount) {
             finished = true;
 
             overlay.style.display = "none";
-            overlay.setAttribute("aria-hidden", "true");
+
+            overlay.setAttribute(
+                "aria-hidden",
+                "true"
+            );
 
             document.body.classList.remove("modal-open");
 
@@ -3792,11 +3807,16 @@ function openPopup() {
 
     if (!overlay) {
         console.error("Missing HTML element: #popupOverlay");
+
         return false;
     }
 
     overlay.classList.add("active");
-    overlay.setAttribute("aria-hidden", "false");
+
+    overlay.setAttribute(
+        "aria-hidden",
+        "false"
+    );
 
     document.body.classList.add("modal-open");
 
@@ -3806,10 +3826,16 @@ function openPopup() {
 function closePopup() {
     const overlay = $("popupOverlay");
 
-    if (!overlay || quicktelPaymentInProgress) return;
+    if (!overlay || quicktelPaymentInProgress) {
+        return;
+    }
 
     overlay.classList.remove("active");
-    overlay.setAttribute("aria-hidden", "true");
+
+    overlay.setAttribute(
+        "aria-hidden",
+        "true"
+    );
 
     document.body.classList.remove("modal-open");
 }
@@ -3821,14 +3847,21 @@ window.closePopup = closePopup;
    OPEN PAYMENT FLOW
 ========================================================= */
 
-window.openPhonePopup = async function (packageSize, amount) {
+window.openPhonePopup = async function (
+    packageSize,
+    amount
+) {
     if (quicktelPaymentInProgress) return;
 
-    const cleanPackage = String(packageSize || "").trim();
+    const cleanPackage = String(
+        packageSize || ""
+    ).trim();
+
     const numericAmount = Number(amount);
 
     if (!cleanPackage) {
         alert("Please select a valid package.");
+
         return;
     }
 
@@ -3837,6 +3870,7 @@ window.openPhonePopup = async function (packageSize, amount) {
         numericAmount <= 0
     ) {
         alert("Invalid package price.");
+
         return;
     }
 
@@ -3878,7 +3912,8 @@ window.openPhonePopup = async function (packageSize, amount) {
     }
 
     if (selectedPrice) {
-        const price = `KSh ${numericAmount.toLocaleString("en-KE")}`;
+        const price =
+            `KSh ${numericAmount.toLocaleString("en-KE")}`;
 
         if ("value" in selectedPrice) {
             selectedPrice.value = String(numericAmount);
@@ -3921,6 +3956,7 @@ const cancelPayment = $("cancelPayment");
 if (cancelPayment) {
     cancelPayment.addEventListener("click", (event) => {
         event.preventDefault();
+
         closePopup();
     });
 }
@@ -3933,7 +3969,6 @@ if (cancelPayment) {
 function normalizeKenyanPhone(input) {
     let phone = String(input || "").trim();
 
-    // Remove spaces, plus signs, brackets and hyphens.
     phone = phone.replace(/[^\d]/g, "");
 
     // 0712345678 -> 254712345678
@@ -3960,19 +3995,29 @@ function isValidKenyanPhone(phone) {
    PAYMENT STATUS DISPLAY
 ========================================================= */
 
-function showPaymentStatus(message, type = "info") {
+function showPaymentStatus(
+    message,
+    type = "info"
+) {
     const status = $("paymentStatus");
 
     if (!status) {
         console.log(`[Payment ${type}]`, message);
+
         return;
     }
 
     status.textContent = message;
-    status.className = `payment-status show ${type}`;
+
+    status.className =
+        `payment-status show ${type}`;
 
     status.setAttribute("role", "status");
-    status.setAttribute("aria-live", "polite");
+
+    status.setAttribute(
+        "aria-live",
+        "polite"
+    );
 }
 
 
@@ -3983,7 +4028,9 @@ function showPaymentStatus(message, type = "info") {
 async function readPaymentResponse(response) {
     const text = await response.text();
 
-    if (!text) return {};
+    if (!text) {
+        return {};
+    }
 
     try {
         return JSON.parse(text);
@@ -4004,7 +4051,11 @@ function getPaymentError(result, fallback) {
         return fallback;
     }
 
+    const details = result.details || {};
+
     const message =
+        details.errorMessage ||
+        details.error_description ||
         result.errorMessage ||
         result.error ||
         result.message ||
@@ -4013,14 +4064,110 @@ function getPaymentError(result, fallback) {
         result.CustomerMessage ||
         result.customerMessage;
 
-    return typeof message === "string" && message.trim()
+    return (
+        typeof message === "string" && message.trim()
+    )
         ? message.trim()
         : fallback;
 }
 
 
 /* =========================================================
-   SEND STK PUSH TO VERCEL BACKEND
+   STK PUSH REQUEST
+   HTTP METHOD: POST
+========================================================= */
+
+async function sendSTKPush(phone, amount) {
+    const controller = new AbortController();
+
+    const timeoutId = setTimeout(() => {
+        controller.abort();
+    }, PAYMENT_TIMEOUT);
+
+    try {
+        const response = await fetch(
+            QUICKTEL_STK_PUSH_URL,
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+
+                body: JSON.stringify({
+                    phone: phone,
+                    amount: amount
+                }),
+
+                signal: controller.signal,
+
+                cache: "no-store"
+            }
+        );
+
+        const result = await readPaymentResponse(response);
+
+        console.log(
+            "Quicktel backend HTTP status:",
+            response.status
+        );
+
+        console.log(
+            "Quicktel backend response:",
+            result
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                getPaymentError(
+                    result,
+                    `Backend request failed (HTTP ${response.status}).`
+                )
+            );
+        }
+
+        if (
+            !result ||
+            typeof result !== "object" ||
+            Array.isArray(result)
+        ) {
+            throw new Error(
+                "The backend returned an invalid response."
+            );
+        }
+
+        // Support the current backend response structure:
+        // { success: true, data: { ResponseCode: "0" } }
+
+        const responseCode =
+            result.data?.ResponseCode ??
+            result.ResponseCode ??
+            result.responseCode;
+
+        const accepted =
+            result.success === true ||
+            String(responseCode) === "0";
+
+        if (!accepted) {
+            throw new Error(
+                getPaymentError(
+                    result,
+                    "Safaricom did not confirm acceptance of the STK Push."
+                )
+            );
+        }
+
+        return result;
+
+    } finally {
+        clearTimeout(timeoutId);
+    }
+}
+
+
+/* =========================================================
+   SUBMIT PAYMENT
 ========================================================= */
 
 const submitBtn = $("submitPayment");
@@ -4029,7 +4176,9 @@ if (submitBtn) {
     submitBtn.addEventListener("click", async (event) => {
         event.preventDefault();
 
-        if (quicktelPaymentInProgress) return;
+        if (quicktelPaymentInProgress) {
+            return;
+        }
 
         const phoneInput = $("popupPhone");
         const amountInput = $("popupAmount");
@@ -4040,24 +4189,25 @@ if (submitBtn) {
             ""
         ).trim();
 
-        const amount = Number(amountInput?.value || 0);
+        const amount = Number(
+            amountInput?.value || 0
+        );
 
         const phone = normalizeKenyanPhone(
             phoneInput?.value
         );
 
-        /* Validate package */
-
+        // Validate package.
         if (!packageSize) {
             showPaymentStatus(
                 "Please select a package before making payment.",
                 "error"
             );
+
             return;
         }
 
-        /* Validate amount */
-
+        // Validate amount.
         if (
             !Number.isSafeInteger(amount) ||
             amount <= 0
@@ -4066,29 +4216,33 @@ if (submitBtn) {
                 "Invalid package price. Please select the package again.",
                 "error"
             );
+
             return;
         }
 
-        /* Validate phone */
-
+        // Validate phone.
         if (!isValidKenyanPhone(phone)) {
             showPaymentStatus(
-                "Enter a valid Kenyan mobile number, e.g. 0712345678.",
+                "Enter a valid Kenyan phone number, e.g. 0712345678.",
                 "error"
             );
 
             phoneInput?.focus();
+
             return;
         }
 
-        /* Lock the button */
-
+        // Lock payment submission.
         quicktelPaymentInProgress = true;
 
         const originalLabel = submitBtn.innerHTML;
 
         submitBtn.disabled = true;
-        submitBtn.setAttribute("aria-busy", "true");
+
+        submitBtn.setAttribute(
+            "aria-busy",
+            "true"
+        );
 
         submitBtn.innerHTML = `
             <span class="spinner" aria-hidden="true"></span>
@@ -4096,127 +4250,89 @@ if (submitBtn) {
         `;
 
         showPaymentStatus(
-            "Connecting to M-PESA. Please wait...",
+            "Connecting to the payment server. Please wait...",
             "info"
         );
 
         try {
-            console.log("Sending Quicktel STK Push request", {
-                endpoint: QUICKTEL_STK_PUSH_URL,
-                phone: phone,
-                amount: amount
-            });
-
-            /* Send the exact expected JSON fields */
-
-            const response = await fetch(
-                QUICKTEL_STK_PUSH_URL,
+            console.log(
+                "Initiating Quicktel STK Push:",
                 {
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Accept": "application/json"
-                    },
-
-                    body: JSON.stringify({
-                        phone: phone,
-                        amount: amount
-                    })
+                    endpoint: QUICKTEL_STK_PUSH_URL,
+                    amount: amount
                 }
             );
 
-            const result = await readPaymentResponse(response);
+            const result = await sendSTKPush(
+                phone,
+                amount
+            );
 
-            console.log("Backend HTTP status:", response.status);
-            console.log("Backend response:", result);
+            const paymentData = result.data || {};
 
-            /* Handle HTTP errors */
+            const checkoutRequestId =
+                paymentData.CheckoutRequestID ||
+                result.CheckoutRequestID ||
+                result.checkoutRequestID ||
+                null;
 
-            if (!response.ok) {
-                showPaymentStatus(
-                    getPaymentError(
-                        result,
-                        `Backend request failed (HTTP ${response.status}).`
-                    ),
-                    "error"
-                );
+            const merchantRequestId =
+                paymentData.MerchantRequestID ||
+                result.MerchantRequestID ||
+                result.merchantRequestID ||
+                null;
 
-                return;
-            }
+            console.log(
+                "CheckoutRequestID:",
+                checkoutRequestId
+            );
 
-            /* Reject invalid responses */
+            console.log(
+                "MerchantRequestID:",
+                merchantRequestId
+            );
 
-            if (
-                !result ||
-                typeof result !== "object" ||
-                Array.isArray(result)
-            ) {
-                showPaymentStatus(
-                    "The backend returned an invalid response.",
-                    "error"
-                );
-
-                return;
-            }
-
-            /* Check the Daraja response */
-
-            const responseCode =
-                result.ResponseCode ??
-                result.responseCode;
-
-            const accepted =
-                String(responseCode) === "0" ||
-                result.success === true;
-
-            if (!accepted) {
-                showPaymentStatus(
-                    getPaymentError(
-                        result,
-                        "The backend did not confirm that the STK Push was accepted."
-                    ),
-                    "error"
-                );
-
-                return;
-            }
-
-            /* Request accepted, payment not yet confirmed */
-
+            // This confirms request acceptance only.
+            // It does not establish that payment is complete.
             showPaymentStatus(
-                result.CustomerMessage ||
-                result.customerMessage ||
-                result.ResponseDescription ||
-                result.responseDescription ||
+                result.message ||
+                paymentData.CustomerMessage ||
                 "M-PESA has accepted your request. Check your phone for the payment prompt.",
                 "success"
             );
 
-            console.log("CheckoutRequestID:",
-                result.CheckoutRequestID ||
-                result.checkoutRequestID ||
-                "Not returned"
-            );
-
-            console.log("MerchantRequestID:",
-                result.MerchantRequestID ||
-                result.merchantRequestID ||
-                "Not returned"
-            );
-
         } catch (error) {
-            console.error("Quicktel STK Push error:", error);
-
-            showPaymentStatus(
-                "Unable to contact the backend. Check your internet connection, Vercel deployment, and browser console. If a prompt may already have been sent, verify its status before retrying.",
-                "error"
+            console.error(
+                "Quicktel STK Push error:",
+                error.name,
+                error.message
             );
+
+            if (error.name === "AbortError") {
+                showPaymentStatus(
+                    "The request timed out. Check your transaction status before retrying.",
+                    "error"
+                );
+            } else if (
+                error instanceof TypeError
+            ) {
+                showPaymentStatus(
+                    "Unable to contact the backend. Check your internet connection, browser console, CORS configuration, and Vercel deployment. Verify payment status before retrying.",
+                    "error"
+                );
+            } else {
+                showPaymentStatus(
+                    error.message ||
+                    "The payment request failed. Check your transaction status before retrying.",
+                    "error"
+                );
+            }
 
         } finally {
             quicktelPaymentInProgress = false;
 
             submitBtn.disabled = false;
+
             submitBtn.removeAttribute("aria-busy");
 
             submitBtn.innerHTML =
@@ -4245,9 +4361,13 @@ if (phoneInput) {
 ========================================================= */
 
 document.addEventListener("keydown", (event) => {
-    if (event.key !== "Escape") return;
+    if (event.key !== "Escape") {
+        return;
+    }
 
-    if (quicktelPaymentInProgress) return;
+    if (quicktelPaymentInProgress) {
+        return;
+    }
 
     closePopup();
 });
@@ -4271,6 +4391,5 @@ document
     });
 
 </script>
-
 </body>
 </html>
