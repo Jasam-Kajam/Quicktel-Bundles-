@@ -3571,17 +3571,20 @@
 "use strict";
 
 /* =========================================================
-   QUICKTEL BUNDLES
-   Production Frontend
+   QUICKTEL BUNDLES — PAYMENT FRONTEND
 ========================================================= */
+
+const $ = (id) => document.getElementById(id);
 
 
 /* =========================================================
-   HELPERS
+   CONFIGURATION
 ========================================================= */
 
-const $ = (id) =>
-  document.getElementById(id);
+const QUICKTEL_STK_PUSH_URL =
+    "https://samsoft-coral.vercel.app/api/stkpush";
+
+let quicktelPaymentInProgress = false;
 
 
 /* =========================================================
@@ -3591,8 +3594,7 @@ const $ = (id) =>
 const yearEl = $("year");
 
 if (yearEl) {
-  yearEl.textContent =
-    new Date().getFullYear();
+    yearEl.textContent = new Date().getFullYear();
 }
 
 
@@ -3604,49 +3606,29 @@ const hamburger = $("hamburger");
 const menu = $("menu");
 
 if (hamburger && menu) {
+    hamburger.addEventListener("click", () => {
+        const opened = menu.classList.toggle("show");
 
-  hamburger.addEventListener(
-    "click",
-    () => {
-
-      const opened =
-        menu.classList.toggle("show");
-
-      hamburger.setAttribute(
-        "aria-expanded",
-        opened ? "true" : "false"
-      );
-
-      hamburger.innerHTML = opened
-        ? `<span class="material-symbols-rounded">close</span>`
-        : `<span class="material-symbols-rounded">menu</span>`;
-
-    }
-  );
-
-
-  menu.querySelectorAll("a")
-    .forEach((link) => {
-
-      link.addEventListener(
-        "click",
-        () => {
-
-          menu.classList.remove("show");
-
-          hamburger.setAttribute(
+        hamburger.setAttribute(
             "aria-expanded",
-            "false"
-          );
+            String(opened)
+        );
 
-          hamburger.innerHTML =
-            `<span class="material-symbols-rounded">menu</span>`;
-
-        }
-      );
-
+        hamburger.innerHTML = opened
+            ? '<span class="material-symbols-rounded">close</span>'
+            : '<span class="material-symbols-rounded">menu</span>';
     });
 
+    menu.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => {
+            menu.classList.remove("show");
+
+            hamburger.setAttribute("aria-expanded", "false");
+
+            hamburger.innerHTML =
+                '<span class="material-symbols-rounded">menu</span>';
+        });
+    });
 }
 
 
@@ -3654,55 +3636,24 @@ if (hamburger && menu) {
    CATEGORY FILTER
 ========================================================= */
 
-const mainSelect =
-  $("mainSelect");
+const mainSelect = $("mainSelect");
 
-const productCards =
-  document.querySelectorAll(
+const productCards = document.querySelectorAll(
     "#bundleGrid .product-card"
-  );
-
+);
 
 function filterCategory(category) {
-
-  productCards.forEach(
-    (card) => {
-
-      const cardCategory =
-        card.dataset.category;
-
-      if (cardCategory === category) {
-
-        card.hidden = false;
-
-      } else {
-
-        card.hidden = true;
-
-      }
-
-    }
-  );
-
+    productCards.forEach((card) => {
+        card.hidden = card.dataset.category !== category;
+    });
 }
 
-
 if (mainSelect) {
+    mainSelect.addEventListener("change", () => {
+        filterCategory(mainSelect.value);
+    });
 
-  mainSelect.addEventListener(
-    "change",
-    () => {
-
-      filterCategory(
-        mainSelect.value
-      );
-
-    }
-  );
-
-  filterCategory(
-    mainSelect.value
-  );
+    filterCategory(mainSelect.value);
 }
 
 
@@ -3710,285 +3661,160 @@ if (mainSelect) {
    NAVIGATION
 ========================================================= */
 
-window.selectMain =
-  function(main) {
+window.selectMain = function (main) {
+    if (!mainSelect) return;
 
-    if (!mainSelect) {
-      return;
-    }
-
-    if (
-      !["bundles", "minutes", "sms"]
-        .includes(main)
-    ) {
-      return;
+    if (!["bundles", "minutes", "sms"].includes(main)) {
+        return;
     }
 
     mainSelect.value = main;
-
     filterCategory(main);
-
-  };
+};
 
 
 /* =========================================================
    CUSTOM CONFIRMATION
 ========================================================= */
 
-function customConfirm(
-  product,
-  amount
-) {
+function customConfirm(product, amount) {
+    return new Promise((resolve) => {
+        const overlay = $("customConfirmOverlay");
+        const details = $("confirmDetails");
 
-  return new Promise(
-    (resolve) => {
+        const yesBtn = document.querySelector(".confirm-yes");
+        const noBtn = document.querySelector(".confirm-no");
 
-      const overlay =
-        $("customConfirmOverlay");
+        if (!overlay || !details || !yesBtn || !noBtn) {
+            resolve(
+                window.confirm(
+                    `Confirm purchase:\n\n${product}\nAmount: KSh ${amount}`
+                )
+            );
 
-      const details =
-        $("confirmDetails");
+            return;
+        }
 
-      const yesBtn =
-        document.querySelector(
-          ".confirm-yes"
+        const safeProduct = String(product).replace(
+            /[&<>"']/g,
+            (character) => ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#039;"
+            })[character]
         );
 
-      const noBtn =
-        document.querySelector(
-          ".confirm-no"
-        );
+        details.innerHTML = `
+            <div class="confirm-package">
+                <span class="material-symbols-rounded">
+                    shopping_bag
+                </span>
 
+                <strong>${safeProduct}</strong>
+            </div>
 
-      if (
-        !overlay ||
-        !details ||
-        !yesBtn ||
-        !noBtn
-      ) {
+            <div>
+                Amount:
+                <strong>
+                    KSh ${Number(amount).toLocaleString("en-KE")}
+                </strong>
+            </div>
 
-        resolve(
-          window.confirm(
-            `Confirm purchase:\n\n${product}\nAmount: KSh ${amount}`
-          )
-        );
+            <div>
+                Payment:
+                <strong>M-PESA</strong>
+            </div>
+        `;
 
-        return;
-      }
+        overlay.style.display = "flex";
+        overlay.setAttribute("aria-hidden", "false");
 
+        document.body.classList.add("modal-open");
 
-      /*
-       * Escape HTML before inserting
-       * package data into the confirmation.
-       */
+        let finished = false;
 
-      const safeProduct =
-        String(product)
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;")
-          .replace(/'/g, "&#039;");
+        function cleanup(result) {
+            if (finished) return;
 
+            finished = true;
 
-      details.innerHTML = `
+            overlay.style.display = "none";
+            overlay.setAttribute("aria-hidden", "true");
 
-        <div class="confirm-package">
+            document.body.classList.remove("modal-open");
 
-          <span
-            class="material-symbols-rounded"
-          >
-            shopping_bag
-          </span>
+            yesBtn.removeEventListener("click", onYes);
+            noBtn.removeEventListener("click", onNo);
 
-          <strong>
-            ${safeProduct}
-          </strong>
+            document.removeEventListener("keydown", onEscape);
+            overlay.removeEventListener("click", onOverlay);
 
-        </div>
+            resolve(result);
+        }
 
-        <div>
-          Amount:
-          <strong>
-            KSh ${Number(amount).toLocaleString()}
-          </strong>
-        </div>
+        function onYes() {
+            cleanup(true);
+        }
 
-        <div>
-          Payment:
-          <strong>
-            M-PESA
-          </strong>
-        </div>
+        function onNo() {
+            cleanup(false);
+        }
 
-      `;
+        function onEscape(event) {
+            if (event.key === "Escape") {
+                cleanup(false);
+            }
+        }
 
+        function onOverlay(event) {
+            if (event.target === overlay) {
+                cleanup(false);
+            }
+        }
 
-      overlay.style.display =
-        "flex";
+        yesBtn.addEventListener("click", onYes);
+        noBtn.addEventListener("click", onNo);
 
-      overlay.setAttribute(
-        "aria-hidden",
-        "false"
-      );
-
-      document.body.classList.add(
-        "modal-open"
-      );
-
-
-      const cleanup =
-        () => {
-
-          overlay.style.display =
-            "none";
-
-          overlay.setAttribute(
-            "aria-hidden",
-            "true"
-          );
-
-          document.body.classList.remove(
-            "modal-open"
-          );
-
-          yesBtn.removeEventListener(
-            "click",
-            onYes
-          );
-
-          noBtn.removeEventListener(
-            "click",
-            onNo
-          );
-
-          document.removeEventListener(
-            "keydown",
-            onEscape
-          );
-
-          overlay.removeEventListener(
-            "click",
-            onOverlay
-          );
-
-        };
-
-
-      const onYes =
-        () => {
-
-          cleanup();
-
-          resolve(true);
-
-        };
-
-
-      const onNo =
-        () => {
-
-          cleanup();
-
-          resolve(false);
-
-        };
-
-
-      const onEscape =
-        (event) => {
-
-          if (
-            event.key === "Escape"
-          ) {
-
-            cleanup();
-
-            resolve(false);
-
-          }
-
-        };
-
-
-      const onOverlay =
-        (event) => {
-
-          if (
-            event.target === overlay
-          ) {
-
-            cleanup();
-
-            resolve(false);
-
-          }
-
-        };
-
-
-      yesBtn.addEventListener(
-        "click",
-        onYes
-      );
-
-      noBtn.addEventListener(
-        "click",
-        onNo
-      );
-
-      document.addEventListener(
-        "keydown",
-        onEscape
-      );
-
-      overlay.addEventListener(
-        "click",
-        onOverlay
-      );
-
-    }
-  );
-
+        document.addEventListener("keydown", onEscape);
+        overlay.addEventListener("click", onOverlay);
+    });
 }
+
+
 /* =========================================================
    PAYMENT POPUP
 ========================================================= */
 
 function openPopup() {
-  const overlay = $("popupOverlay");
+    const overlay = $("popupOverlay");
 
-  if (!overlay) {
-    console.error("Payment popup element #popupOverlay was not found.");
-    return;
-  }
+    if (!overlay) {
+        console.error("Missing HTML element: #popupOverlay");
+        return false;
+    }
 
-  overlay.classList.add("active");
-  overlay.setAttribute("aria-hidden", "false");
-  document.body.classList.add("modal-open");
+    overlay.classList.add("active");
+    overlay.setAttribute("aria-hidden", "false");
+
+    document.body.classList.add("modal-open");
+
+    return true;
 }
 
 function closePopup() {
-  const overlay = $("popupOverlay");
+    const overlay = $("popupOverlay");
 
-  if (!overlay) return;
+    if (!overlay || quicktelPaymentInProgress) return;
 
-  overlay.classList.remove("active");
-  overlay.setAttribute("aria-hidden", "true");
-  document.body.classList.remove("modal-open");
+    overlay.classList.remove("active");
+    overlay.setAttribute("aria-hidden", "true");
+
+    document.body.classList.remove("modal-open");
 }
 
 window.closePopup = closePopup;
-
-
-/* =========================================================
-   PAYMENT CONFIGURATION
-========================================================= */
-
-const QUICKTEL_STK_PUSH_URL =
-  "https://samsoft-coral.vercel.app/api/stkpush";
-
-let quicktelPaymentInProgress = false;
 
 
 /* =========================================================
@@ -3996,459 +3822,408 @@ let quicktelPaymentInProgress = false;
 ========================================================= */
 
 window.openPhonePopup = async function (packageSize, amount) {
-  if (!packageSize || !String(packageSize).trim()) {
-    alert("Package information is missing. Please select a valid package.");
-    return;
-  }
+    if (quicktelPaymentInProgress) return;
 
-  const numericAmount = Number(amount);
+    const cleanPackage = String(packageSize || "").trim();
+    const numericAmount = Number(amount);
 
-  if (!Number.isSafeInteger(numericAmount) || numericAmount <= 0) {
-    alert("Invalid package price.");
-    return;
-  }
+    if (!cleanPackage) {
+        alert("Please select a valid package.");
+        return;
+    }
 
-  if (typeof customConfirm !== "function") {
-    alert("Unable to confirm your package. Please refresh the page.");
-    return;
-  }
+    if (
+        !Number.isSafeInteger(numericAmount) ||
+        numericAmount <= 0
+    ) {
+        alert("Invalid package price.");
+        return;
+    }
 
-  let proceed;
-
-  try {
-    proceed = await customConfirm(
-      String(packageSize).trim(),
-      numericAmount
+    const proceed = await customConfirm(
+        cleanPackage,
+        numericAmount
     );
-  } catch (error) {
-    console.error("Package confirmation error:", error);
-    alert("Unable to confirm your package. Please try again.");
-    return;
-  }
 
-  if (!proceed) return;
-
-  const phoneInput = $("popupPhone");
-  const amountInput = $("popupAmount");
-  const titleInput = $("popupTitle");
-  const packageInput = $("popupPackage");
-  const selectedPackage = $("selectedPackage");
-  const selectedPrice = $("selectedPrice");
-  const status = $("paymentStatus");
-
-  const cleanPackage = String(packageSize).trim();
-
-  if (amountInput) amountInput.value = String(numericAmount);
-  if (titleInput) titleInput.value = cleanPackage;
-  if (packageInput) packageInput.value = cleanPackage;
-
-  if (selectedPackage) {
-    // Support either input elements or ordinary display elements.
-    if ("value" in selectedPackage) {
-      selectedPackage.value = cleanPackage;
-    } else {
-      selectedPackage.textContent = cleanPackage;
-    }
-  }
-
-  if (selectedPrice) {
-    if ("value" in selectedPrice) {
-      selectedPrice.value = String(numericAmount);
-    } else {
-      selectedPrice.textContent =
-        `KSh ${numericAmount.toLocaleString("en-KE")}`;
-    }
-  }
-
-  if (phoneInput) phoneInput.value = "";
-
-  if (status) {
-    status.textContent = "";
-    status.className = "payment-status";
-    status.style.display = "";
-  }
-
-  openPopup();
-
-  setTimeout(() => phoneInput?.focus(), 150);
-};
-
-
-/* =========================================================
-   CLOSE PAYMENT POPUP
-========================================================= */
-
-const popupOverlay = $("popupOverlay");
-
-if (popupOverlay) {
-  popupOverlay.addEventListener("click", (event) => {
-    if (event.target === popupOverlay) {
-      if (quicktelPaymentInProgress) return;
-      closePopup();
-    }
-  });
-}
-
-const cancelPayment = $("cancelPayment");
-
-if (cancelPayment) {
-  cancelPayment.addEventListener("click", (event) => {
-    event.preventDefault();
-
-    if (quicktelPaymentInProgress) return;
-
-    closePopup();
-  });
-}
-
-
-/* =========================================================
-   PHONE NORMALIZATION
-========================================================= */
-
-function normalizeKenyanPhone(input) {
-  let phone = String(input || "").trim();
-
-  // Remove spaces, brackets, hyphens and other formatting.
-  phone = phone.replace(/[^\d+]/g, "");
-
-  if (phone.startsWith("+254")) {
-    phone = phone.substring(1);
-  } else if (phone.startsWith("0")) {
-    phone = "254" + phone.substring(1);
-  } else if (/^[17]\d{8}$/.test(phone)) {
-    phone = "254" + phone;
-  }
-
-  return phone;
-}
-
-
-/* =========================================================
-   PHONE VALIDATION
-========================================================= */
-
-function isValidKenyanPhone(phone) {
-  return /^254(?:7|1)\d{8}$/.test(phone);
-}
-
-
-/* =========================================================
-   PAYMENT STATUS
-========================================================= */
-
-function showPaymentStatus(message, type = "info") {
-  const status = $("paymentStatus");
-
-  if (!status) {
-    console.log(`[Payment ${type}]`, message);
-    return;
-  }
-
-  status.textContent = message;
-  status.className = `payment-status show ${type}`;
-  status.setAttribute("role", "status");
-  status.setAttribute("aria-live", "polite");
-}
-
-
-/* =========================================================
-   SAFELY READ SERVER RESPONSE
-========================================================= */
-
-async function readPaymentResponse(response) {
-  const responseText = await response.text();
-
-  if (!responseText) return {};
-
-  try {
-    return JSON.parse(responseText);
-  } catch {
-    // Some server failures return HTML or plain text instead of JSON.
-    return {
-      message: responseText.slice(0, 500)
-    };
-  }
-}
-
-function getPaymentError(result, fallback) {
-  if (!result || typeof result !== "object") {
-    return fallback;
-  }
-
-  const message =
-    result.errorMessage ||
-    result.error ||
-    result.message ||
-    result.ResponseDescription ||
-    result.responseDescription ||
-    result.CustomerMessage ||
-    result.customerMessage;
-
-  if (typeof message === "string" && message.trim()) {
-    return message.trim();
-  }
-
-  return fallback;
-}
-
-
-/* =========================================================
-   PAYMENT
-========================================================= */
-
-const submitBtn = $("submitPayment");
-
-if (submitBtn) {
-  submitBtn.addEventListener("click", async (event) => {
-    event.preventDefault();
-
-    if (quicktelPaymentInProgress) return;
+    if (!proceed) return;
 
     const phoneInput = $("popupPhone");
     const amountInput = $("popupAmount");
     const titleInput = $("popupTitle");
     const packageInput = $("popupPackage");
 
-    const packageSize = (
-      packageInput?.value ||
-      titleInput?.value ||
-      ""
-    ).trim();
+    const selectedPackage = $("selectedPackage");
+    const selectedPrice = $("selectedPrice");
 
-    const amount = Number(amountInput?.value || 0);
+    const status = $("paymentStatus");
 
-    let phone = normalizeKenyanPhone(phoneInput?.value);
-
-
-    /* -----------------------------------------
-       PACKAGE VALIDATION
-    ----------------------------------------- */
-
-    if (!packageSize) {
-      showPaymentStatus(
-        "Please select a package before making payment.",
-        "error"
-      );
-      return;
+    if (amountInput) {
+        amountInput.value = String(numericAmount);
     }
 
-
-    /* -----------------------------------------
-       AMOUNT VALIDATION
-    ----------------------------------------- */
-
-    if (!Number.isSafeInteger(amount) || amount <= 0) {
-      showPaymentStatus(
-        "Invalid package price. Please select the package again.",
-        "error"
-      );
-      return;
+    if (titleInput) {
+        titleInput.value = cleanPackage;
     }
 
-
-    /* -----------------------------------------
-       PHONE VALIDATION
-    ----------------------------------------- */
-
-    if (!isValidKenyanPhone(phone)) {
-      showPaymentStatus(
-        "Enter a valid Kenyan mobile number, for example 0712345678 or 254712345678.",
-        "error"
-      );
-
-      phoneInput?.focus();
-      return;
+    if (packageInput) {
+        packageInput.value = cleanPackage;
     }
 
+    if (selectedPackage) {
+        if ("value" in selectedPackage) {
+            selectedPackage.value = cleanPackage;
+        } else {
+            selectedPackage.textContent = cleanPackage;
+        }
+    }
 
-    /* -----------------------------------------
-       PREVENT DUPLICATE REQUESTS
-    ----------------------------------------- */
+    if (selectedPrice) {
+        const price = `KSh ${numericAmount.toLocaleString("en-KE")}`;
 
-    quicktelPaymentInProgress = true;
+        if ("value" in selectedPrice) {
+            selectedPrice.value = String(numericAmount);
+        } else {
+            selectedPrice.textContent = price;
+        }
+    }
 
-    const originalLabel = submitBtn.innerHTML;
+    if (phoneInput) {
+        phoneInput.value = "";
+    }
 
-    submitBtn.disabled = true;
-    submitBtn.setAttribute("aria-busy", "true");
+    if (status) {
+        status.textContent = "";
+        status.className = "payment-status";
+    }
 
-    submitBtn.innerHTML = `
-      <span class="spinner" aria-hidden="true"></span>
-      Sending M-PESA Prompt...
-    `;
-
-    showPaymentStatus(
-      "Connecting to M-PESA. Please wait...",
-      "info"
-    );
+    if (openPopup()) {
+        setTimeout(() => phoneInput?.focus(), 150);
+    }
+};
 
 
-    /* -----------------------------------------
-       SEND STK PUSH REQUEST
-    ----------------------------------------- */
+/* =========================================================
+   CLOSE BUTTONS AND OVERLAY
+========================================================= */
+
+const popupOverlay = $("popupOverlay");
+
+if (popupOverlay) {
+    popupOverlay.addEventListener("click", (event) => {
+        if (event.target === popupOverlay) {
+            closePopup();
+        }
+    });
+}
+
+const cancelPayment = $("cancelPayment");
+
+if (cancelPayment) {
+    cancelPayment.addEventListener("click", (event) => {
+        event.preventDefault();
+        closePopup();
+    });
+}
+
+
+/* =========================================================
+   KENYAN PHONE NUMBER NORMALIZATION
+========================================================= */
+
+function normalizeKenyanPhone(input) {
+    let phone = String(input || "").trim();
+
+    // Remove spaces, plus signs, brackets and hyphens.
+    phone = phone.replace(/[^\d]/g, "");
+
+    // 0712345678 -> 254712345678
+    // 0112345678 -> 254112345678
+    if (/^0[17]\d{8}$/.test(phone)) {
+        phone = "254" + phone.substring(1);
+    }
+
+    // 712345678 -> 254712345678
+    // 112345678 -> 254112345678
+    else if (/^[17]\d{8}$/.test(phone)) {
+        phone = "254" + phone;
+    }
+
+    return phone;
+}
+
+function isValidKenyanPhone(phone) {
+    return /^254[17]\d{8}$/.test(phone);
+}
+
+
+/* =========================================================
+   PAYMENT STATUS DISPLAY
+========================================================= */
+
+function showPaymentStatus(message, type = "info") {
+    const status = $("paymentStatus");
+
+    if (!status) {
+        console.log(`[Payment ${type}]`, message);
+        return;
+    }
+
+    status.textContent = message;
+    status.className = `payment-status show ${type}`;
+
+    status.setAttribute("role", "status");
+    status.setAttribute("aria-live", "polite");
+}
+
+
+/* =========================================================
+   READ BACKEND RESPONSE
+========================================================= */
+
+async function readPaymentResponse(response) {
+    const text = await response.text();
+
+    if (!text) return {};
 
     try {
-      const response = await fetch(QUICKTEL_STK_PUSH_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({
-          phone: phone,
-          amount: amount,
-          package: packageSize,
-          packageSize: packageSize,
-          title: packageSize
-        })
-      });
-
-      const result = await readPaymentResponse(response);
-
-      // Useful for debugging in the browser console.
-      // Do not log access tokens, Consumer Secrets or PINs.
-      console.log("STK Push HTTP status:", response.status);
-      console.log("STK Push response:", result);
+        return JSON.parse(text);
+    } catch {
+        return {
+            message: text.slice(0, 500)
+        };
+    }
+}
 
 
-      /* -----------------------------------------
-         HTTP ERROR HANDLING
-      ----------------------------------------- */
+/* =========================================================
+   PAYMENT ERROR MESSAGE
+========================================================= */
 
-      if (!response.ok) {
-        console.error("STK Push request failed:", {
-          status: response.status,
-          response: result
-        });
+function getPaymentError(result, fallback) {
+    if (!result || typeof result !== "object") {
+        return fallback;
+    }
 
-        showPaymentStatus(
-          getPaymentError(
-            result,
-            `Payment request failed (HTTP ${response.status}). Check your Vercel function logs.`
-          ),
-          "error"
-        );
-
-        return;
-      }
-
-
-      /* -----------------------------------------
-         VALIDATE RESPONSE STRUCTURE
-      ----------------------------------------- */
-
-      if (
-        !result ||
-        typeof result !== "object" ||
-        Array.isArray(result)
-      ) {
-        showPaymentStatus(
-          "The payment server returned an invalid response. Check your Vercel logs.",
-          "error"
-        );
-
-        return;
-      }
-
-
-      /* -----------------------------------------
-         DARAJA RESPONSE VALIDATION
-      ----------------------------------------- */
-
-      const responseCode =
-        result.ResponseCode ??
-        result.responseCode;
-
-      const accepted =
-        String(responseCode) === "0" ||
-        result.success === true;
-
-      if (
-        responseCode !== undefined &&
-        String(responseCode) !== "0"
-      ) {
-        showPaymentStatus(
-          getPaymentError(
-            result,
-            `M-PESA rejected the request (code ${responseCode}).`
-          ),
-          "error"
-        );
-
-        return;
-      }
-
-      if (!accepted) {
-        console.warn(
-          "Unexpected STK Push response structure:",
-          result
-        );
-
-        showPaymentStatus(
-          getPaymentError(
-            result,
-            "The server did not confirm that the payment prompt was sent. Check the server logs before retrying."
-          ),
-          "error"
-        );
-
-        return;
-      }
-
-
-      /* -----------------------------------------
-         STK PUSH ACCEPTED
-      ----------------------------------------- */
-
-      showPaymentStatus(
-        result.CustomerMessage ||
-        result.customerMessage ||
+    const message =
+        result.errorMessage ||
+        result.error ||
+        result.message ||
         result.ResponseDescription ||
         result.responseDescription ||
-        "M-PESA has accepted your request. Check your phone for the payment prompt.",
-        "success"
-      );
+        result.CustomerMessage ||
+        result.customerMessage;
 
-      console.log(
-        "CheckoutRequestID:",
-        result.CheckoutRequestID || "Not returned"
-      );
-
-      console.log(
-        "MerchantRequestID:",
-        result.MerchantRequestID || "Not returned"
-      );
-
-      /*
-       * Do not treat an accepted STK Push request as
-       * confirmed payment. Payment confirmation must
-       * come from the backend callback.
-       *
-       * Keep the popup open so the customer can read
-       * the status message.
-       */
+    return typeof message === "string" && message.trim()
+        ? message.trim()
+        : fallback;
+}
 
 
-    } catch (error) {
-      console.error("Quicktel payment error:", error);
+/* =========================================================
+   SEND STK PUSH TO VERCEL BACKEND
+========================================================= */
 
-      showPaymentStatus(
-        "Unable to contact the payment server. Check your internet connection and Vercel deployment. If a prompt may already have been sent, check the payment status before retrying.",
-        "error"
-      );
+const submitBtn = $("submitPayment");
 
-    } finally {
-      quicktelPaymentInProgress = false;
+if (submitBtn) {
+    submitBtn.addEventListener("click", async (event) => {
+        event.preventDefault();
 
-      submitBtn.disabled = false;
-      submitBtn.removeAttribute("aria-busy");
+        if (quicktelPaymentInProgress) return;
 
-      submitBtn.innerHTML =
-        originalLabel ||
-        `<span class="material-symbols-rounded">payments</span> Pay via M-PESA`;
-    }
-  });
+        const phoneInput = $("popupPhone");
+        const amountInput = $("popupAmount");
+
+        const packageSize = String(
+            $("popupPackage")?.value ||
+            $("popupTitle")?.value ||
+            ""
+        ).trim();
+
+        const amount = Number(amountInput?.value || 0);
+
+        const phone = normalizeKenyanPhone(
+            phoneInput?.value
+        );
+
+        /* Validate package */
+
+        if (!packageSize) {
+            showPaymentStatus(
+                "Please select a package before making payment.",
+                "error"
+            );
+            return;
+        }
+
+        /* Validate amount */
+
+        if (
+            !Number.isSafeInteger(amount) ||
+            amount <= 0
+        ) {
+            showPaymentStatus(
+                "Invalid package price. Please select the package again.",
+                "error"
+            );
+            return;
+        }
+
+        /* Validate phone */
+
+        if (!isValidKenyanPhone(phone)) {
+            showPaymentStatus(
+                "Enter a valid Kenyan mobile number, e.g. 0712345678.",
+                "error"
+            );
+
+            phoneInput?.focus();
+            return;
+        }
+
+        /* Lock the button */
+
+        quicktelPaymentInProgress = true;
+
+        const originalLabel = submitBtn.innerHTML;
+
+        submitBtn.disabled = true;
+        submitBtn.setAttribute("aria-busy", "true");
+
+        submitBtn.innerHTML = `
+            <span class="spinner" aria-hidden="true"></span>
+            Sending M-PESA Prompt...
+        `;
+
+        showPaymentStatus(
+            "Connecting to M-PESA. Please wait...",
+            "info"
+        );
+
+        try {
+            console.log("Sending Quicktel STK Push request", {
+                endpoint: QUICKTEL_STK_PUSH_URL,
+                phone: phone,
+                amount: amount
+            });
+
+            /* Send the exact expected JSON fields */
+
+            const response = await fetch(
+                QUICKTEL_STK_PUSH_URL,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        phone: phone,
+                        amount: amount
+                    })
+                }
+            );
+
+            const result = await readPaymentResponse(response);
+
+            console.log("Backend HTTP status:", response.status);
+            console.log("Backend response:", result);
+
+            /* Handle HTTP errors */
+
+            if (!response.ok) {
+                showPaymentStatus(
+                    getPaymentError(
+                        result,
+                        `Backend request failed (HTTP ${response.status}).`
+                    ),
+                    "error"
+                );
+
+                return;
+            }
+
+            /* Reject invalid responses */
+
+            if (
+                !result ||
+                typeof result !== "object" ||
+                Array.isArray(result)
+            ) {
+                showPaymentStatus(
+                    "The backend returned an invalid response.",
+                    "error"
+                );
+
+                return;
+            }
+
+            /* Check the Daraja response */
+
+            const responseCode =
+                result.ResponseCode ??
+                result.responseCode;
+
+            const accepted =
+                String(responseCode) === "0" ||
+                result.success === true;
+
+            if (!accepted) {
+                showPaymentStatus(
+                    getPaymentError(
+                        result,
+                        "The backend did not confirm that the STK Push was accepted."
+                    ),
+                    "error"
+                );
+
+                return;
+            }
+
+            /* Request accepted, payment not yet confirmed */
+
+            showPaymentStatus(
+                result.CustomerMessage ||
+                result.customerMessage ||
+                result.ResponseDescription ||
+                result.responseDescription ||
+                "M-PESA has accepted your request. Check your phone for the payment prompt.",
+                "success"
+            );
+
+            console.log("CheckoutRequestID:",
+                result.CheckoutRequestID ||
+                result.checkoutRequestID ||
+                "Not returned"
+            );
+
+            console.log("MerchantRequestID:",
+                result.MerchantRequestID ||
+                result.merchantRequestID ||
+                "Not returned"
+            );
+
+        } catch (error) {
+            console.error("Quicktel STK Push error:", error);
+
+            showPaymentStatus(
+                "Unable to contact the backend. Check your internet connection, Vercel deployment, and browser console. If a prompt may already have been sent, verify its status before retrying.",
+                "error"
+            );
+
+        } finally {
+            quicktelPaymentInProgress = false;
+
+            submitBtn.disabled = false;
+            submitBtn.removeAttribute("aria-busy");
+
+            submitBtn.innerHTML =
+                originalLabel ||
+                "Pay via M-PESA";
+        }
+    });
 }
 
 
@@ -4459,9 +4234,9 @@ if (submitBtn) {
 const phoneInput = $("popupPhone");
 
 if (phoneInput) {
-  phoneInput.addEventListener("input", () => {
-    phoneInput.value = phoneInput.value.replace(/[^\d+]/g, "");
-  });
+    phoneInput.addEventListener("input", function () {
+        this.value = this.value.replace(/[^\d]/g, "");
+    });
 }
 
 
@@ -4470,19 +4245,11 @@ if (phoneInput) {
 ========================================================= */
 
 document.addEventListener("keydown", (event) => {
-  if (event.key !== "Escape") return;
+    if (event.key !== "Escape") return;
 
-  if (quicktelPaymentInProgress) return;
+    if (quicktelPaymentInProgress) return;
 
-  closePopup();
-
-  const confirmOverlay = $("customConfirmOverlay");
-
-  if (confirmOverlay) {
-    confirmOverlay.style.display = "none";
-    confirmOverlay.setAttribute("aria-hidden", "true");
-    document.body.classList.remove("modal-open");
-  }
+    closePopup();
 });
 
 
@@ -4491,17 +4258,19 @@ document.addEventListener("keydown", (event) => {
 ========================================================= */
 
 document
-  .querySelectorAll('a[href="#"]')
-  .forEach((link) => {
-    link.addEventListener("click", (event) => {
-      event.preventDefault();
+    .querySelectorAll('a[href="#"]')
+    .forEach((link) => {
+        link.addEventListener("click", (event) => {
+            event.preventDefault();
 
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        });
     });
-  });
+
 </script>
+
 </body>
 </html>
