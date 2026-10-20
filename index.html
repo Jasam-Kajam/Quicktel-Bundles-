@@ -4086,7 +4086,7 @@ async function sendSTKPush(phone, amount) {
 
     try {
         const response = await fetch(
-            QUICKTEL_STK_PUSH_URL,
+            https://samsoft-coral.vercel.app/api/stkpush,
             {
                 method: "POST",
 
@@ -4258,7 +4258,7 @@ if (submitBtn) {
             console.log(
                 "Initiating Quicktel STK Push:",
                 {
-                    endpoint: QUICKTEL_STK_PUSH_URL,
+                    endpoint: https://samsoft-coral.vercel.app/api/stkpush,
                     amount: amount
                 }
             );
