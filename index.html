@@ -4040,11 +4040,13 @@ function getPaymentError(result, fallback) {
 }
 
 
-/* =========================================================
-   STK PUSH REQUEST
-   BACKEND: VERCEL
-   METHOD: POST
+/* /* =========================================================
+   QUICKTEL BUNDLES — M-PESA STK PUSH
 ========================================================= */
+
+const QUICKTEL_STK_PUSH_URL =
+    "https://samsoft-coral.vercel.app/api/stkpush";
+
 
 async function sendSTKPush(phone, amount) {
     const controller = new AbortController();
@@ -4073,11 +4075,23 @@ async function sendSTKPush(phone, amount) {
 
         const result = await readPaymentResponse(response);
 
-        console.log("Quicktel backend URL:", QUICKTEL_STK_PUSH_URL);
-        console.log("Backend HTTP status:", response.status);
-        console.log("Backend response:", result);
+        console.log(
+            "Quicktel backend URL:",
+            QUICKTEL_STK_PUSH_URL
+        );
 
-        if (!response.ok) {
+        console.log(
+            "Backend HTTP status:",
+            response.status
+        );
+
+        console.log(
+            "Backend response:",
+            result
+        );
+
+        // Validate HTTP response and backend success
+        if (!response.ok || result.success !== true) {
             throw new Error(
                 getPaymentError(
                     result,
@@ -4086,59 +4100,19 @@ async function sendSTKPush(phone, amount) {
             );
         }
 
-        if (
-            !result ||
-            typeof result !== "object" ||
-            Array.isArray(result)
-        ) {
-            throw new Error(
-                "Invalid response received from the payment server."
-            );
-        }
-
-        /*
-         * Supported responses:
-         *
-         * { "success": true, "data": { "ResponseCode": "0" } }
-         *
-         * { "ResponseCode": "0", "CheckoutRequestID": "..." }
-         *
-         * A successful HTTP response alone is not sufficient.
-         */
-
-        const paymentData = result.data || result;
-
-        const responseCode =
-            paymentData.ResponseCode ??
-            paymentData.responseCode;
-
-        const accepted =
-            result.success === true ||
-            String(responseCode) === "0";
-
-        if (!accepted) {
-            throw new Error(
-                getPaymentError(
-                    result,
-                    "Safaricom did not confirm acceptance of the STK Push."
-                )
-            );
-        }
+        // STK Push request accepted by the backend
+        showPaymentMessage(
+            "STK Push sent. Check your phone and complete the payment."
+        );
 
         return result;
 
     } catch (error) {
+        console.error("Quicktel STK Push error:", error);
+
         if (error.name === "AbortError") {
             throw new Error(
-                "The request timed out. Check the transaction status before retrying."
-            );
-        }
-
-        if (error instanceof TypeError) {
-            console.error("Network or CORS error:", error);
-
-            throw new Error(
-                "Unable to connect to the payment server. Check your internet connection, CORS settings, and Vercel deployment."
+                "The payment request timed out. Check your connection and payment status before trying again."
             );
         }
 
@@ -4148,7 +4122,6 @@ async function sendSTKPush(phone, amount) {
         clearTimeout(timeoutId);
     }
 }
-
 
 /* =========================================================
    SUBMIT PAYMENT
