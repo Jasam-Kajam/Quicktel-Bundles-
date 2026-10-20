@@ -3566,13 +3566,12 @@
 
 </footer>
 
-
 <script>
 "use strict";
 
 /* =========================================================
-   QUICKTEL BUNDLES — PAYMENT FRONTEND
-   Safaricom Daraja STK Push
+   QUICKTEL BUNDLES
+   PAYMENT FRONTEND — SAFARICOM DARAJA STK PUSH
 ========================================================= */
 
 
@@ -3587,7 +3586,11 @@ const QUICKTEL_STK_PUSH_URL =
 
 const PAYMENT_TIMEOUT = 45000;
 
+const MIN_PAYMENT_AMOUNT = 1;
+const MAX_PAYMENT_AMOUNT = 250000;
+
 let quicktelPaymentInProgress = false;
+let paymentRequestController = null;
 
 
 /* =========================================================
@@ -3602,11 +3605,23 @@ if (yearEl) {
 
 
 /* =========================================================
-   MOBILE MENU
+   MOBILE NAVIGATION
 ========================================================= */
 
 const hamburger = $("hamburger");
 const menu = $("menu");
+
+function closeMobileMenu() {
+    if (!hamburger || !menu) return;
+
+    menu.classList.remove("show");
+
+    hamburger.setAttribute("aria-expanded", "false");
+    hamburger.setAttribute("aria-label", "Open menu");
+
+    hamburger.innerHTML =
+        '<span class="material-symbols-rounded">menu</span>';
+}
 
 if (hamburger && menu) {
     hamburger.addEventListener("click", () => {
@@ -3628,15 +3643,13 @@ if (hamburger && menu) {
     });
 
     menu.querySelectorAll("a").forEach((link) => {
-        link.addEventListener("click", () => {
-            menu.classList.remove("show");
+        link.addEventListener("click", closeMobileMenu);
+    });
 
-            hamburger.setAttribute("aria-expanded", "false");
-            hamburger.setAttribute("aria-label", "Open menu");
-
-            hamburger.innerHTML =
-                '<span class="material-symbols-rounded">menu</span>';
-        });
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            closeMobileMenu();
+        }
     });
 }
 
@@ -3653,7 +3666,10 @@ const productCards = document.querySelectorAll(
 
 function filterCategory(category) {
     productCards.forEach((card) => {
-        card.hidden = card.dataset.category !== category;
+        const matches =
+            card.dataset.category === category;
+
+        card.hidden = !matches;
     });
 }
 
@@ -3671,13 +3687,21 @@ if (mainSelect) {
 ========================================================= */
 
 window.selectMain = function (category) {
-    if (!mainSelect) return;
+    const allowedCategories = [
+        "bundles",
+        "minutes",
+        "sms"
+    ];
 
-    if (!["bundles", "minutes", "sms"].includes(category)) {
+    if (
+        !mainSelect ||
+        !allowedCategories.includes(category)
+    ) {
         return;
     }
 
     mainSelect.value = category;
+
     filterCategory(category);
 };
 
@@ -3687,13 +3711,28 @@ window.selectMain = function (category) {
 ========================================================= */
 
 function escapeHTML(value) {
-    return String(value).replace(/[&<>"']/g, (character) => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#039;"
-    })[character]);
+    return String(value).replace(/[&<>"']/g, (character) => {
+        const entities = {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#039;"
+        };
+
+        return entities[character];
+    });
+}
+
+
+/* =========================================================
+   FORMAT KENYAN CURRENCY
+========================================================= */
+
+function formatKES(amount) {
+    return Number(amount).toLocaleString("en-KE", {
+        maximumFractionDigits: 0
+    });
 }
 
 
@@ -3712,7 +3751,8 @@ function customConfirm(product, amount) {
         if (!overlay || !details || !yesBtn || !noBtn) {
             resolve(
                 window.confirm(
-                    `Confirm purchase: ${product}\nAmount: KSh ${amount}`
+                    `Confirm purchase: ${product}\n` +
+                    `Amount: KSh ${formatKES(amount)}`
                 )
             );
 
@@ -3721,30 +3761,32 @@ function customConfirm(product, amount) {
 
         details.innerHTML = `
             <div class="confirm-package">
-                <span class="material-symbols-rounded">
-                    shopping_bag
-                </span>
+                <span
+                    class="material-symbols-rounded"
+                    aria-hidden="true"
+                >shopping_bag</span>
 
                 <strong>${escapeHTML(product)}</strong>
             </div>
 
             <div>
                 Amount:
-                <strong>
-                    KSh ${Number(amount).toLocaleString("en-KE")}
-                </strong>
+                <strong>KSh ${formatKES(amount)}</strong>
             </div>
 
             <div>
-                Payment:
+                Payment method:
                 <strong>M-PESA</strong>
             </div>
         `;
 
         overlay.style.display = "flex";
+
         overlay.setAttribute("aria-hidden", "false");
 
         document.body.classList.add("modal-open");
+
+        const previousFocus = document.activeElement;
 
         let finished = false;
 
@@ -3754,6 +3796,7 @@ function customConfirm(product, amount) {
             finished = true;
 
             overlay.style.display = "none";
+
             overlay.setAttribute("aria-hidden", "true");
 
             document.body.classList.remove("modal-open");
@@ -3762,7 +3805,12 @@ function customConfirm(product, amount) {
             noBtn.removeEventListener("click", onNo);
 
             overlay.removeEventListener("click", onOverlay);
+
             document.removeEventListener("keydown", onEscape);
+
+            if (previousFocus && typeof previousFocus.focus === "function") {
+                previousFocus.focus();
+            }
 
             resolve(result);
         }
@@ -3791,7 +3839,10 @@ function customConfirm(product, amount) {
         noBtn.addEventListener("click", onNo);
 
         overlay.addEventListener("click", onOverlay);
+
         document.addEventListener("keydown", onEscape);
+
+        yesBtn.focus();
     });
 }
 
@@ -3810,6 +3861,7 @@ function openPopup() {
     }
 
     overlay.classList.add("active");
+
     overlay.setAttribute("aria-hidden", "false");
 
     document.body.classList.add("modal-open");
@@ -3820,12 +3872,12 @@ function openPopup() {
 function closePopup() {
     const overlay = $("popupOverlay");
 
-    // Do not close while the request is being processed.
     if (!overlay || quicktelPaymentInProgress) {
         return;
     }
 
     overlay.classList.remove("active");
+
     overlay.setAttribute("aria-hidden", "true");
 
     document.body.classList.remove("modal-open");
@@ -3842,18 +3894,22 @@ window.openPhonePopup = async function (packageSize, amount) {
     if (quicktelPaymentInProgress) return;
 
     const selectedName = String(packageSize || "").trim();
+
     const selectedAmount = Number(amount);
 
     if (!selectedName) {
         alert("Please select a valid package.");
+
         return;
     }
 
     if (
         !Number.isSafeInteger(selectedAmount) ||
-        selectedAmount <= 0
+        selectedAmount < MIN_PAYMENT_AMOUNT ||
+        selectedAmount > MAX_PAYMENT_AMOUNT
     ) {
         alert("The selected package has an invalid price.");
+
         return;
     }
 
@@ -3871,7 +3927,6 @@ window.openPhonePopup = async function (packageSize, amount) {
 
     const packageDisplay = $("selectedPackage");
     const priceDisplay = $("selectedPrice");
-    const status = $("paymentStatus");
 
     if (amountInput) {
         amountInput.value = String(selectedAmount);
@@ -3891,26 +3946,25 @@ window.openPhonePopup = async function (packageSize, amount) {
 
     if (priceDisplay) {
         priceDisplay.textContent =
-            `KSh ${selectedAmount.toLocaleString("en-KE")}`;
+            `KSh ${formatKES(selectedAmount)}`;
     }
 
     if (phoneInput) {
         phoneInput.value = "";
     }
 
-    if (status) {
-        status.textContent = "";
-        status.className = "payment-status";
-    }
+    showPaymentStatus("", "info");
 
     if (openPopup()) {
-        setTimeout(() => phoneInput?.focus(), 150);
+        setTimeout(() => {
+            phoneInput?.focus();
+        }, 150);
     }
 };
 
 
 /* =========================================================
-   CLOSE POPUP
+   POPUP CLOSE EVENTS
 ========================================================= */
 
 const popupOverlay = $("popupOverlay");
@@ -3928,32 +3982,44 @@ const cancelPayment = $("cancelPayment");
 if (cancelPayment) {
     cancelPayment.addEventListener("click", (event) => {
         event.preventDefault();
+
         closePopup();
     });
 }
 
 
 /* =========================================================
-   KENYAN PHONE NUMBER NORMALIZATION
+   KENYAN PHONE NORMALIZATION
 ========================================================= */
 
 function normalizeKenyanPhone(input) {
-    let phone = String(input || "").replace(/\D/g, "");
+    let phone = String(input || "").trim();
 
-    // 0712345678 -> 254712345678
-    // 0112345678 -> 254112345678
+    // Remove spaces, hyphens and other formatting.
+    phone = phone.replace(/[\s()-]/g, "");
+
+    // Convert an international prefix.
+    if (phone.startsWith("+")) {
+        phone = phone.slice(1);
+    }
+
+    // Accept a number entered with Kenya's country code.
+    if (/^254[17]\d{8}$/.test(phone)) {
+        return phone;
+    }
+
+    // Convert local format: 0712345678 -> 254712345678.
     if (/^0[17]\d{8}$/.test(phone)) {
-        phone = "254" + phone.slice(1);
+        return "254" + phone.slice(1);
     }
 
-    // 712345678 -> 254712345678
-    // 112345678 -> 254112345678
-    else if (/^[17]\d{8}$/.test(phone)) {
-        phone = "254" + phone;
+    // Convert local format: 712345678 -> 254712345678.
+    if (/^[17]\d{8}$/.test(phone)) {
+        return "254" + phone;
     }
 
-    // 254712345678 remains unchanged.
-    return phone;
+    // Return remaining digits for validation.
+    return phone.replace(/\D/g, "");
 }
 
 function isValidKenyanPhone(phone) {
@@ -3962,22 +4028,32 @@ function isValidKenyanPhone(phone) {
 
 
 /* =========================================================
-   PAYMENT STATUS MESSAGE
+   PAYMENT STATUS MESSAGES
 ========================================================= */
 
 function showPaymentStatus(message, type = "info") {
     const status = $("paymentStatus");
 
     if (!status) {
-        console.log(`[Payment: ${type}]`, message);
+        if (message) {
+            console.log(`[Payment: ${type}]`, message);
+        }
+
         return;
     }
 
     status.textContent = message;
 
-    status.className = `payment-status show ${type}`;
+    status.className = `payment-status ${type}`;
+
+    if (message) {
+        status.classList.add("show");
+    } else {
+        status.classList.remove("show");
+    }
 
     status.setAttribute("role", "status");
+
     status.setAttribute("aria-live", "polite");
 }
 
@@ -3989,7 +4065,7 @@ function showPaymentStatus(message, type = "info") {
 async function readPaymentResponse(response) {
     const responseText = await response.text();
 
-    if (!responseText) {
+    if (!responseText.trim()) {
         return {};
     }
 
@@ -3998,18 +4074,18 @@ async function readPaymentResponse(response) {
     } catch {
         console.error(
             "Backend returned a non-JSON response:",
-            responseText.slice(0, 500)
+            responseText.slice(0, 300)
         );
 
         throw new Error(
-            "The payment server returned an invalid response."
+            "The payment server returned an invalid response. Please try again later."
         );
     }
 }
 
 
 /* =========================================================
-   EXTRACT PAYMENT ERROR
+   EXTRACT BACKEND ERROR
 ========================================================= */
 
 function getPaymentError(result, fallback) {
@@ -4018,6 +4094,7 @@ function getPaymentError(result, fallback) {
     }
 
     const details = result.details || {};
+
     const data = result.data || {};
 
     const message =
@@ -4032,27 +4109,23 @@ function getPaymentError(result, fallback) {
         result.ResponseDescription ||
         result.CustomerMessage;
 
-    return (
-        typeof message === "string" && message.trim()
-    )
-        ? message.trim()
-        : fallback;
+    if (typeof message === "string" && message.trim()) {
+        return message.trim();
+    }
+
+    return fallback;
 }
 
 
-/* /* =========================================================
-   QUICKTEL BUNDLES — M-PESA STK PUSH
+/* =========================================================
+   M-PESA STK PUSH REQUEST
 ========================================================= */
 
-const QUICKTEL_STK_PUSH_URL =
-    "https://samsoft-coral.vercel.app/api/stkpush";
-
-
 async function sendSTKPush(phone, amount) {
-    const controller = new AbortController();
+    paymentRequestController = new AbortController();
 
     const timeoutId = setTimeout(() => {
-        controller.abort();
+        paymentRequestController?.abort();
     }, PAYMENT_TIMEOUT);
 
     try {
@@ -4069,28 +4142,19 @@ async function sendSTKPush(phone, amount) {
                 amount: amount
             }),
 
-            signal: controller.signal,
+            signal: paymentRequestController.signal,
+
             cache: "no-store"
         });
 
         const result = await readPaymentResponse(response);
 
-        console.log(
-            "Quicktel backend URL:",
-            QUICKTEL_STK_PUSH_URL
-        );
+        console.log("Quicktel backend URL:", QUICKTEL_STK_PUSH_URL);
 
-        console.log(
-            "Backend HTTP status:",
-            response.status
-        );
+        console.log("Backend HTTP status:", response.status);
 
-        console.log(
-            "Backend response:",
-            result
-        );
+        console.log("Backend response:", result);
 
-        // Validate HTTP response and backend success
         if (!response.ok || result.success !== true) {
             throw new Error(
                 getPaymentError(
@@ -4100,19 +4164,24 @@ async function sendSTKPush(phone, amount) {
             );
         }
 
-        // STK Push request accepted by the backend
-        showPaymentMessage(
-            "STK Push sent. Check your phone and complete the payment."
-        );
-
         return result;
 
     } catch (error) {
         console.error("Quicktel STK Push error:", error);
 
         if (error.name === "AbortError") {
+            const timeoutError = new Error(
+                "The request timed out. Check your M-PESA transaction status before attempting another payment."
+            );
+
+            timeoutError.name = "PaymentTimeoutError";
+
+            throw timeoutError;
+        }
+
+        if (error instanceof TypeError) {
             throw new Error(
-                "The payment request timed out. Check your connection and payment status before trying again."
+                "Unable to reach the payment server. Check your internet connection and try again."
             );
         }
 
@@ -4120,11 +4189,14 @@ async function sendSTKPush(phone, amount) {
 
     } finally {
         clearTimeout(timeoutId);
+
+        paymentRequestController = null;
     }
 }
 
+
 /* =========================================================
-   SUBMIT PAYMENT
+   PAYMENT SUBMISSION
 ========================================================= */
 
 const submitBtn = $("submitPayment");
@@ -4133,7 +4205,9 @@ if (submitBtn) {
     submitBtn.addEventListener("click", async (event) => {
         event.preventDefault();
 
-        if (quicktelPaymentInProgress) return;
+        if (quicktelPaymentInProgress) {
+            return;
+        }
 
         const phoneInput = $("popupPhone");
 
@@ -4151,6 +4225,10 @@ if (submitBtn) {
             ""
         ).trim();
 
+        /* -----------------------------------------------
+           VALIDATE PACKAGE
+        ----------------------------------------------- */
+
         if (!packageName) {
             showPaymentStatus(
                 "Please select a package before making payment.",
@@ -4160,9 +4238,14 @@ if (submitBtn) {
             return;
         }
 
+        /* -----------------------------------------------
+           VALIDATE AMOUNT
+        ----------------------------------------------- */
+
         if (
             !Number.isSafeInteger(amount) ||
-            amount <= 0
+            amount < MIN_PAYMENT_AMOUNT ||
+            amount > MAX_PAYMENT_AMOUNT
         ) {
             showPaymentStatus(
                 "Invalid package price. Please select your package again.",
@@ -4172,9 +4255,13 @@ if (submitBtn) {
             return;
         }
 
+        /* -----------------------------------------------
+           VALIDATE PHONE
+        ----------------------------------------------- */
+
         if (!isValidKenyanPhone(phone)) {
             showPaymentStatus(
-                "Enter a valid Kenyan phone number, such as 0712345678.",
+                "Enter a valid Kenyan Safaricom, Airtel or Telkom number, such as 0712345678.",
                 "error"
             );
 
@@ -4182,6 +4269,10 @@ if (submitBtn) {
 
             return;
         }
+
+        /* -----------------------------------------------
+           LOCK PAYMENT BUTTON
+        ----------------------------------------------- */
 
         quicktelPaymentInProgress = true;
 
@@ -4233,13 +4324,12 @@ if (submitBtn) {
                 merchantRequestId
             );
 
-            /*
-             * Safaricom accepting the request does not mean
-             * that the customer has completed payment.
-             */
+            /* -------------------------------------------
+               REQUEST ACCEPTED
+            ------------------------------------------- */
 
             showPaymentStatus(
-                "STK Push request accepted. Check your phone and enter your M-PESA PIN if prompted. Your payment is not confirmed until the transaction result is verified.",
+                "Your M-PESA request has been accepted. Check your phone and follow the M-PESA prompt. Payment is not complete until the transaction is confirmed.",
                 "success"
             );
 
@@ -4251,7 +4341,7 @@ if (submitBtn) {
 
             showPaymentStatus(
                 error.message ||
-                "The payment request failed. Check the transaction status before retrying.",
+                "Unable to initiate payment. Check your transaction status before retrying.",
                 "error"
             );
 
@@ -4262,7 +4352,8 @@ if (submitBtn) {
 
             submitBtn.removeAttribute("aria-busy");
 
-            submitBtn.innerHTML = originalLabel;
+            submitBtn.innerHTML =
+                "Pay with M-PESA";
         }
     });
 }
@@ -4275,8 +4366,12 @@ if (submitBtn) {
 const phoneInput = $("popupPhone");
 
 if (phoneInput) {
+    phoneInput.setAttribute("inputmode", "tel");
+
+    phoneInput.setAttribute("autocomplete", "tel");
+
     phoneInput.addEventListener("input", function () {
-        this.value = this.value.replace(/\D/g, "");
+        this.value = this.value.replace(/[^\d+()\s-]/g, "");
     });
 }
 
@@ -4306,6 +4401,13 @@ document.querySelectorAll('a[href="#"]').forEach((link) => {
         });
     });
 });
+
+
+/* =========================================================
+   INITIALIZATION
+========================================================= */
+
+console.log("Quicktel Bundles payment frontend initialized.");
 
 </script>
 </body>
