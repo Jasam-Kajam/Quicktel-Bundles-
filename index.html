@@ -3571,7 +3571,7 @@
 
 /* =========================================================
    QUICKTEL BUNDLES
-   PAYMENT FRONTEND — SAFARICOM DARAJA STK PUSH
+   SAFARICOM DARAJA STK PUSH + PAYMENT STATUS POLLING
 ========================================================= */
 
 
@@ -3584,13 +3584,19 @@ const $ = (id) => document.getElementById(id);
 const QUICKTEL_STK_PUSH_URL =
     "https://samsoft-coral.vercel.app/api/stkpush";
 
+const QUICKTEL_PAYMENT_STATUS_URL =
+    "https://samsoft-coral.vercel.app/api/payment-status";
+
 const PAYMENT_TIMEOUT = 45000;
+const PAYMENT_POLL_INTERVAL = 2500;
+const PAYMENT_POLL_TIMEOUT = 120000;
 
 const MIN_PAYMENT_AMOUNT = 1;
 const MAX_PAYMENT_AMOUNT = 250000;
 
 let quicktelPaymentInProgress = false;
 let paymentRequestController = null;
+let paymentPollController = null;
 
 
 /* =========================================================
@@ -3627,11 +3633,7 @@ if (hamburger && menu) {
     hamburger.addEventListener("click", () => {
         const opened = menu.classList.toggle("show");
 
-        hamburger.setAttribute(
-            "aria-expanded",
-            String(opened)
-        );
-
+        hamburger.setAttribute("aria-expanded", String(opened));
         hamburger.setAttribute(
             "aria-label",
             opened ? "Close menu" : "Open menu"
@@ -3666,10 +3668,7 @@ const productCards = document.querySelectorAll(
 
 function filterCategory(category) {
     productCards.forEach((card) => {
-        const matches =
-            card.dataset.category === category;
-
-        card.hidden = !matches;
+        card.hidden = card.dataset.category !== category;
     });
 }
 
@@ -3687,21 +3686,13 @@ if (mainSelect) {
 ========================================================= */
 
 window.selectMain = function (category) {
-    const allowedCategories = [
-        "bundles",
-        "minutes",
-        "sms"
-    ];
+    const allowedCategories = ["bundles", "minutes", "sms"];
 
-    if (
-        !mainSelect ||
-        !allowedCategories.includes(category)
-    ) {
+    if (!mainSelect || !allowedCategories.includes(category)) {
         return;
     }
 
     mainSelect.value = category;
-
     filterCategory(category);
 };
 
@@ -3730,7 +3721,11 @@ function escapeHTML(value) {
 ========================================================= */
 
 function formatKES(amount) {
-    return Number(amount).toLocaleString("en-KE", {
+    const number = Number(amount);
+
+    if (!Number.isFinite(number)) return "0";
+
+    return number.toLocaleString("en-KE", {
         maximumFractionDigits: 0
     });
 }
@@ -3744,7 +3739,6 @@ function customConfirm(product, amount) {
     return new Promise((resolve) => {
         const overlay = $("customConfirmOverlay");
         const details = $("confirmDetails");
-
         const yesBtn = document.querySelector(".confirm-yes");
         const noBtn = document.querySelector(".confirm-no");
 
@@ -3755,7 +3749,6 @@ function customConfirm(product, amount) {
                     `Amount: KSh ${formatKES(amount)}`
                 )
             );
-
             return;
         }
 
@@ -3765,7 +3758,6 @@ function customConfirm(product, amount) {
                     class="material-symbols-rounded"
                     aria-hidden="true"
                 >shopping_bag</span>
-
                 <strong>${escapeHTML(product)}</strong>
             </div>
 
@@ -3781,34 +3773,27 @@ function customConfirm(product, amount) {
         `;
 
         overlay.style.display = "flex";
-
         overlay.setAttribute("aria-hidden", "false");
-
         document.body.classList.add("modal-open");
 
         const previousFocus = document.activeElement;
-
         let finished = false;
 
         function cleanup(result) {
             if (finished) return;
-
             finished = true;
 
             overlay.style.display = "none";
-
             overlay.setAttribute("aria-hidden", "true");
-
             document.body.classList.remove("modal-open");
 
             yesBtn.removeEventListener("click", onYes);
             noBtn.removeEventListener("click", onNo);
-
             overlay.removeEventListener("click", onOverlay);
-
             document.removeEventListener("keydown", onEscape);
 
-            if (previousFocus && typeof previousFocus.focus === "function") {
+            if (previousFocus &&
+                typeof previousFocus.focus === "function") {
                 previousFocus.focus();
             }
 
@@ -3824,22 +3809,16 @@ function customConfirm(product, amount) {
         }
 
         function onEscape(event) {
-            if (event.key === "Escape") {
-                cleanup(false);
-            }
+            if (event.key === "Escape") cleanup(false);
         }
 
         function onOverlay(event) {
-            if (event.target === overlay) {
-                cleanup(false);
-            }
+            if (event.target === overlay) cleanup(false);
         }
 
         yesBtn.addEventListener("click", onYes);
         noBtn.addEventListener("click", onNo);
-
         overlay.addEventListener("click", onOverlay);
-
         document.addEventListener("keydown", onEscape);
 
         yesBtn.focus();
@@ -3856,14 +3835,11 @@ function openPopup() {
 
     if (!overlay) {
         console.error("Payment popup element is missing.");
-
         return false;
     }
 
     overlay.classList.add("active");
-
     overlay.setAttribute("aria-hidden", "false");
-
     document.body.classList.add("modal-open");
 
     return true;
@@ -3872,14 +3848,11 @@ function openPopup() {
 function closePopup() {
     const overlay = $("popupOverlay");
 
-    if (!overlay || quicktelPaymentInProgress) {
-        return;
-    }
+    // Keep the popup visible while the payment is being tracked.
+    if (!overlay || quicktelPaymentInProgress) return;
 
     overlay.classList.remove("active");
-
     overlay.setAttribute("aria-hidden", "true");
-
     document.body.classList.remove("modal-open");
 }
 
@@ -3894,12 +3867,10 @@ window.openPhonePopup = async function (packageSize, amount) {
     if (quicktelPaymentInProgress) return;
 
     const selectedName = String(packageSize || "").trim();
-
     const selectedAmount = Number(amount);
 
     if (!selectedName) {
         alert("Please select a valid package.");
-
         return;
     }
 
@@ -3909,7 +3880,6 @@ window.openPhonePopup = async function (packageSize, amount) {
         selectedAmount > MAX_PAYMENT_AMOUNT
     ) {
         alert("The selected package has an invalid price.");
-
         return;
     }
 
@@ -3924,21 +3894,12 @@ window.openPhonePopup = async function (packageSize, amount) {
     const amountInput = $("popupAmount");
     const titleInput = $("popupTitle");
     const packageInput = $("popupPackage");
-
     const packageDisplay = $("selectedPackage");
     const priceDisplay = $("selectedPrice");
 
-    if (amountInput) {
-        amountInput.value = String(selectedAmount);
-    }
-
-    if (titleInput) {
-        titleInput.value = selectedName;
-    }
-
-    if (packageInput) {
-        packageInput.value = selectedName;
-    }
+    if (amountInput) amountInput.value = String(selectedAmount);
+    if (titleInput) titleInput.value = selectedName;
+    if (packageInput) packageInput.value = selectedName;
 
     if (packageDisplay) {
         packageDisplay.textContent = selectedName;
@@ -3949,16 +3910,12 @@ window.openPhonePopup = async function (packageSize, amount) {
             `KSh ${formatKES(selectedAmount)}`;
     }
 
-    if (phoneInput) {
-        phoneInput.value = "";
-    }
+    if (phoneInput) phoneInput.value = "";
 
     showPaymentStatus("", "info");
 
     if (openPopup()) {
-        setTimeout(() => {
-            phoneInput?.focus();
-        }, 150);
+        setTimeout(() => phoneInput?.focus(), 150);
     }
 };
 
@@ -3971,9 +3928,7 @@ const popupOverlay = $("popupOverlay");
 
 if (popupOverlay) {
     popupOverlay.addEventListener("click", (event) => {
-        if (event.target === popupOverlay) {
-            closePopup();
-        }
+        if (event.target === popupOverlay) closePopup();
     });
 }
 
@@ -3982,7 +3937,6 @@ const cancelPayment = $("cancelPayment");
 if (cancelPayment) {
     cancelPayment.addEventListener("click", (event) => {
         event.preventDefault();
-
         closePopup();
     });
 }
@@ -3995,30 +3949,24 @@ if (cancelPayment) {
 function normalizeKenyanPhone(input) {
     let phone = String(input || "").trim();
 
-    // Remove spaces, hyphens and other formatting.
     phone = phone.replace(/[\s()-]/g, "");
 
-    // Convert an international prefix.
     if (phone.startsWith("+")) {
         phone = phone.slice(1);
     }
 
-    // Accept a number entered with Kenya's country code.
     if (/^254[17]\d{8}$/.test(phone)) {
         return phone;
     }
 
-    // Convert local format: 0712345678 -> 254712345678.
     if (/^0[17]\d{8}$/.test(phone)) {
         return "254" + phone.slice(1);
     }
 
-    // Convert local format: 712345678 -> 254712345678.
     if (/^[17]\d{8}$/.test(phone)) {
         return "254" + phone;
     }
 
-    // Return remaining digits for validation.
     return phone.replace(/\D/g, "");
 }
 
@@ -4028,7 +3976,7 @@ function isValidKenyanPhone(phone) {
 
 
 /* =========================================================
-   PAYMENT STATUS MESSAGES
+   PAYMENT STATUS DISPLAY
 ========================================================= */
 
 function showPaymentStatus(message, type = "info") {
@@ -4038,12 +3986,10 @@ function showPaymentStatus(message, type = "info") {
         if (message) {
             console.log(`[Payment: ${type}]`, message);
         }
-
         return;
     }
 
     status.textContent = message;
-
     status.className = `payment-status ${type}`;
 
     if (message) {
@@ -4053,7 +3999,6 @@ function showPaymentStatus(message, type = "info") {
     }
 
     status.setAttribute("role", "status");
-
     status.setAttribute("aria-live", "polite");
 }
 
@@ -4065,9 +4010,7 @@ function showPaymentStatus(message, type = "info") {
 async function readPaymentResponse(response) {
     const responseText = await response.text();
 
-    if (!responseText.trim()) {
-        return {};
-    }
+    if (!responseText.trim()) return {};
 
     try {
         return JSON.parse(responseText);
@@ -4089,12 +4032,9 @@ async function readPaymentResponse(response) {
 ========================================================= */
 
 function getPaymentError(result, fallback) {
-    if (!result || typeof result !== "object") {
-        return fallback;
-    }
+    if (!result || typeof result !== "object") return fallback;
 
     const details = result.details || {};
-
     const data = result.data || {};
 
     const message =
@@ -4109,11 +4049,9 @@ function getPaymentError(result, fallback) {
         result.ResponseDescription ||
         result.CustomerMessage;
 
-    if (typeof message === "string" && message.trim()) {
-        return message.trim();
-    }
-
-    return fallback;
+    return typeof message === "string" && message.trim()
+        ? message.trim()
+        : fallback;
 }
 
 
@@ -4121,39 +4059,37 @@ function getPaymentError(result, fallback) {
    M-PESA STK PUSH REQUEST
 ========================================================= */
 
-async function sendSTKPush(phone, amount) {
+async function sendSTKPush(phone, amount, packageName) {
     paymentRequestController = new AbortController();
 
+    const controller = paymentRequestController;
+
     const timeoutId = setTimeout(() => {
-        paymentRequestController?.abort();
+        controller.abort();
     }, PAYMENT_TIMEOUT);
 
     try {
         const response = await fetch(QUICKTEL_STK_PUSH_URL, {
             method: "POST",
-
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
             },
-
             body: JSON.stringify({
-                phone: phone,
-                amount: amount
+                phone,
+                amount,
+                package: packageName,
+                packageSize: packageName,
+                title: packageName
             }),
-
-            signal: paymentRequestController.signal,
-
+            signal: controller.signal,
             cache: "no-store"
         });
 
         const result = await readPaymentResponse(response);
 
-        console.log("Quicktel backend URL:", QUICKTEL_STK_PUSH_URL);
-
-        console.log("Backend HTTP status:", response.status);
-
-        console.log("Backend response:", result);
+        console.log("Quicktel STK endpoint:", QUICKTEL_STK_PUSH_URL);
+        console.log("STK HTTP status:", response.status);
 
         if (!response.ok || result.success !== true) {
             throw new Error(
@@ -4171,11 +4107,10 @@ async function sendSTKPush(phone, amount) {
 
         if (error.name === "AbortError") {
             const timeoutError = new Error(
-                "The request timed out. Check your M-PESA transaction status before attempting another payment."
+                "The request timed out. Check your M-PESA messages and transaction status before attempting another payment."
             );
 
             timeoutError.name = "PaymentTimeoutError";
-
             throw timeoutError;
         }
 
@@ -4190,13 +4125,191 @@ async function sendSTKPush(phone, amount) {
     } finally {
         clearTimeout(timeoutId);
 
-        paymentRequestController = null;
+        if (paymentRequestController === controller) {
+            paymentRequestController = null;
+        }
     }
 }
 
 
 /* =========================================================
-   PAYMENT SUBMISSION
+   WAIT BETWEEN STATUS CHECKS
+========================================================= */
+
+function waitForNextPoll(milliseconds) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, milliseconds);
+    });
+}
+
+
+/* =========================================================
+   PAYMENT STATUS POLLING
+========================================================= */
+
+async function pollPaymentStatus(checkoutRequestId, statusToken) {
+    const startedAt = Date.now();
+
+    paymentPollController = new AbortController();
+
+    const controller = paymentPollController;
+
+    let lastTemporaryError = "";
+
+    try {
+        while (Date.now() - startedAt < PAYMENT_POLL_TIMEOUT) {
+            if (controller.signal.aborted) {
+                return {
+                    status: "PENDING",
+                    message: "Payment status tracking was interrupted. Check your M-PESA messages."
+                };
+            }
+
+            try {
+                const response = await fetch(
+                    QUICKTEL_PAYMENT_STATUS_URL,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json"
+                        },
+                        body: JSON.stringify({
+                            checkoutRequestId,
+                            statusToken
+                        }),
+                        cache: "no-store",
+                        signal: controller.signal
+                    }
+                );
+
+                const result = await readPaymentResponse(response);
+
+                if (!response.ok || result.success !== true) {
+                    const errorMessage = getPaymentError(
+                        result,
+                        `Status check failed (HTTP ${response.status}).`
+                    );
+
+                    // Client errors usually indicate an invalid request/token.
+                    if (
+                        response.status >= 400 &&
+                        response.status < 500 &&
+                        response.status !== 408 &&
+                        response.status !== 429
+                    ) {
+                        throw new Error(errorMessage);
+                    }
+
+                    lastTemporaryError = errorMessage;
+                    console.warn("Temporary payment status error:", errorMessage);
+
+                } else {
+                    lastTemporaryError = "";
+
+                    const status = String(
+                        result.status || "PENDING"
+                    ).toUpperCase();
+
+                    console.log("Quicktel payment status:", status);
+
+                    if (status === "SUCCESS") {
+                        return {
+                            status: "SUCCESS",
+                            message: result.message ||
+                                "Payment received successfully.",
+                            receiptNumber:
+                                result.receiptNumber ||
+                                result.mpesaReceiptNumber ||
+                                result.receipt ||
+                                "",
+                            amount: result.amount ?? null
+                        };
+                    }
+
+                    if (status === "CANCELLED") {
+                        return {
+                            status: "CANCELLED",
+                            message: result.message ||
+                                "The payment was cancelled on the phone."
+                        };
+                    }
+
+                    if (status === "FAILED") {
+                        return {
+                            status: "FAILED",
+                            message: result.message ||
+                                "The payment failed."
+                        };
+                    }
+
+                    if (status !== "PENDING" && status !== "PROCESSING") {
+                        console.warn(
+                            "Unrecognized payment status:",
+                            status
+                        );
+                    }
+                }
+
+            } catch (error) {
+                if (error.name === "AbortError") {
+                    return {
+                        status: "PENDING",
+                        message: "Payment tracking was interrupted. Check your M-PESA messages."
+                    };
+                }
+
+                // A definite client error such as an invalid status token
+                // should not be retried indefinitely.
+                if (
+                    error.message &&
+                    /invalid|unauthorized|forbidden|token/i.test(error.message)
+                ) {
+                    return {
+                        status: "TRACKING_ERROR",
+                        message: error.message
+                    };
+                }
+
+                lastTemporaryError = error.message || "Temporary network error.";
+                console.warn(
+                    "Payment status polling error:",
+                    lastTemporaryError
+                );
+            }
+
+            showPaymentStatus(
+                "Waiting for Safaricom payment confirmation...",
+                "info"
+            );
+
+            const remaining =
+                PAYMENT_POLL_TIMEOUT - (Date.now() - startedAt);
+
+            if (remaining > 0) {
+                await waitForNextPoll(
+                    Math.min(PAYMENT_POLL_INTERVAL, remaining)
+                );
+            }
+        }
+
+        return {
+            status: "PENDING",
+            message: lastTemporaryError
+                ? "Confirmation has not arrived yet. Check your M-PESA messages before retrying."
+                : "Payment confirmation is taking longer than expected. Check your M-PESA messages before retrying."
+        };
+
+    } finally {
+        if (paymentPollController === controller) {
+            paymentPollController = null;
+        }
+    }
+}
+
+
+/* =========================================================
+   SUBMIT PAYMENT
 ========================================================= */
 
 const submitBtn = $("submitPayment");
@@ -4205,9 +4318,7 @@ if (submitBtn) {
     submitBtn.addEventListener("click", async (event) => {
         event.preventDefault();
 
-        if (quicktelPaymentInProgress) {
-            return;
-        }
+        if (quicktelPaymentInProgress) return;
 
         const phoneInput = $("popupPhone");
 
@@ -4225,22 +4336,17 @@ if (submitBtn) {
             ""
         ).trim();
 
-        /* -----------------------------------------------
-           VALIDATE PACKAGE
-        ----------------------------------------------- */
+        /* Validate package */
 
         if (!packageName) {
             showPaymentStatus(
                 "Please select a package before making payment.",
                 "error"
             );
-
             return;
         }
 
-        /* -----------------------------------------------
-           VALIDATE AMOUNT
-        ----------------------------------------------- */
+        /* Validate amount */
 
         if (
             !Number.isSafeInteger(amount) ||
@@ -4251,35 +4357,28 @@ if (submitBtn) {
                 "Invalid package price. Please select your package again.",
                 "error"
             );
-
             return;
         }
 
-        /* -----------------------------------------------
-           VALIDATE PHONE
-        ----------------------------------------------- */
+        /* Validate phone */
 
         if (!isValidKenyanPhone(phone)) {
             showPaymentStatus(
-                "Enter a valid Kenyan Safaricom, Airtel or Telkom number, such as 0712345678.",
+                "Enter a valid Kenyan mobile number, such as 0712345678.",
                 "error"
             );
 
             phoneInput?.focus();
-
             return;
         }
 
-        /* -----------------------------------------------
-           LOCK PAYMENT BUTTON
-        ----------------------------------------------- */
+        /* Lock payment UI while the result is tracked */
 
         quicktelPaymentInProgress = true;
 
         const originalLabel = submitBtn.innerHTML;
 
         submitBtn.disabled = true;
-
         submitBtn.setAttribute("aria-busy", "true");
 
         submitBtn.innerHTML = `
@@ -4292,56 +4391,115 @@ if (submitBtn) {
             "info"
         );
 
-        console.log("Initiating Quicktel STK Push:", {
-            endpoint: QUICKTEL_STK_PUSH_URL,
-            phone: phone,
-            amount: amount,
-            package: packageName
-        });
+        let paymentWasInitiated = false;
 
         try {
-            const result = await sendSTKPush(phone, amount);
+            const result = await sendSTKPush(
+                phone,
+                amount,
+                packageName
+            );
 
             const paymentData = result.data || result;
 
             const checkoutRequestId =
                 paymentData.CheckoutRequestID ||
+                paymentData.checkoutRequestId ||
                 paymentData.checkoutRequestID ||
+                null;
+
+            const statusToken =
+                paymentData.statusToken ||
+                result.statusToken ||
                 null;
 
             const merchantRequestId =
                 paymentData.MerchantRequestID ||
+                paymentData.merchantRequestId ||
                 paymentData.merchantRequestID ||
                 null;
 
-            console.log(
-                "CheckoutRequestID:",
-                checkoutRequestId
-            );
+            console.log("STK request accepted:", {
+                checkoutRequestId,
+                merchantRequestId,
+                trackingTokenReturned: Boolean(statusToken)
+            });
 
-            console.log(
-                "MerchantRequestID:",
-                merchantRequestId
-            );
+            paymentWasInitiated = true;
 
-            /* -------------------------------------------
-               REQUEST ACCEPTED
-            ------------------------------------------- */
+            if (!checkoutRequestId || !statusToken) {
+                showPaymentStatus(
+                    "Safaricom accepted the request, but payment tracking could not start. Check your M-PESA messages before trying again.",
+                    "warning"
+                );
+                return;
+            }
+
+            submitBtn.innerHTML = `
+                <span class="spinner" aria-hidden="true"></span>
+                Waiting for Confirmation...
+            `;
 
             showPaymentStatus(
-                "Check your phone and follow the M-PESA prompt. Payment is not complete until the transaction is confirmed.",
-                "success"
+                "Check your phone and follow the M-PESA prompt. Waiting for transaction confirmation...",
+                "info"
             );
 
-        } catch (error) {
-            console.error(
-                "Quicktel payment request failed:",
-                error
+            const payment = await pollPaymentStatus(
+                checkoutRequestId,
+                statusToken
             );
+
+            if (payment.status === "SUCCESS") {
+                const receiptText = payment.receiptNumber
+                    ? ` M-PESA receipt: ${payment.receiptNumber}.`
+                    : "";
+
+                const amountText =
+                    payment.amount !== null &&
+                    payment.amount !== undefined
+                        ? ` Amount: KSh ${formatKES(payment.amount)}.`
+                        : "";
+
+                showPaymentStatus(
+                    `Payment successful!${receiptText}${amountText}`,
+                    "success"
+                );
+
+                submitBtn.innerHTML = "Payment Confirmed";
+
+            } else if (payment.status === "CANCELLED") {
+                showPaymentStatus(
+                    "Payment was cancelled on the phone. No successful payment confirmation was received.",
+                    "error"
+                );
+
+            } else if (payment.status === "FAILED") {
+                showPaymentStatus(
+                    payment.message || "Payment failed.",
+                    "error"
+                );
+
+            } else if (payment.status === "TRACKING_ERROR") {
+                showPaymentStatus(
+                    `The payment request was accepted, but status tracking failed: ${payment.message} Check your M-PESA messages before retrying.`,
+                    "warning"
+                );
+
+            } else {
+                showPaymentStatus(
+                    payment.message ||
+                    "Payment confirmation is still pending. Check your M-PESA messages before retrying.",
+                    "warning"
+                );
+            }
+
+        } catch (error) {
+            console.error("Quicktel payment failed:", error);
 
             showPaymentStatus(
                 error.message ||
-                "Unable to initiate payment. Check your transaction status before retrying.",
+                "Unable to confirm the payment request. Check your M-PESA messages before retrying.",
                 "error"
             );
 
@@ -4349,11 +4507,22 @@ if (submitBtn) {
             quicktelPaymentInProgress = false;
 
             submitBtn.disabled = false;
-
             submitBtn.removeAttribute("aria-busy");
 
-            submitBtn.innerHTML =
-                "Pay with M-PESA";
+            // Keep a confirmed-success label; otherwise restore the button.
+            if (
+                submitBtn.innerHTML.includes("Payment Confirmed")
+            ) {
+                submitBtn.innerHTML = "Payment Confirmed";
+            } else {
+                submitBtn.innerHTML = originalLabel || "Pay with M-PESA";
+            }
+
+            if (paymentWasInitiated) {
+                console.log(
+                    "STK request processing finished. Verify M-PESA status before another attempt."
+                );
+            }
         }
     });
 }
@@ -4367,7 +4536,6 @@ const phoneInput = $("popupPhone");
 
 if (phoneInput) {
     phoneInput.setAttribute("inputmode", "tel");
-
     phoneInput.setAttribute("autocomplete", "tel");
 
     phoneInput.addEventListener("input", function () {
@@ -4407,7 +4575,7 @@ document.querySelectorAll('a[href="#"]').forEach((link) => {
    INITIALIZATION
 ========================================================= */
 
-console.log("Quicktel Bundles payment frontend initialized.");
+console.log("Quicktel Bundles STK Push + payment polling initialized.");
 
 </script>
 </body>
