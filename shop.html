@@ -1620,17 +1620,55 @@ footer {
         </div>
     </main>
    
-     <!-- Payment Popup -->
-  <div class="popup-overlay" id="popupOverlay">
+     <!-- QUICKTEL PAYMENT POPUP -->
+<div class="popup-overlay" id="popupOverlay">
     <div class="popup">
-      <h3>Enter Payment Details</h3>
-      <input type="text" id="popupPhone" placeholder="Number to Make Payment (2547...)" maxlength="12">
-       <input type="text" id="popupPhone" placeholder="Number to Receive Package (2547...)" maxlength="12">
-      <input type="hidden" id="popupAmount">
-      <input type="hidden" id="popupTitle">
-      <button id="submitPayment">Pay Now</button>
-      <button class="cancel" onclick="closePopup()">Cancel</button>
+
+        <h3>Complete Your Purchase</h3>
+
+        <p id="selectedProduct"></p>
+
+        <div>
+            <label for="popupPhone">M-PESA Payment Number</label>
+            <input
+                type="tel"
+                id="popupPhone"
+                placeholder="2547XXXXXXXX"
+                maxlength="12"
+                autocomplete="tel"
+            >
+        </div>
+
+        <div id="recipientContainer">
+            <label for="recipientPhone">
+                Bundle Recipient Number
+            </label>
+
+            <input
+                type="tel"
+                id="recipientPhone"
+                placeholder="2547XXXXXXXX"
+                maxlength="12"
+            >
+        </div>
+
+        <input type="hidden" id="popupAmount">
+        <input type="hidden" id="popupTitle">
+
+        <button id="submitPayment" type="button">
+            Pay Now
+        </button>
+
+        <button
+            class="cancel"
+            type="button"
+            onclick="closePopup()"
+        >
+            Cancel
+        </button>
+
     </div>
+</div>
   </div>
   <div id="customConfirmOverlay">
     <div id="customConfirmBox">
@@ -1649,256 +1687,395 @@ footer {
         </p>
     </footer>
 
-    <script src="https://js.paystack.co/v1/inline.js"></script>
-    <script>
-        const subCategories = {
-            bundles: ['daily', 'weekly', 'monthly', 'special'],
-            minutes: ['short', 'long', 'international'],
-            sms: ['bulk', 'personal', 'promo']
-        };
+<script>
+"use strict";
 
-        function toggleMenu() {
-            const menu = document.getElementById('menu');
-            const icon = document.getElementById('hamburgerIcon');
-            if (menu.style.display === "block") {
-                menu.style.display = "none";
-                icon.innerHTML = "&#9776;";
-            } else {
-                menu.style.display = "block";
-                icon.innerHTML = "&times;";
-            }
-        }        function selectMain(main) {
-            document.getElementById('mainSelect').value = main;
-            changeMain();
-            toggleMenu();
-        }
+/* ==========================================
+   QUICKTEL BUNDLES
+   Category + Purchase + M-PESA STK Push
+========================================== */
 
-        function changeMain() {
-            let main = document.getElementById('mainSelect').value;
-            document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
-            document.getElementById(main + '-section').style.display = 'block';
+const $ = id => document.getElementById(id);
 
-            let subSelect = document.getElementById('subSelect');
-            subSelect.innerHTML = '';
-            subCategories[main].forEach(sub => {
-                let option = document.createElement('option');
-                option.value = sub;
-                option.text = sub.charAt(0).toUpperCase() + sub.slice(1);
-                subSelect.appendChild(option);
-            });
-            changeSubCategory();
-        }
+const API_URL = "https://samsoft-coral.vercel.app/api/stkpush";
 
-        function changeSubCategory() {
-            let main = document.getElementById('mainSelect').value;
-            let sub = document.getElementById('subSelect').value;
-            document.querySelectorAll(`#${main}-section .sub-section`).forEach(s => s.style.display = 'none');
-            document.getElementById(`${main}-${sub}`).style.display = 'block';
-        }
-
-        function buySelf(bundleName, price) {
-    const phone = prompt("Enter your M-PESA number:");
-    if(!phone) return;
-
-    let handler = PaystackPop.setup({
-        key: 'pk_live_3b95d82d975d8cd88f2e0059b1d6dca62c1db036',
-        email: 'customer@quicktel.com',
-        amount: price * 100,
-        currency: 'KES',
-        metadata: {
-            custom_fields: [
-                { display_name: "Bundle", variable_name: "bundle", value: bundleName },
-                { display_name: "Payer", variable_name: "payer", value: phone },
-                { display_name: "Recipient", variable_name: "recipient", value: phone }
-            ]
-        },
-        callback: function(response) {
-            alert("Payment successful: " + response.reference);
-        },
-        onClose: function() {
-            alert("Transaction cancelled");
-        }
-    });
-
-    handler.openIframe();
-}
-
-function buyForOthers(bundleName, price) {
-    const payerPhone = prompt("Enter your M-PESA number:");
-    if(!payerPhone) return;
-    const recipientPhone = prompt("Enter recipient's phone number:");
-    if(!recipientPhone) return;
-
-    let handler = PaystackPop.setup({
-        key: 'pk_live_3b95d82d975d8cd88f2e0059b1d6dca62c1db036',
-        email: 'customer@quicktel.com',
-        amount: price * 100,
-        currency: 'KES',
-        metadata: {
-            custom_fields: [
-                { display_name: "Bundle", variable_name: "bundle", value: bundleName },
-                { display_name: "Payer", variable_name: "payer", value: payerPhone },
-                { display_name: "Recipient", variable_name: "recipient", value: recipientPhone }
-            ]
-        },
-        callback: function(response) { alert("Payment successful: " + response.reference); },
-        onClose: function() { alert("Transaction cancelled"); }
-    });
-    handler.openIframe();
-}
-        window.onload = changeMain;
-
-        document.addEventListener('contextmenu', function(event) {
-            event.preventDefault();
-            alert("Right-click is disabled on this site.");
-        });
-        
-      
-// ===== Utility =====
-const $ = (id) => document.getElementById(id);
-
-// ===== Disable right click =====
-document.addEventListener("contextmenu", (e) => e.preventDefault()); 
-// ===== Mobile menu =====
-const menuEl = document.querySelector(".menu");
-const hamburgerEl = $("hamburger");
-if (hamburgerEl) {
-  hamburgerEl.addEventListener("click", () => {
-    if (menuEl) menuEl.classList.toggle("show");
-  });
-}
-
-// ===== Footer year =====
-const yearEl = $("year");
-if (yearEl) yearEl.textContent = new Date().getFullYear();
-
-// ===== Category filtering =====
-const gridCards = document.querySelectorAll("#bundleGrid .card");
-function filterCategory(category) {
-  gridCards.forEach((card) => {
-    card.style.display =
-      !category || card.dataset.category === category ? "" : "none";
-  });
-}
-const mainSelect = $("mainSelect");
-if (mainSelect) {
-  mainSelect.addEventListener("change", () => filterCategory(mainSelect.value));
-  filterCategory(mainSelect.value || "bundles");
-}
-document.querySelectorAll('.menu a[data-section]').forEach((link) => {
-  link.addEventListener("click", (e) => {
-    e.preventDefault();
-    const section = link.getAttribute("data-section");
-    if (mainSelect && section) mainSelect.value = section;
-    filterCategory(section);
-    if (menuEl) menuEl.classList.remove("show");
-  });
-});
-
-// ===== Custom Confirm dialog =====
-function customConfirm(product, amount) {
-  return new Promise((resolve) => {
-    const overlay = $("customConfirmOverlay");
-    const details = $("confirmDetails");
-    const yesBtn = document.querySelector(".confirm-yes");
-    const noBtn = document.querySelector(".confirm-no");
-
-    if (!overlay || !details || !yesBtn || !noBtn) {
-      resolve(window.confirm(`Confirm purchase:\n${product}\nKES ${amount}`));
-      return;
-    }
-
-    details.innerHTML =
-      `📦 <strong>${product}</strong><br>💰 Amount: <strong>KES ${amount}</strong>`;
-    overlay.style.display = "flex";
-
-    const cleanup = () => {
-      overlay.style.display = "none";
-      yesBtn.removeEventListener("click", onYes);
-      noBtn.removeEventListener("click", onNo);
-      overlay.removeEventListener("click", onOverlay);
-      document.removeEventListener("keydown", onEsc);
-    };
-
-    const onYes = () => { cleanup(); resolve(true); };
-    const onNo = () => { cleanup(); resolve(false); };
-    const onOverlay = (ev) => { if (ev.target === overlay) { cleanup(); resolve(false); } };
-    const onEsc = (ev) => { if (ev.key === "Escape") { cleanup(); resolve(false); } };
-
-    yesBtn.addEventListener("click", onYes, { once: true });
-    noBtn.addEventListener("click", onNo, { once: true });
-    overlay.addEventListener("click", onOverlay, { once: true });
-    document.addEventListener("keydown", onEsc, { once: true });
-  });
-}
-
-// ===== Payment popup =====
-function openPopup() {
-  $("popupOverlay")?.classList.add("active");
-}
-function closePopup() {
-  $("popupOverlay")?.classList.remove("active");
-}
-window.closePopup = closePopup;
-
-// ===== Flow: Buy -> Confirm -> Popup =====
-window.openPhonePopup = async function (product, amount) {
-  const proceed = await customConfirm(product, amount);
-  if (!proceed) return;
-
-  const phoneInput = $("popupPhone");
-  const amountInput = $("popupAmount");
-  const titleInput = $("popupTitle");
-
-  if (amountInput) { amountInput.value = amount; amountInput.readOnly = true; }
-  if (titleInput) { titleInput.value = product; titleInput.readOnly = true; }
-  if (phoneInput) { phoneInput.value = ""; phoneInput.focus(); }
-
-  openPopup();
+const subCategories = {
+    bundles: ["daily", "weekly", "monthly", "special"],
+    minutes: ["short", "long", "international"],
+    sms: ["bulk", "personal", "promo"]
 };
 
-// ===== Submit payment =====
-const submitBtn = $("submitPayment");
-if (submitBtn) {
-  submitBtn.addEventListener("click", async () => {
-    const phone = ($("popupPhone")?.value || "").trim();
-    const amount = $("popupAmount")?.value || "";
+let selectedProduct = "";
+let selectedAmount = 0;
+let purchaseType = "self";
 
-    // Validate phone
-    if (!phone || !/^254\d{9}$/.test(phone)) {
-      alert("❌ Please enter a valid Safaricom number (format: 2547XXXXXXXX)");
-      return;
+/* ==========================================
+   MOBILE MENU
+========================================== */
+
+function toggleMenu() {
+    const menu = $("menu");
+    const icon = $("hamburgerIcon");
+
+    const isOpen = menu.style.display === "block";
+
+    menu.style.display = isOpen ? "none" : "block";
+    icon.innerHTML = isOpen ? "&#9776;" : "&times;";
+}
+
+function selectMain(category) {
+    $("mainSelect").value = category;
+    changeMain();
+
+    $("menu").style.display = "none";
+    $("hamburgerIcon").innerHTML = "&#9776;";
+}
+
+/* ==========================================
+   CATEGORY NAVIGATION
+========================================== */
+
+function changeMain() {
+    const main = $("mainSelect").value;
+
+    document.querySelectorAll(".section").forEach(section => {
+        section.style.display = "none";
+    });
+
+    const activeSection = $(main + "-section");
+
+    if (!activeSection || !subCategories[main]) return;
+
+    activeSection.style.display = "block";
+
+    const subSelect = $("subSelect");
+    subSelect.innerHTML = "";
+
+    subCategories[main].forEach(sub => {
+        const option = document.createElement("option");
+
+        option.value = sub;
+        option.textContent =
+            sub.charAt(0).toUpperCase() + sub.slice(1);
+
+        subSelect.appendChild(option);
+    });
+
+    changeSubCategory();
+}
+
+function changeSubCategory() {
+    const main = $("mainSelect").value;
+    const sub = $("subSelect").value;
+
+    document.querySelectorAll(
+        `#${main}-section .sub-section`
+    ).forEach(section => {
+        section.style.display = "none";
+    });
+
+    const activeSub = $(`${main}-${sub}`);
+
+    if (activeSub) {
+        activeSub.style.display = "block";
     }
-    if (!amount || isNaN(amount) || Number(amount) <= 0) {
-      alert("❌ Invalid amount.");
-      return;
+}
+
+/* ==========================================
+   PURCHASE CONFIRMATION
+========================================== */
+
+function customConfirm(product, amount) {
+
+    return new Promise(resolve => {
+
+        const overlay = $("customConfirmOverlay");
+        const details = $("confirmDetails");
+
+        const yes = document.querySelector(".confirm-yes");
+        const no = document.querySelector(".confirm-no");
+
+        if (!overlay || !details || !yes || !no) {
+            resolve(
+                window.confirm(
+                    `Confirm purchase: ${product} - KES ${amount}`
+                )
+            );
+            return;
+        }
+
+        details.textContent =
+            `Package: ${product} | Amount: KES ${amount}`;
+
+        overlay.style.display = "flex";
+
+        function cleanup(result) {
+            overlay.style.display = "none";
+
+            yes.removeEventListener("click", onYes);
+            no.removeEventListener("click", onNo);
+            overlay.removeEventListener("click", onOutside);
+            document.removeEventListener("keydown", onEscape);
+
+            resolve(result);
+        }
+
+        function onYes() {
+            cleanup(true);
+        }
+
+        function onNo() {
+            cleanup(false);
+        }
+
+        function onOutside(event) {
+            if (event.target === overlay) cleanup(false);
+        }
+
+        function onEscape(event) {
+            if (event.key === "Escape") cleanup(false);
+        }
+
+        yes.addEventListener("click", onYes);
+        no.addEventListener("click", onNo);
+        overlay.addEventListener("click", onOutside);
+        document.addEventListener("keydown", onEscape);
+    });
+}
+
+/* ==========================================
+   PHONE NUMBER NORMALIZATION
+========================================== */
+
+function normalizePhone(phone) {
+
+    let number = phone.replace(/\D/g, "");
+
+    if (number.startsWith("0")) {
+        number = "254" + number.substring(1);
+    }
+
+    if (number.startsWith("7") || number.startsWith("1")) {
+        number = "254" + number;
+    }
+
+    if (!/^254[17]\d{8}$/.test(number)) {
+        return null;
+    }
+
+    return number;
+}
+
+/* ==========================================
+   OPEN PURCHASE POPUP
+========================================== */
+
+function openPopup() {
+    $("popupOverlay").classList.add("active");
+}
+
+function closePopup() {
+    $("popupOverlay").classList.remove("active");
+}
+
+window.closePopup = closePopup;
+
+/* ==========================================
+   BUY FOR SELF
+========================================== */
+
+window.buySelf = async function(product, amount) {
+
+    const confirmed = await customConfirm(product, amount);
+
+    if (!confirmed) return;
+
+    purchaseType = "self";
+
+    selectedProduct = product;
+    selectedAmount = amount;
+
+    $("selectedProduct").textContent =
+        `${product} | KES ${amount}`;
+
+    $("popupTitle").value = product;
+    $("popupAmount").value = amount;
+
+    $("popupPhone").value = "";
+    $("recipientPhone").value = "";
+
+    $("recipientContainer").style.display = "none";
+
+    $("popupPhone").placeholder = "2547XXXXXXXX";
+
+    openPopup();
+};
+
+/* ==========================================
+   BUY FOR OTHERS
+========================================== */
+
+window.openPhonePopup = async function(product, amount) {
+
+    const confirmed = await customConfirm(product, amount);
+
+    if (!confirmed) return;
+
+    purchaseType = "others";
+
+    selectedProduct = product;
+    selectedAmount = amount;
+
+    $("selectedProduct").textContent =
+        `${product} | KES ${amount}`;
+
+    $("popupTitle").value = product;
+    $("popupAmount").value = amount;
+
+    $("popupPhone").value = "";
+    $("recipientPhone").value = "";
+
+    $("recipientContainer").style.display = "block";
+
+    openPopup();
+};
+
+/* ==========================================
+   SUBMIT M-PESA PAYMENT
+========================================== */
+
+const submitBtn = $("submitPayment");
+
+submitBtn.addEventListener("click", async function() {
+
+    const payer = normalizePhone($("popupPhone").value);
+
+    const recipientInput = $("recipientPhone").value.trim();
+
+    const recipient = purchaseType === "self"
+        ? payer
+        : normalizePhone(recipientInput);
+
+    if (!payer) {
+        alert("Please enter a valid M-PESA number.");
+        return;
+    }
+
+    if (!recipient) {
+        alert("Please enter a valid recipient number.");
+        return;
+    }
+
+    if (!selectedProduct || !selectedAmount ||
+        !Number.isFinite(Number(selectedAmount)) ||
+        Number(selectedAmount) <= 0) {
+
+        alert("Invalid package or payment amount.");
+        return;
     }
 
     submitBtn.disabled = true;
-    const originalLabel = submitBtn.textContent;
-    submitBtn.innerHTML = `
-  <span class="spinner"></span> Processing Payment
-`;
+
+    submitBtn.innerHTML =
+        '<span class="spinner"></span> Processing...';
 
     try {
-      const response = await fetch("https://samsoft-coral.vercel.app/stkpush", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone, amount })
-      });
 
-      const result = await response.json();
-      alert(result.message || JSON.stringify(result));
-    } catch (err) {
-      console.error(err);
-      alert("❌ Payment failed. Please try again.");
+        const response = await fetch(API_URL, {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+
+                phone: payer,
+
+                recipientPhone: recipient,
+
+                amount: Number(selectedAmount),
+
+                package: selectedProduct,
+
+                packageSize: selectedProduct,
+
+                title: selectedProduct
+
+            })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                result.message || "Unable to initiate payment."
+            );
+        }
+
+        alert(
+            result.message ||
+            "Your M-PESA payment request has been submitted. " +
+            "Check your phone and enter your M-PESA PIN if prompted."
+        );
+
+        closePopup();
+
+    } catch (error) {
+
+        console.error("Quicktel payment error:", error);
+
+        alert(
+            error.message ||
+            "Payment request failed. Please try again."
+        );
+
     } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = originalLabel || "Pay Now";
-      closePopup();
+
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Pay Now";
+
     }
-  });
-}
-    </script>
+
+});
+
+/* ==========================================
+   INITIALIZE WEBSITE
+========================================== */
+
+window.addEventListener("DOMContentLoaded", function() {
+
+    changeMain();
+
+    const year = $("year");
+
+    if (year) {
+        year.textContent = new Date().getFullYear();
+    }
+
+});
+
+/* ==========================================
+   CLOSE MENU WHEN CLICKING OUTSIDE
+========================================== */
+
+document.addEventListener("click", function(event) {
+
+    const menu = $("menu");
+    const hamburger = document.querySelector(".hamburger");
+
+    if (
+        menu &&
+        hamburger &&
+        !menu.contains(event.target) &&
+        !hamburger.contains(event.target)
+    ) {
+        menu.style.display = "none";
+
+        $("hamburgerIcon").innerHTML = "&#9776;";
+    }
+
+});
+</script>
 </body>
 </html>
