@@ -368,13 +368,13 @@ function renderProducts() {
     self.type = "button";
     self.className = "self-button";
     self.textContent = "Self";
-    self.addEventListener("click", () => openPurchase(name, price, "self"));
+    self.addEventListener("click", () => openPurchase(name, price, validity, "self"));
 
     const others = document.createElement("button");
     others.type = "button";
     others.className = "others-button";
     others.textContent = "Others";
-    others.addEventListener("click", () => openPurchase(name, price, "others"));
+    others.addEventListener("click", () => openPurchase(name, price, validity, "others"));
 
     buttons.append(self, others);
     card.append(top, valid, amount, buyLabel, buttons);
@@ -382,11 +382,15 @@ function renderProducts() {
   });
 }
 
-function openPurchase(product, amount, mode) {
-  selected = { product, amount: Number(amount) };
+function openPurchase(product, amount, validity, mode) {
+  if (typeof validity !== "string" || !validity.trim()) {
+    setStatus("This package is missing its validity information. Please contact support.", "error");
+    return;
+  }
+  selected = { product, amount: Number(amount), validity: validity.trim() };
   purchaseMode = mode;
   $("selectedProduct").textContent =
-    product + " · KSh " + Number(amount).toLocaleString("en-KE");
+    product + " · KSh " + Number(amount).toLocaleString("en-KE") + " · Valid: " + selected.validity;
   $("recipientField").hidden = mode === "self";
   $("payerPhone").value = "";
   $("recipientPhone").value = "";
@@ -441,6 +445,8 @@ async function submitPayment() {
         amount: selected.amount,
         package: selected.product,
         packageSize: selected.product,
+        validity: selected.validity,
+        packageValidity: selected.validity,
         title: selected.product
       }),
       signal: controller.signal
