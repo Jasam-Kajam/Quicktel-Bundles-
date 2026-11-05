@@ -34,22 +34,7 @@
     .menu a:hover{background:#f6effb;color:var(--purple-dark)}
     main{width:min(1200px,100%);margin:0 auto;padding:28px 18px 40px;flex:1}
     .hero{text-align:center;padding:14px 10px 22px}
-    /* Bellamy Regular webfont: place your licensed font file at /fonts/Bellamy-Regular.woff2 */
-    @font-face{
-      font-family:"Bellamy Regular";
-      src:url("/fonts/Bellamy-Regular.woff2") format("woff2");
-      font-style:normal;
-      font-weight:400;
-      font-display:swap;
-    }
-    .hero h1{
-      margin:0;
-      color:var(--purple-dark);
-      font-family:"Bellamy Regular","Bellamy",cursive;
-      font-weight:400;
-      font-size:clamp(1.9rem,4.5vw,2.8rem);
-      letter-spacing:.7px;
-    }
+    .hero h1{margin:0;color:var(--purple-dark);font-size:clamp(1.7rem,4vw,2.5rem);letter-spacing:.7px}
     .hero p{margin:8px 0 0;color:var(--muted)}
     .controls{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;margin:0 auto 20px;padding:14px;background:#fff;border:1px solid var(--line);border-radius:15px}
     .control-group{display:flex;align-items:center;gap:8px}
@@ -185,6 +170,9 @@
 "use strict";
 
 const API_URL = "https://samsoft-coral.vercel.app/api/stkpush";
+const STATUS_API_URL = "https://samsoft-coral.vercel.app/api/payment-status";
+const POLL_INTERVAL = 2500;
+const MAX_POLL_TIME = 120000;
 const LOGO_URL = "https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/rssmtvcf4bathncmrv37.jpeg";
 
 const catalogue = {
@@ -382,15 +370,49 @@ function renderProducts() {
   });
 }
 
+const PAYMENT_SESSION_KEY = "quicktel_active_payment_v1";
+let activePayment = null;
+let paymentCompleted = false;
+let uncertainPayment = false;
+let polling = false;
+
+function readSavedPayment() {
+  try {
+    const saved = sessionStorage.getItem(PAYMENT_SESSION_KEY);
+    if (!saved) return null;
+    const parsed = JSON.parse(saved);
+    return parsed && parsed.checkoutRequestId && parsed.statusToken ? parsed : null;
+  } catch (_) { return null; }
+}
+
+function saveActivePayment(payment) {
+  activePayment = payment;
+  try { sessionStorage.setItem(PAYMENT_SESSION_KEY, JSON.stringify(payment)); } catch (_) {}
+}
+
+function clearActivePayment() {
+  activePayment = null;
+  try { sessionStorage.removeItem(PAYMENT_SESSION_KEY); } catch (_) {}
+}
+
 function openPurchase(product, amount, validity, mode) {
-  if (typeof validity !== "string" || !validity.trim()) {
-    setStatus("This package is missing its validity information. Please contact support.", "error");
+  if (activePayment) {
+    alert("A previous M-PESA payment is still awaiting confirmation. Please check its status before starting another purchase.");
+    $("purchaseOverlay").classList.add("show");
+    selected = { product, amount: Number(amount), validity };
+    setStatus("A previous payment is still being checked. Use the button below to continue checking it.", "info");
+    $("submitPayment").textContent = "Check payment status";
+    $("submitPayment").disabled = false;
     return;
   }
-  selected = { product, amount: Number(amount), validity: validity.trim() };
+  if (uncertainPayment) {
+    alert("A previous payment request has an uncertain result. Please check M-PESA and contact Quicktel support before making another payment.");
+    return;
+  }
+  selected = { product, amount: Number(amount), validity };
   purchaseMode = mode;
-  $("selectedProduct").textContent =
-    product + " · KSh " + Number(amount).toLocaleString("en-KE") + " · Valid: " + selected.validity;
+  paymentCompleted = false;
+  $("selectedProduct").textContent = product + " · KSh " + Number(amount).toLocaleString("en-KE") + " · " + validity;
   $("recipientField").hidden = mode === "self";
   $("payerPhone").value = "";
   $("recipientPhone").value = "";
@@ -402,19 +424,105 @@ function openPurchase(product, amount, validity, mode) {
 }
 
 function closePurchase() {
-  if (requestInProgress) return;
+  if (requestInProgress || polling || activePayment) return;
   $("purchaseOverlay").classList.remove("show");
   selected = null;
 }
 
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function checkPaymentStatus(checkoutRequestId, statusToken) {
+  if (polling) return;
+  polling = true;
+  const button = $("submitPayment");
+  const startedAt = Date.now();
+  button.disabled = true;
+  button.textContent = "Checking payment…";
+  setStatus("Waiting for Safaricom to confirm your payment. This may take a moment. Do not make another payment.", "info");
+
+  try {
+    while (Date.now() - startedAt < MAX_POLL_TIME) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      let response;
+      let result;
+      try {
+        response = await fetch(STATUS_API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ checkoutRequestId, statusToken }),
+          signal: controller.signal
+        });
+        result = await response.json().catch(() => ({}));
+      } finally {
+        clearTimeout(timeoutId);
+      }
+
+      if (!response.ok || result.success !== true) {
+        throw new Error(result.message || "Unable to verify payment status right now.");
+      }
+
+      const status = String(result.status || "PENDING").toUpperCase();
+      if (status === "SUCCESS") {
+        paymentCompleted = true;
+        clearActivePayment();
+        const receipt = result.receiptNumber ? " M-PESA receipt: " + result.receiptNumber + "." : "";
+        const paidAmount = Number.isFinite(Number(result.amount)) ? " KSh " + Number(result.amount).toLocaleString("en-KE") + "." : "";
+        setStatus("Payment confirmed!" + paidAmount + receipt + " Your payment is verified. Bundle delivery is a separate step; contact support if your package is not delivered.", "success");
+        button.disabled = true;
+        button.textContent = "Payment confirmed";
+        return;
+      }
+      if (status === "CANCELLED") {
+        clearActivePayment();
+        setStatus(result.message || "The M-PESA request was cancelled. No payment was confirmed. You may try again.", "error");
+        button.disabled = false;
+        button.textContent = "Try again";
+        return;
+      }
+      if (status === "FAILED") {
+        clearActivePayment();
+        setStatus(result.message || "The payment was not successful. You may try again.", "error");
+        button.disabled = false;
+        button.textContent = "Try again";
+        return;
+      }
+      setStatus("M-PESA prompt sent. Please check the payer's phone and approve the request if you initiated it. Waiting for confirmation…", "info");
+      await wait(POLL_INTERVAL);
+    }
+
+    setStatus("Payment is still pending. Do not pay again. Tap ‘Check payment status’ to check again, or contact support if you need help.", "info");
+    button.disabled = false;
+    button.textContent = "Check payment status";
+  } catch (error) {
+    setStatus((error.message || "Could not check payment status.") + " Your transaction is being kept for another status check. Do not start a second payment.", "error");
+    button.disabled = false;
+    button.textContent = "Check payment status";
+  } finally {
+    polling = false;
+  }
+}
+
 async function submitPayment() {
-  if (requestInProgress || !selected) return;
+  if (requestInProgress || polling || paymentCompleted) return;
+
+  if (activePayment) {
+    await checkPaymentStatus(activePayment.checkoutRequestId, activePayment.statusToken);
+    return;
+  }
+  if (uncertainPayment) {
+    setStatus("The previous payment request may have reached Safaricom, but its tracking details were not received. Check M-PESA and contact support before retrying.", "error");
+    return;
+  }
+  if (!selected || !selected.validity) {
+    setStatus("This package is missing its validity information. Please contact support.", "error");
+    return;
+  }
 
   const payer = normalizePhone($("payerPhone").value);
-  const recipient = purchaseMode === "self"
-    ? payer
-    : normalizePhone($("recipientPhone").value);
-
+  const recipient = purchaseMode === "self" ? payer : normalizePhone($("recipientPhone").value);
   if (!payer) {
     setStatus("Enter a valid Kenyan M-PESA number, for example 0712345678.", "error");
     $("payerPhone").focus();
@@ -434,8 +542,10 @@ async function submitPayment() {
 
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 45000);
+  let serverMayHaveReceivedRequest = false;
 
   try {
+    serverMayHaveReceivedRequest = true;
     const response = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -444,44 +554,69 @@ async function submitPayment() {
         recipientPhone: recipient,
         amount: selected.amount,
         package: selected.product,
+        packageName: selected.product,
         packageSize: selected.product,
+        title: selected.product,
         validity: selected.validity,
-        packageValidity: selected.validity,
-        title: selected.product
+        packageValidity: selected.validity
       }),
       signal: controller.signal
     });
+    const result = await response.json().catch(() => ({}));
 
-    const raw = await response.text();
-    let result;
-    try { result = raw ? JSON.parse(raw) : {}; }
-    catch { throw new Error("The payment server returned an unreadable response. Please contact support before retrying."); }
-
-    if (!response.ok || result.success === false) {
-      throw new Error(result.message || result.error || "Unable to initiate the M-PESA request.");
+    if (!response.ok || result.success !== true) {
+      serverMayHaveReceivedRequest = false;
+      throw new Error(result.message || result.error || "The payment request could not be started.");
     }
 
-    setStatus(
-      result.message || "M-PESA request submitted. Check the payer's phone and follow the prompt if it arrives. Your order is not confirmed until payment is verified.",
-      "success"
-    );
-    button.textContent = "Request submitted";
-    // Keep the dialog visible so the customer can read the payment status.
+    const data = result.data || {};
+    if (result.trackingAvailable !== true || !data.CheckoutRequestID || !data.statusToken) {
+      uncertainPayment = true;
+      setStatus("Safaricom may have received your payment request, but the website did not receive tracking details. Do not try again yet. Check your M-PESA messages and contact support with the time and phone number used.", "error");
+      button.disabled = true;
+      button.textContent = "Awaiting support";
+      return;
+    }
+
+    saveActivePayment({
+      checkoutRequestId: data.CheckoutRequestID,
+      statusToken: data.statusToken,
+      packageName: selected.product,
+      amount: selected.amount,
+      validity: selected.validity,
+      createdAt: Date.now()
+    });
+    setStatus("M-PESA request sent. Check the payer's phone and follow the prompt. Payment will only be confirmed after Safaricom reports success.", "info");
+    await checkPaymentStatus(activePayment.checkoutRequestId, activePayment.statusToken);
   } catch (error) {
-    const message = error.name === "AbortError"
-      ? "The request timed out. Check your M-PESA messages and contact support before trying again."
-      : (error.message || "Payment request failed. Please try again later.");
-    setStatus(message, "error");
-    button.disabled = false;
-    button.textContent = "Try again";
+    if (serverMayHaveReceivedRequest && (error.name === "AbortError" || error instanceof TypeError)) {
+      uncertainPayment = true;
+      setStatus("We could not confirm whether the payment request reached Safaricom. Do not submit again yet. Check the M-PESA phone and contact support before retrying.", "error");
+      button.disabled = true;
+      button.textContent = "Awaiting support";
+    } else {
+      setStatus(error.message || "Payment request failed. Please try again later.", "error");
+      button.disabled = false;
+      button.textContent = "Try again";
+    }
   } finally {
     clearTimeout(timeoutId);
     requestInProgress = false;
-    if (button.textContent === "Sending request…") {
+    if (!activePayment && !uncertainPayment && !paymentCompleted && button.textContent === "Sending request…") {
       button.disabled = false;
       button.textContent = "Pay with M-PESA";
     }
   }
+}
+
+// Resume a payment in this browser tab if the customer reloads while waiting.
+activePayment = readSavedPayment();
+if (activePayment) {
+  window.addEventListener("load", () => {
+    $("submitPayment").textContent = "Check payment status";
+    $("submitPayment").disabled = false;
+    setStatus("A previous payment is awaiting confirmation. Select a package to open the payment window and check its status; do not pay again.", "info");
+  });
 }
 
 $("mainSelect").addEventListener("change", () => renderCategories());
