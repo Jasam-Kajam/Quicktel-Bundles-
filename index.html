@@ -1303,23 +1303,30 @@
         1px solid #bbf7d0;
     }
 
+    .payment-status.warning {
+      background: #fffbeb;
+      color: #92400e;
+      border: 1px solid #fde68a;
+    }
+
+    .payment-status.info {
+      background: #eff6ff;
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
+    }
+
     /* =========================================================
        FOOTER
     ========================================================= */
 
     footer {
-    text-align: center;
-    padding: 10px;
-    background: #fff;
-    color: #dc3545;
-    font-size: 0.8em;
-    border-top: 10px solid #2aaf;
-    border-bottom: 10px solid #2aaf;
-    border-left: 10px solid #dc3;
-    border-right: 15px solid #2a3bff;
-  }
-
+      text-align: center;
+      padding: 18px 12px;
+      background: #0f172a;
+      color: #cbd5e1;
       font-size: 13px;
+      border-top: 3px solid #2563eb;
+      border-bottom: 3px solid #7c3aed;
     }
 
     footer strong {
@@ -1426,9 +1433,27 @@
       }
 
       .purchase-grid,
-      .product-grid,
       .offer-cards {
         grid-template-columns: 1fr;
+      }
+
+      .product-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .product-card {
+        min-width: 0;
+        padding: 15px;
+      }
+
+      .product-card h3 {
+        font-size: 20px;
+      }
+
+      .product-image {
+        width: 48px;
+        height: 48px;
       }
 
       .offer-grid {
@@ -1444,6 +1469,12 @@
 
       .filter-box select {
         width: 100%;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .product-grid {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -3602,14 +3633,48 @@ let paymentPollController = null;
 ========================================================= */
 
 const QUICKTEL_PACKAGE_VALIDITY = {
-    "2GB": "24 hours",
+    // Data bundles
+    "250MB": "24 hours",
+    "5GB": "No expiry",
     "1GB": "24 hours",
-    "500MB": "24 hours"
+    "500MB": "3 hours",
+    "300MB": "24 hours",
+    "5GB [VALID FOR 48HRS]": "48 hours",
+    "25GB + YOUTUBE FREE [VALID FOR 30 DAYS]": "30 days",
+    "10GB [VALID FOR 30 DAYS]": "30 days",
+
+    // Minutes
+    "51 MINS": "24 hours",
+    "800 MINS": "30 days",
+    "100 MINS": "24 hours",
+    "20 MINS": "1 hour",
+    "48 MINS": "3 hours",
+    "30 MINS": "1 hour",
+    "100 MINS [VALID FOR 24HRS]": "24 hours",
+    "51 MINS [VALID FOR 24HRS]": "24 hours",
+    "30 MINS [VALID FOR 1HR]": "1 hour",
+    "20 MINS [VALID FOR 1HR]": "1 hour",
+    "48 MINS [VALID FOR 3HRS]": "3 hours",
+    "800 MINS [VALID FOR 30 DAYS]": "30 days",
+
+    // SMS
+    "200 SMS": "24 hours",
+    "1,000 SMS": "7 days",
+    "20 SMS": "24 hours",
+    "10,000 SMS": "30 days",
+    "200 SMS [VALID FOR 24HRS]": "24 hours",
+    "1,000 SMS [VALID FOR 7DAYS]": "7 days",
+    "20 SMS [VALID FOR 24HRS]": "24 hours",
+    "10,000 SMS [VALID FOR 30DAYS]": "30 days"
 };
 
 function getPackageValidity(packageName) {
-    return QUICKTEL_PACKAGE_VALIDITY[packageName]
-        || "See package terms";
+    const key = String(packageName || "")
+        .trim()
+        .replace(/\\s+/g, " ")
+        .toUpperCase();
+
+    return QUICKTEL_PACKAGE_VALIDITY[key] || "Validity not specified";
 }
 
 
